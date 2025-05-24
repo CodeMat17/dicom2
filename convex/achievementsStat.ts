@@ -10,30 +10,24 @@ export const getAchievementsStats = query({
 
 export const updateAchievementsStats = mutation({
   args: {
+    id: v.id("achievementsStats"),
     nationalChampions: v.optional(v.number()),
     internationalRecognition: v.optional(v.number()),
     studentWinners: v.optional(v.number()),
     universityAwards: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const currentStats = await ctx.db.query("achievementsStats").first();
+    const { id, ...fieldsToUpdate } = args;
 
-    if (!currentStats) {
-      return await ctx.db.insert("achievementsStats", {
-        nationalChampions: 5,
-        internationalRecognition: 2,
-        studentWinners: 39,
-        universityAwards: 5,
-      });
+    // Filter out undefined fields
+    const updates = Object.fromEntries(
+      Object.entries(fieldsToUpdate).filter(([, value]) => value !== undefined)
+    );
+
+    if (Object.keys(updates).length === 0) {
+      throw new Error("No fields provided to update.");
     }
 
-    return await ctx.db.patch(currentStats._id, {
-      nationalChampions:
-        args.nationalChampions ?? currentStats.nationalChampions,
-      internationalRecognition:
-        args.internationalRecognition ?? currentStats.internationalRecognition,
-      studentWinners: args.studentWinners ?? currentStats.studentWinners,
-      universityAwards: args.universityAwards ?? currentStats.universityAwards,
-    });
+    await ctx.db.patch(id, updates);
   },
 });

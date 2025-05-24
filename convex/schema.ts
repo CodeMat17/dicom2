@@ -11,8 +11,9 @@ export default defineSchema({
 
   events: defineTable({
     title: v.string(),
-    date: v.string(),
-    location: v.string(),
+    date: v.optional(v.string()),
+    location: v.optional(v.string()),
+    note: v.optional(v.string())
   }),
 
   collaborators: defineTable({

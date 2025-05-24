@@ -31,18 +31,27 @@ export function EventsSection() {
             No event scheduled at the moment
           </p>
         ) : (
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-6'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-6'>
             {events.map((event, index) => (
               <div key={index}>
                 <div className='w-full  bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 mb-6 lg:mb-0'>
-                  <h3 className='text-xl font-semibold mb-3'>{event.title}</h3>
-                  <div className='space-y-2'>
-                    <p className='flex items-center gap-2 text-muted-foreground'>
-                      <Calendar className='w-4 h-4' /> {event.date}
-                    </p>
-                    <p className='flex items-center gap-2 text-muted-foreground'>
-                      <MapPin className='w-4 h-4' /> {event.location}
-                    </p>
+                  <h3 className='text-lg font-semibold mb-2'>{event.title}</h3>
+                  <div className=''>
+                    {event.date &&
+                      <p className='flex items-center gap-2 text-muted-foreground'>
+                        <Calendar className='w-4 h-4' /> {event.date}
+                      </p>
+                    }
+                    {event.location &&
+                      <p className='flex items-center gap-2 text-muted-foreground'>
+                        <MapPin className='w-4 h-4' /> {event.location}
+                      </p>
+                    }
+                    {event.note &&
+                      <div className="bg-gray-100 dark:bg-gray-900 leading-5 text-sm italic p-2 mt-2 rounded-xl">
+                      {event.note}
+                      </div>
+                    }
                   </div>
                 </div>
               </div>

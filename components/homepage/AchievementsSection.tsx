@@ -51,7 +51,7 @@ export function AchievementsSection() {
 
             {achievements === undefined ? (
               <div className='pb-12 pl-6 italic animate-pulse'>
-                Achievements loading...
+                Latest stories loading...
               </div>
             ) : achievements.length === 0 ? (
               <div className='pb-12 pl-6 italic animate-pulse'>

@@ -45,11 +45,11 @@ const testimonials = useQuery(api.testimonials.getTestimonials)
             <motion.div
               key={testimonial._id}
               whileHover={{ y: -5 }}
-              className='bg-white dark:bg-gray-700 p-8 rounded-xl shadow-md'>
+              className='bg-white dark:bg-gray-700 p-8 rounded-xl shadow-md flex flex-col h-full'>
               <Quote className='w-8 h-8 text-primary/70 mb-4' />
-              <p className=' mb-6'>&quot;{testimonial.body}&quot;</p>
+              <p className=' mb-6 flex-1'>&quot;{testimonial.body}&quot;</p>
 
-              <div>
+              <div className="mt-auto">
                 <h3 className='font-bold'>{testimonial.name}</h3>
                 <p className='text-sm text-muted-foreground'>
                   {testimonial.role}

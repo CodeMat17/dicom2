@@ -19,6 +19,7 @@ import type * as collaborators from "../collaborators.js";
 import type * as events from "../events.js";
 import type * as heroSlides from "../heroSlides.js";
 import type * as statements from "../statements.js";
+import type * as storage from "../storage.js";
 import type * as teamMembers from "../teamMembers.js";
 import type * as testimonials from "../testimonials.js";
 
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   events: typeof events;
   heroSlides: typeof heroSlides;
   statements: typeof statements;
+  storage: typeof storage;
   teamMembers: typeof teamMembers;
   testimonials: typeof testimonials;
 }>;

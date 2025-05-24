@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+
+
+
 @media (min-width: 1024px) {
   .stat-scroller-card {
     transition: transform 0.2s ease;

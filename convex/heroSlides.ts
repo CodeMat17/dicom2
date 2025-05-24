@@ -3,33 +3,64 @@ import { mutation, query } from "./_generated/server";
 
 export const getHeroSlides = query({
   handler: async (ctx) => {
-    const hero = await ctx.db.query("heroSlides").order("asc").collect();
+    const slides = await ctx.db.query("heroSlides").collect();
 
-    const heroUrls = await Promise.all(
-      hero.map(async (heroSlider) => {
-        const imgUrl = heroSlider.img
-          ? await ctx.storage.getUrl(heroSlider.img)
-          : null;
+    const slidesWithUrls = await Promise.all(
+      slides.map(async (slide) => {
+        const imgUrl = slide.img ? await ctx.storage.getUrl(slide.img) : null;
 
         return {
-          ...heroSlider,
+          _id: slide._id,
+          title: slide.title,
+          subtitle: slide.subtitle,
+          alt: slide.title,
+          img: slide.img,
           imgUrl,
         };
       })
     );
-    return heroUrls;
+    return slidesWithUrls;
   },
 });
 
 export const addHeroSlide = mutation({
   args: {
     img: v.id("_storage"),
-    alt: v.string(),
     title: v.string(),
     subtitle: v.string(),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("heroSlides", args);
+    await ctx.db.insert("heroSlides", {
+      img: args.img,
+      title: args.title,
+      subtitle: args.subtitle,
+      alt: args.title,
+    });
+  },
+});
+
+export const updateHeroSlide = mutation({
+  args: {
+    id: v.id("heroSlides"),
+    title: v.string(),
+    subtitle: v.string(),
+    img: v.optional(v.id("_storage")),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db.get(args.id);
+    if (!existing) throw new Error("Hero slide not found");
+
+    // Delete old image if a new one is being used and it differs from current
+    if (args.img && args.img !== existing.img) {
+      await ctx.storage.delete(existing.img);
+    }
+
+    await ctx.db.patch(args.id, {
+      title: args.title ?? existing.title,
+      subtitle: args.subtitle ?? existing.subtitle,
+      img: args.img ?? existing.img,
+      alt: args.title ?? existing.title,
+    });
   },
 });
 

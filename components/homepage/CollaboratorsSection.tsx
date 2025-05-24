@@ -53,13 +53,13 @@ export function CollaboratorsSection() {
                     onClick={() => setSelected(collab)}>
                     <div className='w-20 h-20 relative mb-1'>
                       <Image
-                        src={collab.imgUrl || "/fallback-logo.png"}
+                        src={collab.imgUrl || "/logo.webp"}
                         alt={collab.name}
                         fill
                         className='object-contain rounded-full'
                         onError={(e) => {
                           (e.target as HTMLImageElement).src =
-                            "/fallback-logo.png";
+                            "/logo.webp";
                         }}
                       />
                     </div>
@@ -87,13 +87,13 @@ export function CollaboratorsSection() {
                     onClick={() => setSelected(collab)}>
                     <div className='w-20 h-20 relative mb-1'>
                       <Image
-                        src={collab.imgUrl || "/fallback-logo.png"}
+                        src={collab.imgUrl || "/logo.webp"}
                         alt={collab.name}
                         fill
                         className='object-contain rounded-full'
                         onError={(e) => {
                           (e.target as HTMLImageElement).src =
-                            "/fallback-logo.png";
+                            "/logo.webp";
                         }}
                       />
                     </div>
@@ -124,12 +124,12 @@ export function CollaboratorsSection() {
             </button>
             <div className='w-24 h-24 relative mx-auto mb-4'>
               <Image
-                src={selected.imgUrl || "/fallback-logo.png"}
+                src={selected.imgUrl || "/logo.webp"}
                 alt={selected.name}
                 fill
                 className='object-contain rounded-full'
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/fallback-logo.png";
+                  (e.target as HTMLImageElement).src = "/logo.webp";
                 }}
               />
             </div>

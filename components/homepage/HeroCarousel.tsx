@@ -12,29 +12,6 @@ import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/pagination";
 
-// interface HeroImage {
-//   img: string;
-//   alt?: string;
-//   title?: string;
-//   subtitle?: string;
-// }
-
-// const images: HeroImage[] = [
-//   {
-//     img: "/hero/hero1.webp",
-//     alt: "University competition winners celebrating",
-//     title: "Excellence in Competitive Education",
-//     subtitle:
-//       "Fostering talent and academic excellence through competitive platforms",
-//   },
-//   {
-//     img: "/hero/hero3.webp",
-//     alt: "Students participating in academic challenge",
-//     title: "Innovation Through Collaboration",
-//     subtitle: "Empowering future leaders with skill-based learning",
-//   },
-// ];
-
 export function HeroCarousel() {
   const heroData = useQuery(api.heroSlides.getHeroSlides);
 
@@ -75,13 +52,13 @@ export function HeroCarousel() {
   }
 
   return (
-    <section className='relative h-[80vh] w-full overflow-hidden'>
+    <section className='relative w-full h-[80vh] aspect-video overflow-hidden'>
       <Swiper
         modules={[Autoplay, EffectFade, Pagination]}
         autoplay={{ delay: 5000, disableOnInteraction: false }}
         effect='fade'
         loop
-        pagination={{ clickable: true }}
+        pagination={{ clickable: true, }}
         onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
         className='h-full w-full z-0'>
         {heroData.map((data, index) => {
@@ -97,10 +74,10 @@ export function HeroCarousel() {
                   src={imageUrl}
                   alt={data.alt || "Hero image"}
                   fill
-                  className='object-cover absolute inset-0'
+                  className='object-cover object-center absolute inset-0'
                   priority={index === 0}
                   quality={85}
-                  sizes='100vw'
+                  sizes='(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw'
                   onError={() => setFallbackSrc(data.imgUrl ?? null)}
                 />
 
@@ -153,6 +130,8 @@ export function HeroCarousel() {
           );
         })}
       </Swiper>
+      {/* Swiper Pagination Container */}
+      {/* <div className='custom-swiper-pagination absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex justify-center items-center bg-white/10 py-1  px-0.5 rounded-full' /> */}
     </section>
   );
 }

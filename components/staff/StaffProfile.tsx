@@ -16,9 +16,9 @@ const StaffProfile = () => {
   return (
     <section className='w-full py-10 max-w-6xl mx-auto'>
       <div className='flex flex-col md:flex-row justify-between gap-6'>
-        <div className='w-full md:max-w-[40%]'>
+        <div className='w-full md:max-w-[35%]'>
           {director?.imageUrl && (
-            <div className='flex flex-col justify-center items-center bg-white dark:bg-gray-700 rounded-xl shadow-md p-6'>
+            <div className='flex flex-col justify-center items-center bg-white dark:bg-gray-700 rounded-xl shadow-md pt-4 px-6'>
               <div className='relative w-full sm:max-w-sm aspect-square'>
                 <Image
                   src={director.imageUrl}
@@ -30,9 +30,9 @@ const StaffProfile = () => {
               </div>
 
               {/* Info */}
-              <div className='flex flex-col justify-center px-6 py-4 text-center'>
+              <div className='flex flex-col justify-center px-6 pt-1 pb-4 text-center'>
                 <h3 className='text-lg font-medium'>{director.name}</h3>
-                <p className='mb-3 text-gray-600 dark:text-gray-300'>
+                <p className='mb-2 text-gray-600 dark:text-gray-300'>
                   {director.position}
                 </p>
                 <ProfileModal
@@ -56,8 +56,8 @@ const StaffProfile = () => {
                   <Image
                     src={member.imageUrl}
                     alt={member.name}
-                    width={200}
-                    height={200}
+                    width={120}
+                    height={120}
                     className='object-cover aspect-square rounded-full'
                     priority
                   />
@@ -65,9 +65,9 @@ const StaffProfile = () => {
               )}
 
               {/* Info */}
-              <div className='flex flex-col justify-center px-3 py-2 text-center '>
+              <div className='flex flex-col justify-center px-3 pt-1 pb-2 text-center '>
                 <h3 className='font-medium'>{member.name}</h3>
-                <p className='mb-3 text-gray-600 dark:text-gray-300'>
+                <p className='mb-2 text-gray-600 dark:text-gray-300'>
                   {member.position}
                 </p>
                 <ProfileModal
