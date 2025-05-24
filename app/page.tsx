@@ -5,7 +5,7 @@ import { HeroCarousel } from "@/components/homepage/HeroCarousel";
 
 export default function Home() {
   return (
-    <div className='min-h-screen bg-background text-foreground'>
+    <div className='min-h-screen bg-black/5 dark:bg-slate-950'>
       <HeroCarousel />
       <AchievementsSection />
       <CollaboratorsSection />

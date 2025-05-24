@@ -23,7 +23,7 @@ export function CollaboratorsSection() {
     : [];
 
   return (
-    <section className='relative py-12 bg-purple-50 dark:bg-slate-950'>
+    <section className='relative py-12'>
       <div className='px-4 max-w-5xl mx-auto'>
         <div className='flex items-center gap-2 mb-12'>
           <Handshake className='w-8 h-8 text-primary' />
@@ -42,8 +42,8 @@ export function CollaboratorsSection() {
           <div className='space-y-6'>
             {/* Row 1 */}
             <div className='relative overflow-hidden marquee-wrapper'>
-              <div className='absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-purple-50 dark:from-slate-950 to-transparent z-10 pointer-events-none' />
-              <div className='absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-purple-50 dark:from-slate-950 to-transparent z-10 pointer-events-none' />
+              <div className='absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-black/5 dark:from-slate-950 to-transparent z-10 pointer-events-none' />
+              <div className='absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-black/5 dark:from-slate-950 to-transparent z-10 pointer-events-none' />
 
               <div className='marquee-left'>
                 {repeatedCollaborators.map((collab, i) => (

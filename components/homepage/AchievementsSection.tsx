@@ -13,7 +13,7 @@ export function AchievementsSection() {
   const achievements = useQuery(api.achievements.getLatestAchievements);
 
   return (
-    <section className='bg-purple-50 dark:bg-slate-950'>
+    <section className=' '>
       <section className='py-12 px-4 max-w-5xl mx-auto'>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -31,7 +31,7 @@ export function AchievementsSection() {
             initial={{ x: 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className='lg:w-[28%] lg:bg-blue-900/20 lg:dark:bg-gray-700 lg:p-4 lg:rounded-2xl lg:shadow-xl lg:sticky lg:top-20 lg:h-fit'>
+            className='lg:w-[28%] lg:bg-black/20 lg:dark:bg-gray-800 lg:p-4 lg:rounded-2xl lg:shadow-xl lg:sticky lg:top-20 lg:h-fit'>
             <h3 className='text-2xl font-semibold mb-6 text-center lg:text-left lg:text-black lg:dark:text-white'>
               Statistics
             </h3>

@@ -33,8 +33,8 @@ export function AchievementStatScroller() {
   return (
     <div className='relative pt-1 lg:pt-2 pb-10 lg:pb-1 max-w-3xl mx-auto'>
       {/* Fade masks for scroll indication (mobile only) */}
-      <div className='lg:hidden pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-purple-50 dark:from-slate-950 to-transparent z-10' />
-      <div className='lg:hidden pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-purple-50 dark:from-slate-950 to-transparent z-10' />
+      <div className='lg:hidden pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-gray-100 dark:from-slate-950 to-transparent z-10' />
+      <div className='lg:hidden pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-gray-100 dark:from-slate-950 to-transparent z-10' />
 
       {/* Responsive container */}
       <div
@@ -60,8 +60,8 @@ function StatItem({ label, value }: { label: string; value: number }) {
   return (
     <div className='flex-shrink-0 w-[120px] mx-auto bg-white dark:bg-gray-700 lg:bg-white lg:dark:bg-gray-800 rounded-xl p-4 shadow-md hover:shadow-lg transition-transform lg:w-full lg:flex-shrink '>
       <div className='flex flex-col items-center text-center '>
-        <div className='w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 text-primary  lg:mb-0 shrink-0'>
-          <IconComponent className='w-5 h-5' />
+        <div className='w-12 h-12 flex items-center justify-center rounded-full bg-amber-100 text-primary  lg:mb-0 shrink-0'>
+          <IconComponent className='w-5 h-5 text-amber-500' />
         </div>
         <div className="">
           <h3 className='text-xl font-bold text-[#213675] dark:text-blue-500 leading-tight'>
