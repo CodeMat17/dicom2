@@ -13,7 +13,7 @@ export default function AboutUs() {
   const coreValues = statements?.find((s) => s.type === "core-values");
 
   return (
-    <div className='min-h-screen bg-purple-50 dark:bg-slate-700'>
+    <div className='min-h-screen bg-gray-50 dark:bg-slate-700'>
       {/* Hero Section */}
       <section className='relative pt-20 px-4 max-w-6xl mx-auto'>
         <div className='absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 to-transparent opacity-20' />

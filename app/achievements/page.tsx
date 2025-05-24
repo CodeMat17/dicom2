@@ -25,7 +25,7 @@ export default function AchievementsPage() {
   const stats = useQuery(api.achievementsStat.getAchievementsStats);
 
   return (
-    <div className='min-h-screen bg-purple-50 dark:bg-slate-950'>
+    <div className='min-h-screen bg-gray-50 dark:bg-slate-950'>
       {/* Hero Section */}
       <section className='relative pt-12 px-4 max-w-6xl mx-auto text-center'>
         <motion.div
