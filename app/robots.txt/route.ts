@@ -1,16 +1,28 @@
-import { MetadataRoute } from "next";
+import { NextResponse } from "next/server";
 
-export default function robots(): MetadataRoute.Robots {
+export async function GET() {
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL || "https://dicom.gouni.edu.ng";
 
-  return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/api/", "/admin/", "/_next/", "/private/"],
+  const content = `
+# *
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /private/
+
+# Host
+Host: ${baseUrl}
+
+# Sitemaps
+Sitemap: ${baseUrl}/sitemap.xml
+`;
+
+  return new NextResponse(content, {
+    headers: {
+      "Content-Type": "text/plain",
     },
-    sitemap: `${baseUrl}/sitemap.xml`,
-    host: baseUrl,
-  };
+  });
 }
