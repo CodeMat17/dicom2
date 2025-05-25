@@ -1,74 +1,177 @@
-// app/(routes)/achievements/[slug]/page.tsx
-
-"use client";
-
-import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
-import { useQuery } from "convex/react";
-import Image from "next/image";
-import { notFound, useParams } from "next/navigation";
+import { fetchQuery } from "convex/nextjs";
+import { Metadata } from "next";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
-export default function AchievementPage() {
-  const params = useParams();
-  const slug = params.slug as string;
-
-  const story = useQuery(api.achievements.getAchievementBySlug, { slug });
-
-  if (story === undefined) {
-    return (
-      <div className='max-w-3xl mx-auto p-4'>
-        <Skeleton className='h-8 w-3/4 mb-4' />
-        <Skeleton className='h-4 w-1/2 mb-8' />
-        <div className='flex gap-4 mb-8'>
-          <Skeleton className='h-64 w-full' />
-        </div>
-        <Skeleton className='h-4 w-full mb-4' />
-        <Skeleton className='h-4 w-full mb-4' />
-        <Skeleton className='h-4 w-2/3 mb-4' />
-      </div>
-    );
+// Lazy load the container component
+const AchievementSlugContainer = dynamic(
+  () => import("@/app/components/achievements/AchievementSlugContainer"),
+  {
+    loading: () => <AchievementSkeleton />,
+    ssr: true, // Keep SSR enabled for SEO
   }
+);
+
+// Loading skeleton component
+function AchievementSkeleton() {
+  return (
+    <div
+      className='space-y-8 animate-pulse'
+      role='status'
+      aria-label='Loading achievement'
+      aria-busy='true'>
+      {/* Header skeleton */}
+      <div className='space-y-4'>
+        <div className='h-8 bg-gray-200 dark:bg-slate-700 rounded-lg w-3/4' />
+        <div className='h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/2' />
+      </div>
+      {/* Image skeleton */}
+      <div className='aspect-video bg-gray-200 dark:bg-slate-700 rounded-lg' />
+      {/* Content skeleton */}
+      <div className='space-y-3'>
+        {[...Array(4)].map((_, i) => (
+          <div
+            key={i}
+            className='h-4 bg-gray-200 dark:bg-slate-700 rounded w-full'
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const story = await fetchQuery(api.achievements.getAchievementBySlug, {
+    slug,
+  });
 
   if (!story) {
-    return notFound();
+    return {
+      title: "Achievement Not Found | DICOM",
+      description: "The requested achievement could not be found",
+      robots: {
+        index: false,
+        follow: false,
+      },
+      alternates: {
+        canonical: "/achievements/not-found",
+      },
+    };
   }
 
-  return (
-    <article className='max-w-3xl mx-auto px-4 py-12'>
-      <header className='mb-8'>
-        <h1 className='text-4xl font-bold mb-4'>{story.title}</h1>
-        <p className='text-lg text-muted-foreground mb-4'>
-          {story.description}
-        </p>
-        {story._creationTime && (
-          <footer className='mb-6 text-sm text-muted-foreground italic'>
-            Published {new Date(story._creationTime).toLocaleDateString()}
-          </footer>
-        )}
-        {story.photoUrl ? (
-          <div className='relative w-full h-80 rounded-lg overflow-hidden mb-6'>
-            <Image
-              src={story.photoUrl}
-              alt={story.title}
-              fill
-              className='object-cover object-top'
-              sizes='(max-width: 768px) 100vw, 768px'
-            />
-          </div>
-        ) : <div className="flex items-center justify-center text-center italic py-32 animate-pulse">Photo loading...</div>}
-      </header>
+  const formattedDate = new Date(story._creationTime).toISOString();
+  const imageUrl = story.photoUrl || "/achievements/default-og-image.jpg";
+  const absoluteImageUrl = new URL(
+    imageUrl,
+    "https://dicom.gouni.edu.ng"
+  ).toString();
 
-      {story.story && (
-        <section className='space-y-6'>
-          <div
-            className='[&>p]:mb-4 [&>p]:text-gray-700 [&>p]:dark:text-gray-300 [&>p]:leading-relaxed
-                     [&>ul]:list-disc [&>ul]:pl-8 [&>ul]:mb-4
-                     [&>ol]:list-decimal [&>ol]:pl-8 [&>ol]:mb-4
-                     [&>li]:mb-2 [&>*+*]:mt-4'
-            dangerouslySetInnerHTML={{ __html: story.story }}
-          />
-        </section>
-      )}
-    </article>
+  return {
+    title: {
+      absolute: `${story.title} | DICOM - Godfrey Okoye University`,
+      template: "%s | DICOM Achievements",
+    },
+    description: story.description,
+    metadataBase: new URL("https://dicom.gouni.edu.ng"),
+    alternates: {
+      canonical: `/achievements/${story.slug}`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      nocache: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+    openGraph: {
+      title: story.title,
+      description: story.description,
+      url: `https://dicom.gouni.edu.ng/achievements/${slug}`,
+      siteName: "DICOM - Directorate of Competitions",
+      locale: "en_US",
+      type: "article",
+      publishedTime: formattedDate,
+      modifiedTime: formattedDate,
+      authors: ["DICOM - Directorate of Competitions"],
+      images: [
+        {
+          url: absoluteImageUrl,
+          width: 1200,
+          height: 630,
+          alt: story.title,
+          type: "image/jpeg",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: story.title,
+      description: story.description,
+      site: "@dicom_gouni",
+      creator: "@dicom_gouni",
+      images: [
+        {
+          url: absoluteImageUrl,
+          width: 1200,
+          height: 630,
+          alt: story.title,
+          type: "image/jpeg",
+        },
+      ],
+    },
+    keywords: [
+      "DICOM achievements",
+      "Godfrey Okoye University",
+      "academic excellence",
+      "student achievements",
+      "university competitions",
+      "academic success",
+      story.title.toLowerCase(),
+      "education",
+      "competitions",
+      "student success",
+    ],
+    authors: [
+      {
+        name: "DICOM - Directorate of Competitions",
+        url: "https://dicom.gouni.edu.ng",
+      },
+    ],
+    category: "Achievements",
+    verification: {
+      google: "google-site-verification",
+      yandex: "yandex-verification",
+      other: {
+        "facebook-domain-verification": "facebook-domain-verification",
+      },
+    },
+    other: {
+      "theme-color": "#213675",
+    },
+  };
+}
+
+export default function AchievementPage() {
+  return (
+    <main
+      className='max-w-3xl mx-auto px-4 py-8 md:py-12'
+      aria-labelledby='achievement-title'>
+      <Suspense fallback={<AchievementSkeleton />}>
+        <AchievementSlugContainer />
+      </Suspense>
+    </main>
   );
 }

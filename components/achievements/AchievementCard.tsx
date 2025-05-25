@@ -1,11 +1,14 @@
+import { Id } from "@/convex/_generated/dataModel";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
+import { CalendarDays, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import ShareStoryUrl from "../ShareStoryUrl";
 import { Button } from "../ui/button";
 
 type Props = {
-  id: string;
+  id: Id<"achievements">;
   index: number;
   image: string;
   title: string;
@@ -16,7 +19,7 @@ type Props = {
 };
 
 const AchievementCard = ({
-  id,
+  // id,
   index,
   image,
   title,
@@ -30,35 +33,50 @@ const AchievementCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.02 + index * 0.1 }}
       whileHover={{ y: -5 }}
-      className='group bg-card dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow flex flex-col h-full'>
-      <div className='px-4 pt-4 pb-2.5 flex-1 flex flex-col'>
-        <h1 className='font-medium text-lg line-clamp-2 leading-5'>{title}</h1>
-        <div className='flex flex-col gap-2 mt-2 flex-1'>
-          <div className='relative w-full h-[120px] aspect-video shrink-0 rounded-xl overflow-hidden'>
-            <Image
-              src={image}
-              alt={id}
-              fill
-              className='object-cover object-top'
-              sizes='(max-width: 768px) 100vw, 50vw'
-            />
-          </div>
-          <p className='line-clamp-2 leading-5 text-sm'>{desc}</p>
-        </div>
+      className='group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-gray-100 dark:border-gray-700'>
+      {/* Image Container */}
+      <div className='relative w-full h-40 overflow-hidden'>
+        <Image
+          src={image}
+          alt={title}
+          fill
+          className='object-cover object-top transform group-hover:scale-105 transition-transform duration-300'
+          sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+        />
+        <div className='absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
       </div>
 
-      <div className='flex text-sm items-center justify-between gap-4 mt-auto'>
-        <p className="w-full text-center mb-1 italic text-muted-foreground"> {dayjs(date).format("MMM DD, YYYY")}</p>
-        <Button
-          asChild
-          className='w-full rounded-none rounded-br-xl rounded-tl-xl'>
-          <Link
-            href={`/achievements/${slug}`}
-            className='group-hover:text-blue-500 border rounded-full border-transparent'>
-            Read full story
-            <span className='transition-transform ml-2'>→</span>
-          </Link>
-        </Button>
+      {/* Content Container */}
+      <div className='flex flex-col flex-1 px-4 pt-3 pb-2'>
+        <div className='flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-2'>
+          <CalendarDays className='h-3.5 w-3.5' />
+          {date && dayjs(date).format("MMMM DD, YYYY")}
+        </div>
+
+        <h2 className='font-semibold text-lg mb-1.5 text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
+          {title}
+        </h2>
+
+        <p className='text-gray-600 dark:text-gray-300 line-clamp-2 text-sm leading-relaxed mb-3'>
+          {desc}
+        </p>
+
+        <div className='flex items-center justify-between mt-auto pt- border-t border-gray-100 dark:border-gray-700'>
+          <ShareStoryUrl title={title} text={desc} slug={slug} />
+
+          <Button
+            asChild
+            variant='ghost'
+            size='sm'
+            className='group/btn hover:bg-blue-50 dark:hover:bg-blue-950 text-blue-600 dark:text-blue-400'>
+            <Link
+              href={`/achievements/${slug}`}
+              className='flex items-center gap-1'>
+              Read More
+              <ChevronRight className='h-3.5 w-3.5 transform group-hover/btn:translate-x-1 transition-transform' />
+            </Link>
+          </Button>
+        </div>
       </div>
     </motion.div>
   );

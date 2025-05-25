@@ -1,4 +1,5 @@
 // convex/achievements.ts
+import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
@@ -7,7 +8,7 @@ export const getLatestAchievements = query({
     const achievements = await ctx.db
       .query("achievements")
       .order("desc")
-      .take(2); // Limit to the latest 2 entries
+      .take(3); // Limit to the latest 2 entries
 
     const achievementsWithPhotos = await Promise.all(
       achievements.map(async (achievement) => {
@@ -52,6 +53,7 @@ export const getAllAchievements = query({
           description: achievement.description,
           slug: achievement.slug,
           photoUrl,
+          _creationTime: achievement._creationTime,
         };
       })
     );
@@ -204,5 +206,40 @@ export const updateAchievement = mutation({
       story: args.story?.trim(),
       photo: args.photo,
     });
+  },
+});
+
+export const achievementsPaginated = query({
+  args: {
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, { paginationOpts }) => {
+    const paginatedResults = await ctx.db
+      .query("achievements")
+      .order("desc")
+      .paginate(paginationOpts);
+
+    // Add photo URLs to the results
+    const resultsWithPhotos = await Promise.all(
+      paginatedResults.page.map(async (achievement) => {
+        const photoUrl = achievement.photo
+          ? await ctx.storage.getUrl(achievement.photo)
+          : null;
+
+        return {
+          _id: achievement._id,
+          title: achievement.title,
+          description: achievement.description,
+          slug: achievement.slug,
+          date: achievement._creationTime,
+          photoUrl,
+        };
+      })
+    );
+
+    return {
+      ...paginatedResults,
+      page: resultsWithPhotos,
+    };
   },
 });

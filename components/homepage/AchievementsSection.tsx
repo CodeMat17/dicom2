@@ -4,17 +4,17 @@ import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
-import { AchievementStatScroller } from "../achievements/AchievementStatScroller";
-import AchievementCard from "../achievements/AchievementCard";
-import { Button } from "../ui/button";
 import Link from "next/link";
+import AchievementCard from "../achievements/AchievementCard";
+import { AchievementStatScroller } from "../achievements/AchievementStatScroller";
+import { Button } from "../ui/button";
 
 export function AchievementsSection() {
   const achievements = useQuery(api.achievements.getLatestAchievements);
 
   return (
     <section className=' '>
-      <section className='py-12 px-4 max-w-5xl mx-auto'>
+      <section className='py-12 px-4 max-w-6xl mx-auto'>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -25,14 +25,14 @@ export function AchievementsSection() {
           </h2>
         </motion.div>
 
-        <div className='lg:flex lg:gap-20 lg:flex-row-reverse'>
+        <div className='lg:flex lg:gap-8 lg:flex-row-reverse'>
           {/* Statistics Panel */}
           <motion.div
             initial={{ x: 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className='lg:w-[28%] lg:bg-black/20 lg:dark:bg-gray-800 lg:p-4 lg:rounded-2xl lg:shadow-xl lg:sticky lg:top-20 lg:h-fit'>
-            <h3 className='text-2xl font-semibold mb-6 text-center lg:text-left lg:text-black lg:dark:text-white'>
+            className='lg:w-[20%] lg:bg-gray-300 lg:dark:bg-gray-800 lg:p-4 lg:rounded-2xl lg:shadow-xl lg:sticky lg:top-20 lg:h-fit'>
+            <h3 className='text-2xl font-semibold mb-6 text-center lg:text-black lg:dark:text-white'>
               Statistics
             </h3>
 
@@ -40,7 +40,7 @@ export function AchievementsSection() {
           </motion.div>
 
           {/* Stories Grid */}
-          <div className='lg:flex-1'>
+          <div className='lg:flex-1 '>
             <motion.h3
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -59,7 +59,7 @@ export function AchievementsSection() {
               </div>
             ) : (
               <>
-                <div className='grid grid-cols-1 sm:grid-cols-2  gap-6 lg:gap-3'>
+                <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-3'>
                   {achievements.map((achievement, index) => (
                     <AchievementCard
                       key={achievement._id}
@@ -73,14 +73,16 @@ export function AchievementsSection() {
                     />
                   ))}
                 </div>
-                <Button
-                  asChild
-                  className='mt-6 py-5 bg-blue-700 dark:bg-gray-700 text-white'>
-                  <Link href='/achievements'>
-                    Read more achievement stories{" "}
-                    <span className='transition-transform'>→</span>
-                  </Link>
-                </Button>
+                <div className='mt-8 flex justify-center'>
+                  <Button
+                    asChild
+                    className='py-5 bg-blue-700 hover:bg-blue-500 text-white'>
+                    <Link href='/achievements'>
+                      Read more achievement stories{" "}
+                      <span className='transition-transform'>→</span>
+                    </Link>
+                  </Button>
+                </div>
               </>
             )}
           </div>
