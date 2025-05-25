@@ -1,10 +1,12 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
+import { TestimonialDialog } from "./TestimonialDialog";
 
 interface Testimonial {
   _id: string;
@@ -61,23 +63,42 @@ function NoTestimonials() {
 
 // Testimonial card component
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
-    <motion.div
-      whileHover={{ y: -5 }}
-      className='bg-white dark:bg-gray-700 p-8 rounded-xl shadow-md flex flex-col h-full'
-      role='article'
-      aria-label={`Testimonial from ${testimonial.name}`}>
-      <Quote className='w-8 h-8 text-primary/70 mb-4' aria-hidden='true' />
-      <blockquote className='mb-6 flex-1'>
-        <p>{testimonial.body}</p>
-      </blockquote>
-      <footer className='mt-auto'>
-        <cite className='not-italic'>
-          <p className='font-bold'>{testimonial.name}</p>
-          <p className='text-sm text-muted-foreground'>{testimonial.role}</p>
-        </cite>
-      </footer>
-    </motion.div>
+    <>
+      <motion.div
+        whileHover={{ y: -5 }}
+        className='bg-white dark:bg-gray-700 p-8 rounded-xl shadow-md flex flex-col h-full'
+        role='article'
+        aria-label={`Testimonial from ${testimonial.name}`}>
+        <Quote className='w-8 h-8 text-primary/70 mb-4' aria-hidden='true' />
+        <div className='flex-1 flex flex-col'>
+          <blockquote className='mb-4'>
+            <p className='line-clamp-4'>{testimonial.body}</p>
+          </blockquote>
+          <Button
+            variant='ghost'
+            size='sm'
+            className='self-start text-primary hover:text-primary/80 -mt-2 mb-4 pl-0 hover:bg-transparent'
+            onClick={() => setIsDialogOpen(true)}>
+            Read full testimonial →
+          </Button>
+        </div>
+        <footer className='mt-auto border-t dark:border-gray-600 pt-4'>
+          <cite className='not-italic'>
+            <p className='font-bold'>{testimonial.name}</p>
+            <p className='text-sm text-muted-foreground'>{testimonial.role}</p>
+          </cite>
+        </footer>
+      </motion.div>
+
+      <TestimonialDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        testimonial={testimonial}
+      />
+    </>
   );
 }
 
@@ -109,7 +130,7 @@ export default function TestimonialsContainer() {
           <p
             className='text-xl text-muted-foreground max-w-3xl mx-auto'
             role='doc-subtitle'>
-            Hear from students, faculty, and alumni about their DICOM
+            Hear from students, alumni, sponsors and collaborators about their DICOM
             experiences
           </p>
         </motion.div>
@@ -119,11 +140,6 @@ export default function TestimonialsContainer() {
       <section
         className='py-12 px-4 max-w-5xl mx-auto'
         aria-labelledby='testimonials-grid-heading'>
-        <h2
-          id='testimonials-grid-heading'
-          className='text-3xl font-bold text-center mb-12'>
-          Testimonials
-        </h2>
         <Suspense fallback={<TestimonialsSkeleton />}>
           {testimonials === undefined ? (
             <TestimonialsSkeleton />
