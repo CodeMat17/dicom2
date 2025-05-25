@@ -15,7 +15,7 @@ const ShareStoryUrl = ({ title, text, slug }: Props) => {
       variant={"ghost"}
       type='button'
       onClick={() => {
-        const shareUrl = `${window.location.origin}/achievements/${slug}`;
+        const shareUrl = `${window.location.origin}/our-stories/${slug}`;
         if (navigator.share) {
           navigator
             .share({

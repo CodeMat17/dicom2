@@ -3,12 +3,12 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title:
-    "Academic Excellence & Achievements | DICOM - Godfrey Okoye University",
+    "Our Stories & Achievements | DICOM - Godfrey Okoye University",
   description:
     "Celebrating our students' outstanding achievements with national championships and international recognitions. From Tech Fest victories to global debate competitions, discover DICOM's legacy of excellence at Godfrey Okoye University. Partner with us to support the next generation of champions.",
   metadataBase: new URL("https://dicom.gouni.edu.ng"),
   alternates: {
-    canonical: "/achievements",
+    canonical: "/our-stories",
   },
   robots: {
     index: true,
@@ -20,22 +20,22 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      "Academic Excellence & Achievements | DICOM - Godfrey Okoye University",
+      "Our Stories & Achievements | DICOM - Godfrey Okoye University",
     description:
       "Celebrating our students' outstanding achievements with national championships and international recognitions. From Tech Fest victories to global debate competitions, discover DICOM's legacy of excellence at Godfrey Okoye University. Partner with us to support the next generation of champions.",
-    url: "https://dicom.gouni.edu.ng/achievements",
+    url: "https://dicom.gouni.edu.ng/our-stories",
     siteName: "DICOM - Directorate of Competitions",
     locale: "en_US",
     type: "website",
-    images: ["/achievements/opengraph-image.jpg"],
+    images: ["/our-stories/opengraph-image.jpg"],
   },
   twitter: {
     card: "summary_large_image",
     title:
-      "Academic Excellence & Achievements | DICOM - Godfrey Okoye University",
+      "Our Stories & Achievements | DICOM - Godfrey Okoye University",
     description:
       "Celebrating our students' outstanding achievements with national championships and international recognitions. From Tech Fest victories to global debate competitions, discover DICOM's legacy of excellence at Godfrey Okoye University. Partner with us to support the next generation of champions.",
-    images: ["/achievements/opengraph-image.jpg"],
+    images: ["/our-stories/opengraph-image.jpg"],
     site: "@dicom_gouni",
   },
 };

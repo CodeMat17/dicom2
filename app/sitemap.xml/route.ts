@@ -42,7 +42,7 @@ export async function GET() {
       priority: "0.5",
     },
     {
-      url: `${baseUrl}/achievements`,
+      url: `${baseUrl}/our-stories`,
       lastmod: new Date().toISOString(),
       changefreq: "daily",
       priority: "0.9",
@@ -70,7 +70,7 @@ export async function GET() {
   // Dynamic achievement routes
   const achievementRoutes: SitemapRoute[] =
     achievements?.map((achievement) => ({
-      url: `${baseUrl}/achievements/${achievement.slug}`,
+      url: `${baseUrl}/our-stories/${achievement.slug}`,
       lastmod: new Date(achievement._creationTime).toISOString(),
       changefreq: "weekly",
       priority: "0.6",
