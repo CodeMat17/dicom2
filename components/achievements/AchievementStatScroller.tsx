@@ -40,7 +40,7 @@ export function AchievementStatScroller() {
       <div
         ref={containerRef}
         className='flex gap-8 px-4 py-2 lg:py-0 overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar
-                 lg:overflow-visible lg:flex-col sm:gap-3 lg:px-0'
+                 lg:overflow-visible lg:flex-col sm:gap-3 lg:px-0 lg:grid lg:grid-cols-2 lg:gap-2'
         style={{
           WebkitOverflowScrolling: "touch",
           scrollbarWidth: "none",
@@ -58,9 +58,9 @@ function StatItem({ label, value }: { label: string; value: number }) {
   const IconComponent = iconMap[label] || Trophy; // Fallback to Trophy if unknown
 
   return (
-    <div className='flex-shrink-0 w-[120px] mx-auto bg-white dark:bg-gray-700 lg:bg-white lg:dark:bg-gray-700 rounded-xl p-4 shadow-md hover:shadow-lg transition-transform lg:w-full lg:flex-shrink '>
-      <div className='flex flex-col items-center text-center '>
-        <div className='w-12 h-12 flex items-center justify-center rounded-full bg-amber-100 text-primary  lg:mb-0 shrink-0'>
+    <div className='flex-shrink-0 w-[120px] mx-auto bg-white dark:bg-gray-700 lg:bg-white lg:dark:bg-gray-700 rounded-xl p-3 shadow-md hover:shadow-lg transition-transform lg:w-full lg:flex-shrink'>
+      <div className='flex flex-col items-center text-center'>
+        <div className='w-12 h-12 flex items-center justify-center rounded-full bg-amber-50 shadow-md border text-primary  lg:mb-0 shrink-0'>
           <IconComponent className='w-5 h-5 text-amber-500' />
         </div>
         <div className="">

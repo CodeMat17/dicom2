@@ -110,9 +110,9 @@ function StatItem({ label, value, index }: StatItemProps) {
       aria-label={`${label}: ${value}`}>
       <div className='flex items-center justify-center gap-6 mb-2'>
         <div
-          className='w-12 h-12 flex items-center justify-center rounded-full bg-primary/10 text-[#213675] dark:text-blue-500'
+          className='w-12 h-12 flex items-center justify-center rounded-full bg-amber-50 shadow-md border text-[#213675] dark:text-blue-500'
           aria-hidden='true'>
-          <IconComponent className='w-5 h-5' />
+          <IconComponent className='w-5 h-5 text-amber-500' />
         </div>
         <p
           className='text-2xl font-bold'

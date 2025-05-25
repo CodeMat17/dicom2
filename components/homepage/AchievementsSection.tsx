@@ -25,13 +25,13 @@ export function AchievementsSection() {
           </h2>
         </motion.div>
 
-        <div className='lg:flex lg:gap-8 lg:flex-row-reverse'>
+        <div className='lg:flex lg:gap-6 lg:flex-row-reverse'>
           {/* Statistics Panel */}
           <motion.div
             initial={{ x: 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className='lg:w-[20%] lg:bg-gray-300 lg:dark:bg-gray-800 lg:p-4 lg:rounded-2xl lg:shadow-xl lg:sticky lg:top-20 lg:h-fit'>
+            className='lg:w-[23%] lg:bg-gray-300 lg:dark:bg-gray-800 lg:p-4 lg:rounded-2xl lg:shadow-xl lg:sticky lg:top-20 lg:h-fit'>
             <h3 className='text-2xl font-semibold mb-6 text-center lg:text-black lg:dark:text-white'>
               Statistics
             </h3>
