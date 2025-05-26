@@ -188,7 +188,7 @@ export default function AchievementGrid() {
         <p className='text-sm text-gray-600 dark:text-gray-400'>
           Showing {paginationData.startIndex + 1} -{" "}
           {Math.min(paginationData.endIndex, paginationData.totalItems)} of{" "}
-          {paginationData.totalItems} achievements
+          {paginationData.totalItems} stories
         </p>
 
         <Pagination>
