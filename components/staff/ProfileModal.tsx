@@ -8,7 +8,6 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Mail } from "lucide-react";
@@ -36,7 +35,8 @@ const ProfileModal = ({
       </DialogTrigger>
       <DialogContent className='sm:max-w-md'>
         <DialogHeader>
-          <DialogTitle asChild>
+         
+          <div className="flex justify-center sm:justify-start">
             {imageUrl && (
               <Image
                 alt=''
@@ -47,15 +47,19 @@ const ProfileModal = ({
                 className='rounded-full aspect-square'
               />
             )}
-          </DialogTitle>
+          </div>
           <DialogDescription>
             {name} <br /> {position}
           </DialogDescription>
         </DialogHeader>
-              <div className=''>
-                  
-          <p className="mb-4">{profile}</p>
-          {email && <p className="mt-4 text-sm text-muted-foreground flex items-center"><Mail className="w-4 h-4 mr-2" />{email}</p>}
+        <div className=''>
+          <p className='mb-4'>{profile}</p>
+          {email && (
+            <p className='mt-4 text-sm text-muted-foreground flex items-center'>
+              <Mail className='w-4 h-4 mr-2' />
+              {email}
+            </p>
+          )}
         </div>
         <DialogFooter className='sm:justify-end'>
           <DialogClose asChild>

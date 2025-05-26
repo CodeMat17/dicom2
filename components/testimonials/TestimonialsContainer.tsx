@@ -75,7 +75,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
         <Quote className='w-8 h-8 text-primary/70 mb-4' aria-hidden='true' />
         <div className='flex-1 flex flex-col'>
           <blockquote className='mb-4'>
-            <p className='line-clamp-4'>{testimonial.body}</p>
+            <p className='line-clamp-5'>{testimonial.body}</p>
           </blockquote>
           <Button
             variant='ghost'

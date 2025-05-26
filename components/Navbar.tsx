@@ -20,7 +20,7 @@ export default function Navbar() {
     { name: "Partnership", href: "/partnership" },
     { name: "Testimonials", href: "/testimonials" },
     { name: "Our Staff", href: "/our-staff" },
-    { name: "Contact US", href: "/contact-us" },
+    { name: "Contact", href: "/contact-us" },
   ];
 
   return (
@@ -31,7 +31,7 @@ export default function Navbar() {
           <LogoComponent />
 
           {/* Desktop Navigation */}
-          <div className='hidden xl:flex items-center space-x-1'>
+          <div className='hidden lg:flex items-center'>
             {navLinks.map((link, i) => {
               const isActive = pathname === link.href;
               return (
@@ -65,9 +65,9 @@ export default function Navbar() {
           {/* Mobile menu button */}
           <div className='flex items-center gap-2'>
             <ThemeToggle />
-            <div className='xl:hidden'>
+            <div className='lg:hidden'>
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetTrigger className='xl:hidden'>
+                <SheetTrigger className='lg:hidden'>
                   <AlignRight className='h-7 w-7 text-3xl font-bold text-white' />
                 </SheetTrigger>
                 <SheetContent side='right' className='w-[300px] sm:w-[400px]'>
