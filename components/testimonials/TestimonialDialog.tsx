@@ -33,7 +33,7 @@ export function TestimonialDialog({
               <DialogTitle className='text-2xl font-bold'>
                 {testimonial.name}
               </DialogTitle>
-              <p className='text-muted-foreground'>{testimonial.role}</p>
+              <p className='text-muted-foreground text-left'>{testimonial.role}</p>
             </div>
           </div>
         </DialogHeader>
