@@ -1,6 +1,7 @@
 // convex/achievements.ts
 import { paginationOptsValidator } from "convex/server";
 import { v } from "convex/values";
+import { Id } from "./_generated/dataModel";
 import { mutation, query } from "./_generated/server";
 
 export const getLatestAchievements = query({
@@ -241,5 +242,93 @@ export const achievementsPaginated = query({
       ...paginatedResults,
       page: resultsWithPhotos,
     };
+  },
+});
+
+export const getPaginatedAchievements = query({
+  args: {
+    limit: v.number(),
+    cursor: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const { limit, cursor } = args;
+
+    // Start the query
+    let queryBuilder = ctx.db.query("achievements").order("desc");
+
+    // Apply cursor if provided
+    if (cursor) {
+      queryBuilder = queryBuilder.filter((q) =>
+        q.lt(q.field("_id"), cursor as Id<"achievements">)
+      );
+    }
+
+    // Execute query with limit
+    const achievements = await queryBuilder.take(limit + 1);
+
+    // Check if there are more items
+    const hasNextPage = achievements.length > limit;
+    const items = hasNextPage ? achievements.slice(0, -1) : achievements;
+
+    // Add photo URLs to the results
+    const achievementsWithPhotos = await Promise.all(
+      items.map(async (achievement) => {
+        const photoUrl = achievement.photo
+          ? await ctx.storage.getUrl(achievement.photo)
+          : null;
+
+        return {
+          _id: achievement._id,
+          title: achievement.title,
+          description: achievement.description,
+          slug: achievement.slug,
+          date: achievement._creationTime,
+          photoUrl,
+        };
+      })
+    );
+
+    // Get total count for pagination info
+    const totalCount = await ctx.db
+      .query("achievements")
+      .collect()
+      .then((r) => r.length);
+
+    return {
+      items: achievementsWithPhotos,
+      pageInfo: {
+        hasNextPage,
+        totalCount,
+        nextCursor: hasNextPage ? items[items.length - 1]._id.toString() : null,
+      },
+    };
+  },
+});
+
+export const getAllAchievementsWithPhotos = query({
+  handler: async (ctx) => {
+    const achievements = await ctx.db
+      .query("achievements")
+      .order("desc")
+      .collect();
+
+    const achievementsWithPhotos = await Promise.all(
+      achievements.map(async (achievement) => {
+        const photoUrl = achievement.photo
+          ? await ctx.storage.getUrl(achievement.photo)
+          : null;
+
+        return {
+          _id: achievement._id,
+          title: achievement.title,
+          description: achievement.description,
+          slug: achievement.slug,
+          date: achievement._creationTime,
+          photoUrl,
+        };
+      })
+    );
+
+    return achievementsWithPhotos;
   },
 });

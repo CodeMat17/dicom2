@@ -6,234 +6,217 @@ import {
   PaginationItem,
 } from "@/components/ui/pagination";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { usePaginatedQuery, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import AchievementCard from "./AchievementCard";
 
-const ITEMS_PER_PAGE = 9;
-const MAX_PAGE_BUTTONS = 7;
+const ITEMS_PER_PAGE = 8;
+const MAX_VISIBLE_PAGES = 5;
 
-interface Achievement {
-  _id: Id<"achievements">;
-  title: string;
-  description: string;
-  slug: string;
-  date: number;
-  photoUrl: string | null;
-}
+
 
 export default function AchievementGrid() {
-  const [pageIndex, setPageIndex] = useState(0);
-  const [allResults, setAllResults] = useState<Achievement[]>([]);
-  const [isPageLoading, setIsPageLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
 
-  // Fetch all achievements to get total count
-  const allAchievements = useQuery(api.achievements.getAllAchievements);
-  const total = allAchievements?.length ?? 0;
+  // Fetch all achievements
+  const achievements = useQuery(api.achievements.getAllAchievementsWithPhotos);
 
-  // Fetch page data
-  const paginatedQuery = usePaginatedQuery(
-    api.achievements.achievementsPaginated,
-    { paginationOpts: { cursor: null, numItems: ITEMS_PER_PAGE } },
-    { initialNumItems: ITEMS_PER_PAGE }
-  );
+  // Calculate pagination values
+  const paginationData = useMemo(() => {
+    if (!achievements) return null;
 
-  const { results, status, loadMore } = paginatedQuery;
+    const totalPages = Math.ceil(achievements.length / ITEMS_PER_PAGE);
+    const startIndex = currentPage * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const currentItems = achievements.slice(startIndex, endIndex);
 
-  // Keep track of all loaded results
-  useEffect(() => {
-    if (results?.length) {
-      setAllResults((prev) => {
-        const newResults = [...prev];
-        // Replace items at current page index
-        const startIndex = pageIndex * ITEMS_PER_PAGE;
-        results.forEach((result, i) => {
-          newResults[startIndex + i] = result;
-        });
-        return newResults;
-      });
-    }
-  }, [results, pageIndex]);
-
-  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
-
-  // Get current page results
-  const startIndex = pageIndex * ITEMS_PER_PAGE;
-  const displayedResults = allResults.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  );
+    return {
+      totalPages,
+      startIndex,
+      endIndex,
+      currentItems,
+      totalItems: achievements.length,
+    };
+  }, [achievements, currentPage]);
 
   // Loading skeleton component
   const LoadingSkeleton = () => (
-    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-      {[...Array(ITEMS_PER_PAGE)].map((_, i) => (
+    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'>
+      {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
         <div
           key={i}
           className='flex flex-col bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md border border-gray-100 dark:border-gray-700 animate-pulse'>
           <div className='h-40 bg-gray-200 dark:bg-gray-700' />
           <div className='p-4 space-y-3'>
-            <div className='flex items-center gap-1.5'>
-              <div className='h-3.5 w-3.5 rounded-full bg-gray-200 dark:bg-gray-700' />
-              <div className='h-3 bg-gray-200 dark:bg-gray-700 rounded w-24' />
-            </div>
             <div className='h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4' />
             <div className='h-4 bg-gray-200 dark:bg-gray-700 rounded w-full' />
-            <div className='pt-3 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center'>
-              <div className='h-4 bg-gray-200 dark:bg-gray-700 rounded w-8' />
-              <div className='h-4 bg-gray-200 dark:bg-gray-700 rounded w-20' />
-            </div>
           </div>
         </div>
       ))}
     </div>
   );
 
-  // Reset pagination state when changing pages
-  const handlePageChange = async (newPage: number) => {
-    if (newPage < 0 || newPage >= totalPages) return;
+  // Handle page change
+  const handlePageChange = useCallback(
+    (page: number) => {
+      if (!paginationData) return;
+      if (page >= 0 && page < paginationData.totalPages) {
+        setCurrentPage(page);
+        // Scroll to top of grid
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    },
+    [paginationData]
+  );
 
-    const targetIndex = newPage * ITEMS_PER_PAGE;
+  // Navigation handlers
+  const goPrev = useCallback(() => {
+    handlePageChange(currentPage - 1);
+  }, [currentPage, handlePageChange]);
 
-    // If we don't have the results for this page yet, load more until we get there
-    if (targetIndex >= allResults.length && loadMore) {
-      setIsPageLoading(true);
-      try {
-        let currentLength = allResults.length;
-        while (currentLength <= targetIndex) {
-          await loadMore(ITEMS_PER_PAGE);
-          currentLength += ITEMS_PER_PAGE;
-        }
-      } finally {
-        setIsPageLoading(false);
+  const goNext = useCallback(() => {
+    handlePageChange(currentPage + 1);
+  }, [currentPage, handlePageChange]);
+
+  // Render page numbers
+  const renderPageNumbers = useCallback(() => {
+    if (!paginationData) return null;
+    const { totalPages } = paginationData;
+
+    const pages = [];
+    const halfVisible = Math.floor(MAX_VISIBLE_PAGES / 2);
+
+    let startPage = Math.max(0, currentPage - halfVisible);
+    const endPage = Math.min(totalPages - 1, startPage + MAX_VISIBLE_PAGES - 1);
+
+    // Adjust start if we're near the end
+    if (endPage - startPage < MAX_VISIBLE_PAGES - 1) {
+      startPage = Math.max(0, endPage - MAX_VISIBLE_PAGES + 1);
+    }
+
+    // First page
+    if (startPage > 0) {
+      pages.push(
+        <PaginationItem key='first'>
+          <button
+            onClick={() => handlePageChange(0)}
+            className='px-3 py-1 rounded-md border hover:bg-primary/10'
+            aria-label='First page'>
+            1
+          </button>
+        </PaginationItem>
+      );
+      if (startPage > 1) {
+        pages.push(
+          <span key='start-ellipsis' className='px-2 select-none'>
+            ...
+          </span>
+        );
       }
     }
 
-    setPageIndex(newPage);
-  };
-
-  // Jump to page handler (for numbered buttons)
-  const jumpToPage = (targetPage: number) => {
-    handlePageChange(targetPage);
-  };
-
-  // Handlers for prev/next buttons
-  const goPrev = () => {
-    handlePageChange(pageIndex - 1);
-  };
-
-  const goNext = () => {
-    if (pageIndex + 1 < totalPages) {
-      handlePageChange(pageIndex + 1);
-    }
-  };
-
-  // Render page number buttons with ellipsis logic
-  const renderPageButtons = () => {
-    if (!totalPages) return null;
-
-    // If total pages is small, render all
-    if (totalPages <= MAX_PAGE_BUTTONS) {
-      return Array.from({ length: totalPages }, (_, i) => renderPageButton(i));
-    }
-
-    // If many pages, show first 2, last 2, current +/-1, and ellipsis in between
-    const buttons = [];
-    const startPage = Math.max(1, pageIndex - 1);
-    const endPage = Math.min(totalPages - 2, pageIndex + 1);
-
-    buttons.push(renderPageButton(0)); // First page
-
-    if (startPage > 2)
-      buttons.push(
-        <span key='start-ellipsis' className='px-2 select-none'>
-          ...
-        </span>
-      );
-
+    // Numbered pages
     for (let i = startPage; i <= endPage; i++) {
-      buttons.push(renderPageButton(i));
+      pages.push(
+        <PaginationItem key={i}>
+          <button
+            onClick={() => handlePageChange(i)}
+            className={`px-3 py-1 rounded-md border ${
+              i === currentPage
+                ? "bg-blue-500 text-white"
+                : "hover:bg-primary/10"
+            }`}
+            aria-current={i === currentPage ? "page" : undefined}>
+            {i + 1}
+          </button>
+        </PaginationItem>
+      );
     }
 
-    if (endPage < totalPages - 3)
-      buttons.push(
-        <span key='end-ellipsis' className='px-2 select-none'>
-          ...
-        </span>
+    // Last page
+    if (endPage < totalPages - 1) {
+      if (endPage < totalPages - 2) {
+        pages.push(
+          <span key='end-ellipsis' className='px-2 select-none'>
+            ...
+          </span>
+        );
+      }
+      pages.push(
+        <PaginationItem key='last'>
+          <button
+            onClick={() => handlePageChange(totalPages - 1)}
+            className='px-3 py-1 rounded-md border hover:bg-primary/10'
+            aria-label='Last page'>
+            {totalPages}
+          </button>
+        </PaginationItem>
       );
+    }
 
-    buttons.push(renderPageButton(totalPages - 1)); // Last page
+    return pages;
+  }, [currentPage, handlePageChange, paginationData]);
 
-    return buttons;
-  };
-
-  // Single page button renderer
-  const renderPageButton = (pageNum: number) => (
-    <PaginationItem key={pageNum}>
-      <button
-        onClick={() => jumpToPage(pageNum)}
-        disabled={pageNum === pageIndex}
-        className={`px-3 py-1 rounded-md border ${
-          pageNum === pageIndex
-            ? "bg-blue-500 text-white cursor-default"
-            : "hover:bg-primary/10"
-        }`}
-        aria-current={pageNum === pageIndex ? "page" : undefined}>
-        {pageNum + 1}
-      </button>
-    </PaginationItem>
-  );
+  // Show loading state
+  if (!achievements || !paginationData) {
+    return (
+      <div className='space-y-8'>
+        <LoadingSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className='space-y-8'>
-      {status === "LoadingFirstPage" || isPageLoading ? (
-        <LoadingSkeleton />
-      ) : (
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {displayedResults.map((achievement: Achievement, idx: number) => (
-            <AchievementCard
-              key={achievement._id}
-              id={achievement._id}
-              index={idx}
-              image={achievement.photoUrl || "/achievement.png"}
-              title={achievement.title}
-              desc={achievement.description}
-              date={achievement.date}
-              slug={achievement.slug}
-            />
-          ))}
-        </div>
-      )}
+      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'>
+        {paginationData.currentItems.map((achievement, idx) => (
+          <AchievementCard
+            key={achievement._id}
+            id={achievement._id}
+            index={idx}
+            image={achievement.photoUrl || "/achievement.png"}
+            title={achievement.title}
+            desc={achievement.description}
+            date={achievement.date}
+            slug={achievement.slug}
+          />
+        ))}
+      </div>
 
-      <div className='flex justify-center items-center gap-2 flex-wrap'>
+      <div className='flex flex-col items-center gap-4'>
+        <p className='text-sm text-gray-600 dark:text-gray-400'>
+          Showing {paginationData.startIndex + 1} -{" "}
+          {Math.min(paginationData.endIndex, paginationData.totalItems)} of{" "}
+          {paginationData.totalItems} achievements
+        </p>
+
         <Pagination>
           <PaginationContent className='gap-2 flex flex-wrap justify-center'>
             <PaginationItem>
               <button
                 onClick={goPrev}
-                disabled={pageIndex === 0 || isPageLoading}
+                disabled={currentPage === 0}
                 className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
-                  pageIndex === 0 || isPageLoading
-                    ? "opacity-50 pointer-events-none"
-                    : ""
-                }`}>
+                  currentPage === 0 ? "opacity-50 pointer-events-none" : ""
+                }`}
+                aria-label='Previous page'>
                 <ChevronLeft className='h-4 w-4' />
               </button>
             </PaginationItem>
 
-            {renderPageButtons()}
+            {renderPageNumbers()}
 
             <PaginationItem>
               <button
                 onClick={goNext}
-                disabled={pageIndex + 1 >= totalPages || isPageLoading}
+                disabled={currentPage >= paginationData.totalPages - 1}
                 className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
-                  pageIndex + 1 >= totalPages || isPageLoading
+                  currentPage >= paginationData.totalPages - 1
                     ? "opacity-50 pointer-events-none"
                     : ""
-                }`}>
+                }`}
+                aria-label='Next page'>
                 <ChevronRight className='h-4 w-4' />
               </button>
             </PaginationItem>

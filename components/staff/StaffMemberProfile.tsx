@@ -29,23 +29,29 @@ function StaffMemberProfile({ member }: StaffMemberProfileProps) {
         />
       </div>
       <div className='flex flex-col justify-center px-3 pt-1 pb-2 text-center'>
-        <h3
-          id={`staff-name-${member._id}`}
-          className='font-medium text-gray-900 dark:text-white'>
-          {member.name}
-        </h3>
-        <p
-          className='mb-2 text-gray-600 dark:text-gray-300'
-          aria-label={`Position: ${member.position}`}>
-          {member.position}
-        </p>
-        <ProfileModal
-          name={member.name}
-          imageUrl={member.imageUrl}
-          position={member.position}
-          email={member.email}
-          profile={member.profile}
-        />
+        <div className='flex-1 h-full'>
+          <h3
+            id={`staff-name-${member._id}`}
+            className='font-medium text-gray-900 dark:text-white'>
+            {member.name}
+          </h3>
+
+          <p
+            className='mb-2 text-gray-600 dark:text-gray-300'
+            aria-label={`Position: ${member.position}`}>
+            {member.position}
+          </p>
+        </div>
+
+        <div className='w-full mt-auto'>
+          <ProfileModal
+            name={member.name}
+            imageUrl={member.imageUrl}
+            position={member.position}
+            email={member.email}
+            profile={member.profile}
+          />
+        </div>
       </div>
     </article>
   );

@@ -150,7 +150,7 @@ export default function AchievementsContainer() {
       aria-labelledby='achievements-heading'>
       {/* Hero Section */}
       <section
-        className='relative pt-12 px-4 max-w-6xl mx-auto text-center'
+        className='relative pt-12 px-4 max-w-7xl mx-auto text-center'
         aria-labelledby='achievements-heading'>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -200,7 +200,7 @@ export default function AchievementsContainer() {
 
       {/* Achievements Timeline */}
       <section
-        className='py-12 px-4 max-w-5xl mx-auto'
+        className='py-12 px-4 max-w-7xl mx-auto'
         aria-labelledby='stories-heading'>
         <h2
           id='stories-heading'
