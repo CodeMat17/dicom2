@@ -15,6 +15,8 @@ export const getLatestAchievements = query({
         const photoUrl = !!achievement.photo
           ? await ctx.storage.getUrl(achievement.photo)
           : null;
+        
+       
 
         return {
           _id: achievement._id,
@@ -22,6 +24,7 @@ export const getLatestAchievements = query({
           description: achievement.description,
           slug: achievement.slug,
           date: achievement._creationTime,
+          publishedAt: achievement.publishedAt,
           photoUrl,
         };
       })
@@ -53,6 +56,7 @@ export const getAllAchievements = query({
           description: achievement.description,
           slug: achievement.slug,
           photoUrl,
+          publishedAt: achievement.publishedAt,
           _creationTime: achievement._creationTime,
         };
       })
@@ -118,6 +122,7 @@ export const addStory = mutation({
     slug: v.string(),
     story: v.optional(v.string()),
     photo: v.id("_storage"),
+    publishedAt: v.number(),
   },
   handler: async (ctx, args) => {
     // Validate required fields
@@ -142,6 +147,7 @@ export const addStory = mutation({
       slug: args.slug,
       story: args.story?.trim() || undefined,
       photo: args.photo,
+      publishedAt: args.publishedAt,
     });
 
     return achievementId;
@@ -262,7 +268,7 @@ export const getAllAchievementsWithPhotos = query({
           title: achievement.title,
           description: achievement.description,
           slug: achievement.slug,
-          date: achievement._creationTime,
+          date: achievement.publishedAt,
           photoUrl,
         };
       })

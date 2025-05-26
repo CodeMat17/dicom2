@@ -53,8 +53,8 @@ export async function generateMetadata({
 
   if (!story) {
     return {
-      title: "Achievement Not Found | DICOM",
-      description: "The requested achievement could not be found",
+      title: "Story Not Found | DICOM",
+      description: "The requested story could not be found",
       robots: {
         index: false,
         follow: false,
@@ -150,14 +150,7 @@ export async function generateMetadata({
         url: "https://dicom.gouni.edu.ng",
       },
     ],
-    category: "Achievements",
-    verification: {
-      google: "google-site-verification",
-      yandex: "yandex-verification",
-      other: {
-        "facebook-domain-verification": "facebook-domain-verification",
-      },
-    },
+    category: "Stories",
     other: {
       "theme-color": "#213675",
     },
