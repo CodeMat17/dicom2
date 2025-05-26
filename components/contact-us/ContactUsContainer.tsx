@@ -28,13 +28,15 @@ function ContactCard() {
           </div>
           <div>
             <h3 className='text-lg font-semibold mb-1'>Address</h3>
-            <address className='text-muted-foreground not-italic'>
-              Godfrey Okoye University
-              <br />
-              Thinkers Corner, Enugu
-              <br />
-              Enugu State, Nigeria
-            </address>
+            <a href='https://maps.google.com/?q=Godfrey+Okoye+University+Enugu'>
+              <address className='text-muted-foreground not-italic'>
+                Godfrey Okoye University
+                <br />
+                Thinkers Corner, Enugu
+                <br />
+                Enugu State, Nigeria
+              </address>
+            </a>
           </div>
         </div>
 
