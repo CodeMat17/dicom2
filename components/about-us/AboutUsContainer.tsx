@@ -52,7 +52,7 @@ export default function AboutUsContainer() {
           className='relative z-10 text-center'>
           <h1
             id='about-heading'
-            className='text-5xl md:text-6xl font-bold mb-6 text-[#213675] dark:text-blue-500'>
+            className='text-5xl md:text-6xl font-bold mb-6 text-[#213675] dark:text-blue-500 font-poppins'>
             About DICOM
           </h1>
           <p className='text-xl max-w-3xl mx-auto mb-2'>

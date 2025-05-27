@@ -46,8 +46,8 @@ export default function AchievementSlugContainer() {
             Story Not Found
           </h1>
           <p className='text-gray-600 dark:text-gray-400'>
-            The story you&apos;re looking for doesn&apos;t exist or has
-            been removed.
+            The story you&apos;re looking for doesn&apos;t exist or has been
+            removed.
           </p>
         </div>
       </div>
@@ -70,6 +70,7 @@ export default function AchievementSlugContainer() {
         <h1 className='text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100'>
           {achievement.title}
         </h1>
+        <p className="italic text-muted-foreground"> {achievement.description}</p>
 
         <div className='flex items-center gap-12'>
           <div className='flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400'>
@@ -85,7 +86,7 @@ export default function AchievementSlugContainer() {
         </div>
       </header>
 
-      <div className="space-y-3">
+      <div className='space-y-3'>
         {/* Main Image */}
         {achievement.photoUrl && (
           <div className='relative aspect-video w-full overflow-hidden rounded-lg'>
@@ -99,23 +100,18 @@ export default function AchievementSlugContainer() {
             />
           </div>
         )}
-        <div className='prose max-w-none dark:prose-invert'>
-          <p className='text-muted-foreground italic leading-relaxed'>
-            {achievement.description}
-          </p>
-        </div>
       </div>
 
       {/* Story Content */}
       {achievement.story && (
         <div
           className='prose max-w-none dark:prose-invert
-            [&>p]:text-base [&>p]:leading-relaxed [&>p]:text-gray-700 dark:[&>p]:text-gray-300 [&>p]:mb-6
+            [&>p]:text-lg [&>p]:leading-relaxed [&>p]:text-gray-700 dark:[&>p]:text-gray-300 [&>p]:mb-6
             [&>h2]:text-xl [&>h2]:font-semibold [&>h2]:text-gray-900 dark:[&>h2]:text-gray-100 [&>h2]:mt-8 [&>h2]:mb-4
             [&>h3]:text-lg [&>h3]:font-medium [&>h3]:text-gray-900 dark:[&>h3]:text-gray-100 [&>h3]:mt-6 [&>h3]:mb-3
             [&>ul]:list-disc [&>ul]:ml-6 [&>ul]:mb-6
             [&>ol]:list-decimal [&>ol]:ml-6 [&>ol]:mb-6
-            [&>li]:text-base [&>li]:text-gray-700 dark:[&>li]:text-gray-300 [&>li]:mb-2
+            [&>li]:text-lg [&>li]:text-gray-700 dark:[&>li]:text-gray-300 [&>li]:mb-2
             [&>blockquote]:border-l-4 [&>blockquote]:border-gray-200 dark:[&>blockquote]:border-gray-700 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:my-6'
           dangerouslySetInnerHTML={{ __html: achievement.story }}
         />

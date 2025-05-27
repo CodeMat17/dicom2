@@ -4,9 +4,16 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Playfair_Display } from 'next/font/google';
 import "./globals.css";
 
 import { ConvexClientProvider } from "./ConvexClientProvider";
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['600', '700'],
+  variable: '--font-playfair',
+});
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -95,7 +102,7 @@ export default function RootLayout({
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
+        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased min-h-screen flex flex-col`}>
         <ThemeProvider
           attribute='class'
           defaultTheme='system'
