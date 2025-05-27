@@ -78,7 +78,7 @@ export function AchievementsSection() {
                     asChild
                     className='py-5 bg-blue-700 hover:bg-blue-500 text-white'>
                     <Link href='/our-stories'>
-                      Read more stories{" "}
+                      See all stories{" "}
                       <span className='transition-transform'>→</span>
                     </Link>
                   </Button>
