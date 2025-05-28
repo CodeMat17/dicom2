@@ -73,7 +73,7 @@ export function AchievementsSection() {
                     />
                   ))}
                 </div>
-                <div className='mt-8 flex justify-center'>
+                <div className='mt-8 flex justify-center sm:justify-start lg:justify-center'>
                   <Button
                     asChild
                     className='py-5 bg-blue-700 hover:bg-blue-500 text-white'>
