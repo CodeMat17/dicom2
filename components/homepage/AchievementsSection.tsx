@@ -46,12 +46,12 @@ export function AchievementsSection() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
               className='text-2xl font-semibold mb-6 text-center lg:text-left'>
-              Latest Stories
+              Latest Achievements
             </motion.h3>
 
             {achievements === undefined ? (
               <div className='pb-12 pl-6 italic animate-pulse'>
-                Latest stories loading...
+                Latest achievements loading...
               </div>
             ) : achievements.length === 0 ? (
               <div className='pb-12 pl-6 italic animate-pulse'>
@@ -78,7 +78,7 @@ export function AchievementsSection() {
                     asChild
                     className='py-5 bg-blue-700 hover:bg-blue-500 text-white'>
                     <Link href='/achievements'>
-                      See all stories
+                      See All Achievements
                       <span className='transition-transform'>→</span>
                     </Link>
                   </Button>
