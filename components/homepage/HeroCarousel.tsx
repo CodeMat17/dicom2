@@ -23,6 +23,7 @@ function HeroSkeleton() {
       <div className='absolute inset-0 bg-gray-200 dark:bg-gray-700' />
       <div className='absolute inset-0 flex items-center justify-center'>
         <div className='space-y-4 text-center'>
+          <div className='h-40 w-64 bg-gray-300 dark:bg-gray-600 rounded mx-auto' />
           <div className='h-8 w-64 bg-gray-300 dark:bg-gray-600 rounded mx-auto' />
           <div className='h-4 w-48 bg-gray-300 dark:bg-gray-600 rounded mx-auto' />
         </div>
