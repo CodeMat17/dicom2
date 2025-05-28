@@ -159,7 +159,7 @@ export default function AchievementsContainer() {
           <h1
             id='achievements-heading'
             className='text-5xl md:text-6xl font-bold mb-3 text-[#213675] dark:text-blue-500'>
-            Our Stories
+            Our Achievements
           </h1>
           <p
             className='text-xl text-muted-foreground max-w-3xl mx-auto'
@@ -175,7 +175,7 @@ export default function AchievementsContainer() {
         className='py-12 px-4 max-w-5xl mx-auto'
         aria-labelledby='stats-heading'>
         <h2 id='stats-heading' className='sr-only'>
-          Our Story Statistics
+          Our Achievements Statistics
         </h2>
         <Suspense fallback={<StatsSkeleton />}>
           {!stats ? (

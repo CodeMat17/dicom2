@@ -36,25 +36,14 @@ export async function GET() {
       priority: "0.8",
     },
     {
-      url: `${baseUrl}/contact-us`,
-      lastmod: new Date().toISOString(),
-      changefreq: "monthly",
-      priority: "0.5",
-    },
-    {
-      url: `${baseUrl}/our-stories`,
+      url: `${baseUrl}/achievements`,
       lastmod: new Date().toISOString(),
       changefreq: "daily",
       priority: "0.9",
     },
+
     {
       url: `${baseUrl}/partnership`,
-      lastmod: new Date().toISOString(),
-      changefreq: "daily",
-      priority: "0.9",
-    },
-    {
-      url: `${baseUrl}/our-staff`,
       lastmod: new Date().toISOString(),
       changefreq: "daily",
       priority: "0.9",
@@ -65,12 +54,24 @@ export async function GET() {
       changefreq: "weekly",
       priority: "0.7",
     },
+    {
+      url: `${baseUrl}/our-staff`,
+      lastmod: new Date().toISOString(),
+      changefreq: "daily",
+      priority: "0.9",
+    },
+    {
+      url: `${baseUrl}/contact-us`,
+      lastmod: new Date().toISOString(),
+      changefreq: "monthly",
+      priority: "0.5",
+    },
   ];
 
   // Dynamic achievement routes
   const achievementRoutes: SitemapRoute[] =
     achievements?.map((achievement) => ({
-      url: `${baseUrl}/our-stories/${achievement.slug}`,
+      url: `${baseUrl}/achievements/${achievement.slug}`,
       lastmod: new Date(achievement._creationTime).toISOString(),
       changefreq: "weekly",
       priority: "0.6",

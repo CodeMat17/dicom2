@@ -70,7 +70,7 @@ const AchievementCard = ({
             size='sm'
             className='group/btn hover:bg-blue-50 dark:hover:bg-blue-950 text-blue-600 dark:text-blue-400'>
             <Link
-              href={`/our-stories/${slug}`}
+              href={`/achievements/${slug}`}
               className='flex items-center gap-1'>
               Read More
               <ChevronRight className='h-3.5 w-3.5 transform group-hover/btn:translate-x-1 transition-transform' />
