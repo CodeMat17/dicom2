@@ -172,7 +172,7 @@ export default function AchievementsContainer() {
 
       {/* Stats Grid */}
       <section
-        className='py-12 px-4 max-w-5xl mx-auto'
+        className='py-8 px-4 max-w-5xl mx-auto'
         aria-labelledby='stats-heading'>
         <h2 id='stats-heading' className='sr-only'>
           Our Achievements Statistics
@@ -200,12 +200,12 @@ export default function AchievementsContainer() {
 
       {/* Achievements Timeline */}
       <section
-        className='py-12 px-4 max-w-7xl mx-auto'
+        className='pb-12 px-4 max-w-7xl mx-auto'
         aria-labelledby='stories-heading'>
         <h2
           id='stories-heading'
           className='text-3xl font-bold text-center mb-8 text-[#213675] dark:text-blue-500'>
-          Stories
+          Our Stories
         </h2>
         <Suspense fallback={<AchievementsGridSkeleton />}>
           {achievements === undefined ? null : achievements.length === 0 ? (
