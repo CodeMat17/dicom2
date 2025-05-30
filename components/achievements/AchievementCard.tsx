@@ -53,15 +53,15 @@ const AchievementCard = ({
           {date && dayjs(date).format("MMMM DD, YYYY")}
         </div>
 
-        <h2 className='font-semibold text-lg mb-1.5 text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
+        <h2 className='font-semibold text-lg mb-3 text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
           {title}
         </h2>
 
-        <p className='text-gray-600 dark:text-gray-300 line-clamp-2 text-sm leading-relaxed mb-3'>
+        {/* <p className='text-gray-600 dark:text-gray-300 line-clamp-2 text-sm leading-relaxed mb-3'>
           {desc}
-        </p>
+        </p> */}
 
-        <div className='flex items-center justify-between mt-auto pt- border-t border-gray-100 dark:border-gray-700'>
+        <div className='flex items-center justify-between mt-auto pt-2 border-t border-gray-100 dark:border-gray-700'>
           <ShareStoryUrl title={title} text={desc} slug={slug} />
 
           <Button
