@@ -13,7 +13,7 @@ export default function StaffProfile() {
 
   return (
     <section
-      className='w-full py-10 max-w-6xl mx-auto'
+      className='w-full py-10 max-w-7xl mx-auto'
       aria-label='Staff profiles'>
       <h2 className='sr-only'>Our Team</h2>
       <Suspense fallback={<StaffSkeleton />}>
