@@ -50,13 +50,13 @@ export const addStaff = mutation({
     name: v.string(),
     position: v.string(),
     email: v.optional(v.string()),
-    imageId: v.id("_storage"),
+    image: v.id("_storage"),
     profile: v.string(),
   },
   handler: async (ctx, args) => {
     await ctx.db.insert("teamMembers", {
       ...args,
-      image: args.imageId,
+      // image: args.imageId,
       role: "staff",
     });
   },

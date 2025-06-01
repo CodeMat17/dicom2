@@ -12,7 +12,7 @@ export default function StaffProfile() {
   const team = useQuery(api.teamMembers.getTeam) as Team | undefined;
 
   return (
-    <section
+    <section 
       className='w-full py-10 max-w-7xl mx-auto'
       aria-label='Staff profiles'>
       <h2 className='sr-only'>Our Team</h2>

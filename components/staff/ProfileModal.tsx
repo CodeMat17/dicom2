@@ -33,7 +33,7 @@ const ProfileModal = ({
       <DialogTrigger asChild>
         <Button variant='outline'>View Profile</Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-md'>
+      <DialogContent className='sm:max-w-md '>
         <DialogHeader>
          
           <div className="flex justify-center sm:justify-start">
@@ -52,7 +52,7 @@ const ProfileModal = ({
             {name} <br /> {position}
           </DialogDescription>
         </DialogHeader>
-        <div className=''>
+        <div className='max-h-[50vh] overflow-y-scroll'>
           <p className='mb-4'>{profile}</p>
           {email && (
             <p className='mt-4 text-sm text-muted-foreground flex items-center'>
