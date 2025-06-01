@@ -3,16 +3,16 @@ import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
+import { Playfair_Display } from "next/font/google";
 import localFont from "next/font/local";
-import { Playfair_Display } from 'next/font/google';
 import "./globals.css";
 
 import { ConvexClientProvider } from "./ConvexClientProvider";
 
 const playfair = Playfair_Display({
-  subsets: ['latin'],
-  weight: ['600', '700'],
-  variable: '--font-playfair',
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-playfair",
 });
 
 const geistSans = localFont({
@@ -55,6 +55,16 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  // verification: {
+  //   google: "YOUR_GOOGLE_SITE_VERIFICATION_CODE", // Replace with your verification code
+      
+  // },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
   openGraph: {
     title: "Directorate of Competitions | Godfrey Okoye University",
     description:
@@ -90,7 +100,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-
   category: "education",
 };
 
