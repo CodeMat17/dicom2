@@ -15,7 +15,7 @@ function DirectorProfile({ director }: DirectorProfileProps) {
   return (
     <div className='w-full md:max-w-[35%]'>
       <article
-        className='flex flex-col justify-center items-center bg-white dark:bg-gray-700 rounded-xl shadow-md pt-4 px-6 transition-colors duration-200'
+        className='flex flex-col justify-center items-center bg-white dark:bg-gray-900 rounded-xl shadow-md pt-4 px-6 transition-colors duration-200'
         aria-labelledby={`director-name-${director._id}`}>
         <div className='relative w-full sm:max-w-sm aspect-square'>
           <Image
