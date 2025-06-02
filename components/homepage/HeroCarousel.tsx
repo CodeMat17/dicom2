@@ -50,7 +50,7 @@ export function HeroCarousel() {
           "@type": "ImageObject",
           name: slide.title,
           description: slide.subtitle,
-          contentUrl: slide.imageUrl,
+          contentUrl: slide.imgUrl,
         },
       })) || [],
   };
