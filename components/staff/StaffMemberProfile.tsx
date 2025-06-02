@@ -18,7 +18,7 @@ function StaffMemberProfile({ member }: StaffMemberProfileProps) {
     <article
       className='flex flex-col justify-center items-center py-4 px-2 bg-white dark:bg-gray-900 rounded-xl shadow-md transition-colors duration-200'
       aria-labelledby={`staff-name-${member._id}`}>
-      <div className='relative w-[120px] aspect-square'>
+      <div className='relative w-[120px] aspect-square mb-2 rounded-full overflow-hidden object-cover'>
         <Image
           src={member.imageUrl}
           alt={`${member.name}, ${member.position}`}
