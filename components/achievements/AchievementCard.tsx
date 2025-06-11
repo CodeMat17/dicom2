@@ -53,7 +53,7 @@ const AchievementCard = ({
           {date && dayjs(date).format("MMMM DD, YYYY")}
         </div>
 
-        <h2 className='font-semibold text-lg mb-3 text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
+        <h2 className='font-semibold text-lg mb-3 text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors capitalize'>
           {title}
         </h2>
 
