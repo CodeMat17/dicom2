@@ -70,7 +70,10 @@ export default function AchievementSlugContainer() {
         <h1 className='text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100'>
           {achievement.title}
         </h1>
-        <p className="italic text-muted-foreground"> {achievement.description}</p>
+        <p className='italic text-muted-foreground'>
+          {" "}
+          {achievement.description}
+        </p>
 
         <div className='flex items-center gap-12'>
           <div className='flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400'>
@@ -106,13 +109,14 @@ export default function AchievementSlugContainer() {
       {achievement.story && (
         <div
           className='prose max-w-none dark:prose-invert
-            [&>p]:text-lg [&>p]:leading-relaxed [&>p]:text-gray-700 dark:[&>p]:text-gray-300 [&>p]:mb-6
-            [&>h2]:text-xl [&>h2]:font-semibold [&>h2]:text-gray-900 dark:[&>h2]:text-gray-100 [&>h2]:mt-8 [&>h2]:mb-4
-            [&>h3]:text-lg [&>h3]:font-medium [&>h3]:text-gray-900 dark:[&>h3]:text-gray-100 [&>h3]:mt-6 [&>h3]:mb-3
-            [&>ul]:list-disc [&>ul]:ml-6 [&>ul]:mb-6
-            [&>ol]:list-decimal [&>ol]:ml-6 [&>ol]:mb-6
-            [&>li]:text-lg [&>li]:text-gray-700 dark:[&>li]:text-gray-300 [&>li]:mb-2
-            [&>blockquote]:border-l-4 [&>blockquote]:border-gray-200 dark:[&>blockquote]:border-gray-700 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:my-6'
+        [&>p]:text-lg [&>p]:leading-relaxed [&>p]:text-gray-700 dark:[&>p]:text-gray-300 [&>p]:mb-6
+        [&>h2]:text-xl [&>h2]:font-semibold [&>h2]:text-gray-900 dark:[&>h2]:text-gray-100 [&>h2]:mt-8 [&>h2]:mb-4
+        [&>h3]:text-lg [&>h3]:font-medium [&>h3]:text-gray-900 dark:[&>h3]:text-gray-100 [&>h3]:mt-6 [&>h3]:mb-3
+        [&>ul]:list-disc [&>ul]:ml-6 [&>ul]:mb-6
+        [&>ol]:list-decimal [&>ol]:ml-6 [&>ol]:mb-6
+        [&>li]:text-lg [&>li]:text-gray-700 dark:[&>li]:text-gray-300 [&>li]:mb-2
+        [&>blockquote]:border-l-4 [&>blockquote]:border-gray-200 dark:[&>blockquote]:border-gray-700 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:my-6
+        [&_img]:max-h-[400px] [&_img]:w-full [&_img]:h-auto [&_img]:object-contain [&_img]:border-0'
           dangerouslySetInnerHTML={{ __html: achievement.story }}
         />
       )}
