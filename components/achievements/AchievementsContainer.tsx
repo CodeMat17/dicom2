@@ -85,7 +85,7 @@ function NoStats() {
         className='w-12 h-12 text-gray-400 mx-auto mb-4'
         aria-hidden='true'
       />
-      <p className='text-lg text-muted-foreground'>No statistics available</p>
+      <p className='text-lg text-muted-foreground italics'>Stats loading...</p>
     </div>
   );
 }
