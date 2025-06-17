@@ -116,7 +116,7 @@ export default function AchievementSlugContainer() {
         [&>ol]:list-decimal [&>ol]:ml-6 [&>ol]:mb-6
         [&>li]:text-lg [&>li]:text-gray-700 dark:[&>li]:text-gray-300 [&>li]:mb-2
         [&>blockquote]:border-l-4 [&>blockquote]:border-gray-200 dark:[&>blockquote]:border-gray-700 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:my-6
-        [&_img]:max-h-[400px] [&_img]:w-full [&_img]:h-auto [&_img]:object-contain [&_img]:border-0'
+        [&_img]:max-h-full [&_img]:w-full [&_img]:h-auto [&_img]:object-contain [&_img]:border-0 [&_img]:my-6'
           dangerouslySetInnerHTML={{ __html: achievement.story }}
         />
       )}
