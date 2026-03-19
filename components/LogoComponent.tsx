@@ -10,7 +10,7 @@ const LogoComponent = () => {
             <Image alt='' priority width={47} height={47} src='/logo.webp' />
           </div>
 
-          <div className=' leading-tight sm:leading-5 text-white'>
+          <div className='hidden sm:block leading-tight sm:leading-5 text-white'>
             <p className='font-semibold'>
               Directorate of Competitions
             </p>

@@ -21,7 +21,7 @@ export default function StaffProfile() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="flex flex-col md:flex-row gap-8 items-start"
+          className="flex flex-col md:flex-row gap-8 items-center"
         >
           {team.director?.imageUrl && (
             <DirectorProfile director={team.director} />

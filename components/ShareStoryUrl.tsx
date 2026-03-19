@@ -29,7 +29,7 @@ const ShareStoryUrl = ({ title, text, slug }: Props) => {
           toast.success("Link copied");
         }
       }}
-      className='p-2 hover:bg-muted rounded-full transition-colors'
+      className='p-2 text-muted-foreground hover:bg-muted rounded-full transition-colors'
       aria-label='Share achievement'>
       <Share2 className='w-4 h-4 shrink-0' /> <span className="text-xs">Share</span>
     </Button>

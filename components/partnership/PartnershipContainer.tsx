@@ -161,9 +161,9 @@ export default function PartnershipContainer() {
               href="mailto:dicom@gouni.edu.ng?subject=Partnership Inquiry"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-8 py-3.5 rounded-full transition-colors"
+              className="inline-flex items-center gap-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-5 py-2.5 rounded-full transition-colors"
             >
-              <Mail className="w-4 h-4" />
+              {/* <Mail className="w-4 h-4" /> */}
               Contact Our Partnership Team
             </motion.a>
           </div>
