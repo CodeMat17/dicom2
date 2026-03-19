@@ -3,7 +3,8 @@
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
-import { Award, ComponentType, LucideProps, Star, Trophy, Users } from "lucide-react";
+import { Award, Star, Trophy, Users, type LucideProps } from "lucide-react";
+import type { ComponentType } from "react";
 
 type IconMap = { [key: string]: ComponentType<LucideProps> };
 

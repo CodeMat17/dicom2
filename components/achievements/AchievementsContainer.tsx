@@ -3,7 +3,8 @@
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
-import { Award, ComponentType, LucideProps, Mail, Star, Trophy, Users } from "lucide-react";
+import { Award, Mail, Star, Trophy, Users, type LucideProps } from "lucide-react";
+import type { ComponentType } from "react";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 

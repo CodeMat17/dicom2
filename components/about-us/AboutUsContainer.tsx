@@ -34,7 +34,6 @@ export default function AboutUsContainer() {
 
   const mission = statements?.find((s) => s.type === "mission");
   const vision = statements?.find((s) => s.type === "vision");
-  const coreValues = statements?.find((s) => s.type === "core-values");
 
   const structuredData = {
     "@context": "https://schema.org",
