@@ -16,25 +16,15 @@ const AchievementSlugContainer = dynamic(
 // Loading skeleton component
 function AchievementSkeleton() {
   return (
-    <div
-      className='space-y-8 animate-pulse'
-      role='status'
-      aria-label='Loading achievement'
-      aria-busy='true'>
-      {/* Header skeleton */}
-      <div className='space-y-4'>
-        <div className='h-8 bg-gray-200 dark:bg-slate-700 rounded-lg w-3/4' />
-        <div className='h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/2' />
+    <div className="space-y-8 animate-pulse" role="status" aria-label="Loading achievement" aria-busy="true">
+      <div className="space-y-4">
+        <div className="h-10 w-3/4 bg-white/10 rounded-xl" />
+        <div className="h-4 w-1/2 bg-white/10 rounded" />
       </div>
-      {/* Image skeleton */}
-      <div className='aspect-video bg-gray-200 dark:bg-slate-700 rounded-lg' />
-      {/* Content skeleton */}
-      <div className='space-y-3'>
+      <div className="aspect-video bg-white/10 rounded-2xl" />
+      <div className="space-y-3">
         {[...Array(4)].map((_, i) => (
-          <div
-            key={i}
-            className='h-4 bg-gray-200 dark:bg-slate-700 rounded w-full'
-          />
+          <div key={i} className="h-4 bg-white/10 rounded w-full" />
         ))}
       </div>
     </div>
@@ -159,12 +149,15 @@ export async function generateMetadata({
 
 export default function AchievementPage() {
   return (
-    <main
-      className='max-w-3xl mx-auto px-4 py-8 md:py-12'
-      aria-labelledby='achievement-title'>
-      <Suspense fallback={<AchievementSkeleton />}>
-        <AchievementSlugContainer />
-      </Suspense>
-    </main>
+    <div className="min-h-screen bg-[#060e1e]">
+      <div
+        className="max-w-3xl mx-auto px-4 py-16 md:py-20"
+        aria-labelledby="achievement-title"
+      >
+        <Suspense fallback={<AchievementSkeleton />}>
+          <AchievementSlugContainer />
+        </Suspense>
+      </div>
+    </div>
   );
 }

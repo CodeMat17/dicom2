@@ -1,32 +1,30 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
-import { useState } from "react";
-import { A11y, Autoplay, EffectFade, Pagination } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, ChevronDown } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRef, useState } from "react";
+import type { Swiper as SwiperType } from "swiper";
+import { A11y, Autoplay, EffectFade } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/a11y";
 import "swiper/css/effect-fade";
-import "swiper/css/pagination";
 
-// Loading skeleton component for better UX
+const pad = (n: number) => String(n).padStart(2, "0");
+
 function HeroSkeleton() {
   return (
-    <div
-      className='relative h-[80vh] w-full bg-gray-100 animate-pulse'
-      role='status'
-      aria-label='Loading hero section'>
-      <div className='absolute inset-0 bg-gray-200 dark:bg-gray-700' />
-      <div className='absolute inset-0 flex items-center justify-center'>
-        <div className='space-y-4 text-center'>
-          <div className='h-40 w-64 bg-gray-300 dark:bg-gray-600 rounded mx-auto' />
-          <div className='h-8 w-64 bg-gray-300 dark:bg-gray-600 rounded mx-auto' />
-          <div className='h-4 w-48 bg-gray-300 dark:bg-gray-600 rounded mx-auto' />
-        </div>
+    <div className="relative h-[90vh] w-full bg-[#0a1628] overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#213675]/40 via-[#0a1628] to-transparent" />
+      <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-20 max-w-6xl mx-auto gap-5">
+        <div className="h-3 w-28 bg-white/10 rounded-full" />
+        <div className="h-16 w-3/4 bg-white/10 rounded-xl" />
+        <div className="h-6 w-1/2 bg-white/10 rounded-lg" />
+        <div className="h-12 w-40 bg-white/10 rounded-full mt-4" />
       </div>
     </div>
   );
@@ -34,47 +32,20 @@ function HeroSkeleton() {
 
 export function HeroCarousel() {
   const heroData = useQuery(api.heroSlides.getHeroSlides);
-
   const [fallbackSrc, setFallbackSrc] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const swiperRef = useRef<SwiperType | null>(null);
 
-  // Generate structured data for the carousel
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    itemListElement:
-      heroData?.map((slide, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        item: {
-          "@type": "ImageObject",
-          name: slide.title,
-          description: slide.subtitle,
-          contentUrl: slide.imgUrl,
-        },
-      })) || [],
-  };
-
-  if (heroData === undefined) {
-    return <HeroSkeleton />;
-  }
+  if (heroData === undefined) return <HeroSkeleton />;
 
   if (!heroData?.length) {
     return (
-      <div
-        className='relative h-[80vh] w-full bg-gray-100 flex items-center justify-center'
-        role='region'
-        aria-label='Welcome section'>
-        <Image
-          alt='DICOM welcome background'
-          priority
-          fill
-          className='object-cover'
-          src='/fallback.webp'
-          sizes='100vw'
-        />
-        <div className='relative z-10 text-center text-white'>
-          <h1 className='text-4xl font-bold'>
+      <div className="relative h-[90vh] w-full overflow-hidden">
+        <Image alt="DICOM welcome" priority fill className="object-cover" src="/fallback.webp" sizes="100vw" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+        <div className="absolute inset-0 flex items-center px-6 md:px-20">
+          <h1 className="text-5xl md:text-7xl font-bold text-white max-w-3xl leading-tight">
             Welcome to the Directorate of Competitions
           </h1>
         </div>
@@ -82,112 +53,159 @@ export function HeroCarousel() {
     );
   }
 
+  const total = heroData.length;
+  const current = heroData[activeIndex];
+
   return (
-    <>
-      <script
-        type='application/ld+json'
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData),
-        }}
-      />
-      <section
-        className='relative w-full h-[80vh] aspect-video overflow-hidden'
-        aria-label='Hero carousel'
-        role='region'>
-        <Swiper
-          modules={[Autoplay, EffectFade, Pagination, A11y]}
-          autoplay={{ delay: 5000, disableOnInteraction: false }}
-          effect='fade'
-          loop
-          pagination={{
-            clickable: true,
-            bulletActiveClass: "swiper-pagination-bullet-active",
-            bulletClass: "swiper-pagination-bullet",
-            renderBullet: (index, className) => {
-              return `<button class="${className}" aria-label="Go to slide ${index + 1}"></button>`;
-            },
-          }}
-          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-          className='h-full w-full z-0'
-          a11y={{
-            prevSlideMessage: "Previous slide",
-            nextSlideMessage: "Next slide",
-            firstSlideMessage: "This is the first slide",
-            lastSlideMessage: "This is the last slide",
-            paginationBulletMessage: "Go to slide {{index}}",
-          }}>
-          {heroData.map((data, index) => {
-            const imageUrl =
-              fallbackSrc === data.imgUrl
-                ? "/fallback.webp"
-                : (data.imgUrl ?? "/fallback.webp");
+    <section className="relative w-full h-[90vh] overflow-hidden" aria-label="Hero carousel">
+      {/* Swiper — images only */}
+      <Swiper
+        modules={[Autoplay, EffectFade, A11y]}
+        autoplay={{ delay: 6000, disableOnInteraction: false }}
+        effect="fade"
+        loop
+        speed={1200}
+        onSwiper={(s) => { swiperRef.current = s; }}
+        onSlideChange={(s) => setActiveIndex(s.realIndex)}
+        className="absolute inset-0 h-full w-full"
+        a11y={{ prevSlideMessage: "Previous slide", nextSlideMessage: "Next slide" }}
+      >
+        {heroData.map((data, index) => {
+          const src = fallbackSrc === data.imgUrl ? "/fallback.webp" : (data.imgUrl ?? "/fallback.webp");
+          return (
+            <SwiperSlide key={data._id}>
+              <Image
+                src={src}
+                alt={data.alt || data.title}
+                fill
+                className="object-cover object-center"
+                priority={index === 0}
+                quality={90}
+                sizes="100vw"
+                onError={() => setFallbackSrc(data.imgUrl ?? null)}
+              />
+            </SwiperSlide>
+          );
+        })}
+      </Swiper>
 
-            return (
-              <SwiperSlide
-                key={data._id}
-                aria-label={`Slide ${index + 1}: ${data.title}`}>
-                <div className='relative h-full w-full'>
-                  <Image
-                    src={imageUrl}
-                    alt={data.alt || `Hero image: ${data.title}`}
-                    fill
-                    className='object-cover object-center absolute inset-0'
-                    priority={index === 0}
-                    quality={85}
-                    sizes='100vw'
-                    onError={() => setFallbackSrc(data.imgUrl ?? null)}
-                  />
+      {/* Overlays */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-r from-black/75 via-black/45 to-black/10" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
 
-                  <AnimatePresence mode='wait'>
-                    {activeIndex === index && (
-                      <motion.div
-                        key={data._id}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.4 }}
-                        className='absolute inset-0 bg-black/40 flex items-center justify-center z-10'>
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.6 }}
-                          className='text-center px-4 max-w-4xl'>
-                          <motion.h2
-                            initial={{ y: 40, scale: 0.95, opacity: 0 }}
-                            animate={{ y: 0, scale: 1, opacity: 1 }}
-                            exit={{ y: -20, opacity: 0 }}
-                            transition={{
-                              duration: 0.8,
-                              ease: "easeOut",
-                              delay: 0.1,
-                            }}
-                            className='text-4xl md:text-6xl font-bold text-white mb-4'>
-                            {data.title}
-                          </motion.h2>
+      {/* Main content */}
+      <div className="absolute inset-0 z-20 flex flex-col justify-center px-6 md:px-16 lg:px-24">
+        <div className="max-w-5xl w-full mx-auto">
 
-                          <motion.p
-                            initial={{ y: 60, scale: 0.95, opacity: 0 }}
-                            animate={{ y: 0, scale: 1, opacity: 1 }}
-                            exit={{ y: -30, opacity: 0 }}
-                            transition={{
-                              duration: 0.8,
-                              ease: "easeOut",
-                              delay: 0.3,
-                            }}
-                            className='text-xl text-white/90 mb-8'>
-                            {data.subtitle}
-                          </motion.p>
-                        </motion.div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </SwiperSlide>
-            );
-          })}
-        </Swiper>
-      </section>
-    </>
+          {/* Slide counter */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`badge-${activeIndex}`}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              transition={{ duration: 0.4 }}
+              className="flex items-center gap-3 mb-6"
+            >
+              <span className="font-mono text-yellow-400 text-sm tracking-widest">{pad(activeIndex + 1)}</span>
+              <div className="h-px w-10 bg-yellow-400/60" />
+              <span className="font-mono text-white/40 text-sm tracking-widest">{pad(total)}</span>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Title */}
+          <AnimatePresence mode="wait">
+            <motion.h1
+              key={`title-${activeIndex}`}
+              initial={{ opacity: 0, y: 50, filter: "blur(4px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={{ opacity: 0, y: -30, filter: "blur(4px)" }}
+              transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] max-w-4xl"
+            >
+              {current?.title}
+            </motion.h1>
+          </AnimatePresence>
+
+          {/* Subtitle */}
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={`sub-${activeIndex}`}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
+              className="text-base md:text-xl text-white/70 mt-5 max-w-xl leading-relaxed"
+            >
+              {current?.subtitle}
+            </motion.p>
+          </AnimatePresence>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="mt-10 flex items-center gap-4"
+          >
+            <Link
+              href="/achievements"
+              className="group inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-7 py-3.5 rounded-full transition-all duration-300"
+            >
+              Explore Achievements
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+            <Link
+              href="/about-us"
+              className="text-white/70 hover:text-white text-sm font-medium transition-colors duration-200 underline underline-offset-4"
+            >
+              Learn more
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Bottom: slide dots + progress */}
+      <div className="absolute bottom-0 left-0 right-0 z-30">
+        {/* Progress bar */}
+        <div className="h-0.5 bg-white/10 w-full">
+          <motion.div
+            key={`progress-${activeIndex}`}
+            initial={{ width: "0%" }}
+            animate={{ width: "100%" }}
+            transition={{ duration: 6, ease: "linear" }}
+            className="h-full bg-yellow-400"
+          />
+        </div>
+
+        {/* Dots */}
+        <div className="flex items-center justify-between px-6 md:px-16 lg:px-24 py-5">
+          <div className="flex gap-2">
+            {heroData.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => swiperRef.current?.slideToLoop(i)}
+                className={`rounded-full transition-all duration-400 ${
+                  i === activeIndex
+                    ? "w-8 h-2 bg-yellow-400"
+                    : "w-2 h-2 bg-white/30 hover:bg-white/60"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+
+          {/* Scroll hint */}
+          <motion.div
+            animate={{ y: [0, 5, 0] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="flex items-center gap-1.5 text-white/40 text-xs font-mono tracking-widest uppercase"
+          >
+            <span>Scroll</span>
+            <ChevronDown className="w-3 h-3" />
+          </motion.div>
+        </div>
+      </div>
+    </section>
   );
 }

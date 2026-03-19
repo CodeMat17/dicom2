@@ -2,13 +2,10 @@
 
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
-import { Award, Star, Trophy, Users, LucideProps } from "lucide-react";
-import { useRef, ComponentType } from "react";
+import { motion } from "framer-motion";
+import { Award, ComponentType, LucideProps, Star, Trophy, Users } from "lucide-react";
 
-// Type for icon mapping
-type IconMap = {
-  [key: string]: ComponentType<LucideProps>;
-};
+type IconMap = { [key: string]: ComponentType<LucideProps> };
 
 const iconMap: IconMap = {
   "National Champion": Trophy,
@@ -17,61 +14,58 @@ const iconMap: IconMap = {
   "University Awards": Award,
 };
 
+const colors: Record<string, { bg: string; text: string; ring: string }> = {
+  "National Champion": { bg: "bg-yellow-400/10", text: "text-yellow-400", ring: "ring-yellow-400/20" },
+  "International Recognition": { bg: "bg-[#179BD7]/10", text: "text-[#179BD7]", ring: "ring-[#179BD7]/20" },
+  "Students Winners": { bg: "bg-emerald-400/10", text: "text-emerald-400", ring: "ring-emerald-400/20" },
+  "University Awards": { bg: "bg-purple-400/10", text: "text-purple-400", ring: "ring-purple-400/20" },
+};
+
 export function AchievementStatScroller() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const stats = useQuery(api.achievementsStat.getAchievementsStats);
 
-  const stats = useQuery(api.achievementsStat.getAchievementsStats)
+  if (stats === undefined)
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="h-16 rounded-xl bg-white/5 animate-pulse" />
+        ))}
+      </div>
+    );
 
-  if(stats === undefined) return  <div className='text-center italic py-5 animate-pulse'>
-  Stats loading...
-  </div>
-  
-  if (!stats) return  <div className='text-center italic py-5 animate-pulse'>
-  No stat available.
-</div>
+  if (!stats)
+    return <p className="text-white/30 text-sm text-center py-4">No stats available</p>;
+
+  const items = [
+    { label: "National Champion", value: stats.nationalChampions },
+    { label: "International Recognition", value: stats.internationalRecognition },
+    { label: "Students Winners", value: stats.studentWinners },
+    { label: "University Awards", value: stats.universityAwards },
+  ];
 
   return (
-    <div className='relative pt-1 lg:pt-2 pb-10 lg:pb-1 max-w-3xl mx-auto'>
-      {/* Fade masks for scroll indication (mobile only) */}
-      <div className='lg:hidden pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-gray-50 dark:from-slate-950 to-transparent z-10' />
-      <div className='lg:hidden pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-gray-50 dark:from-slate-950 to-transparent z-10' />
-
-      {/* Responsive container */}
-      <div
-        ref={containerRef}
-        className='flex gap-8 px-4 py-2 lg:py-0 overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar
-                 lg:overflow-visible lg:flex-col sm:gap-3 lg:px-0 lg:grid lg:grid-cols-2 lg:gap-2'
-        style={{
-          WebkitOverflowScrolling: "touch",
-          scrollbarWidth: "none",
-        }}>
-        <StatItem label='National Champion' value={stats.nationalChampions} />
-        <StatItem label='International Recognition' value={stats.internationalRecognition} />
-        <StatItem label='Students Winners' value={stats.studentWinners} />
-        <StatItem label='University Awards' value={stats.universityAwards} />
-      </div>
-    </div>
-  );
-}
-
-function StatItem({ label, value }: { label: string; value: number }) {
-  const IconComponent = iconMap[label] || Trophy; // Fallback to Trophy if unknown
-
-  return (
-    <div className='flex-shrink-0 w-[120px] mx-auto bg-white dark:bg-gray-700 lg:bg-white lg:dark:bg-gray-700 rounded-xl p-3 shadow-md hover:shadow-lg transition-transform lg:w-full lg:flex-shrink'>
-      <div className='flex flex-col items-center text-center'>
-        <div className='w-12 h-12 flex items-center justify-center rounded-full bg-amber-50 shadow-md border text-primary  lg:mb-0 shrink-0'>
-          <IconComponent className='w-5 h-5 text-amber-500' />
-        </div>
-        <div className="">
-          <h3 className='text-xl font-bold text-[#213675] dark:text-blue-500 leading-tight'>
-            {value}
-          </h3>
-          <p className='text-xs lg:text-[14px] font-medium leading-snug'>
-            {label}
-          </p>
-        </div>
-      </div>
+    <div className="space-y-3">
+      {items.map(({ label, value }, i) => {
+        const Icon = iconMap[label] || Trophy;
+        const c = colors[label] || colors["National Champion"];
+        return (
+          <motion.div
+            key={label}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: i * 0.08, duration: 0.4 }}
+            className="flex items-center gap-3 p-3 rounded-xl bg-white/3 border border-white/8 hover:border-white/15 transition-colors"
+          >
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${c.bg} ring-1 ${c.ring}`}>
+              <Icon className={`w-4.5 h-4.5 ${c.text}`} />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-white leading-none">{value}</p>
+              <p className="text-xs text-white/40 mt-0.5 leading-tight">{label}</p>
+            </div>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

@@ -3,154 +3,138 @@
 import { motion } from "framer-motion";
 import { Clock, Mail, MapPin, Send } from "lucide-react";
 
-// Contact information card component
-function ContactCard() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5 }}
-      className='bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8'
-      role='region'
-      aria-labelledby='office-info-heading'>
-      <h2 id='office-info-heading' className='text-2xl font-bold mb-6'>
-        Our Office
-      </h2>
-
-      <div className='space-y-6'>
-        <div className='flex items-start gap-4'>
-          <div className='flex-shrink-0 mt-1'>
-            <MapPin
-              className='w-5 h-5 text-primary'
-              aria-hidden='true'
-              role='img'
-            />
-          </div>
-          <div>
-            <h3 className='text-lg font-semibold mb-1'>Address</h3>
-            <a href='https://maps.google.com/?q=Godfrey+Okoye+University+Enugu'>
-              <address className='text-muted-foreground not-italic'>
-                Godfrey Okoye University
-                <br />
-                Thinkers Corner, Enugu
-                <br />
-                Enugu State, Nigeria
-              </address>
-            </a>
-          </div>
-        </div>
-
-        <div className='flex items-start gap-4'>
-          <div className='flex-shrink-0 mt-1'>
-            <Mail
-              className='w-5 h-5 text-primary'
-              aria-hidden='true'
-              role='img'
-            />
-          </div>
-          <div>
-            <h3 className='text-lg font-semibold mb-1'>Email</h3>
-            <p className='text-muted-foreground'>
-              <a
-                href='mailto:dicom@gouni.edu.ng'
-                className='hover:underline focus:outline-none focus:ring-2 focus:ring-primary rounded'
-                aria-label='Send email to DICOM'>
-                dicom@gouni.edu.ng
-              </a>
-            </p>
-          </div>
-        </div>
-
-        <div className='flex items-start gap-4'>
-          <div className='flex-shrink-0 mt-1'>
-            <Clock
-              className='w-5 h-5 text-primary'
-              aria-hidden='true'
-              role='img'
-            />
-          </div>
-          <div>
-            <h3 className='text-lg font-semibold mb-1'>Office Hours</h3>
-            <p className='text-muted-foreground'>
-              <time>Monday - Friday: 8:00 AM - 4:00 PM</time>
-            </p>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// Contact form component
-function ContactForm() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: 0.1 }}
-      className='flex flex-col justify-center items-center bg-white dark:bg-gray-800 rounded-xl p-8'
-      role='region'
-      aria-labelledby='contact-form-heading'>
-      <Mail
-        className='w-12 h-12 text-primary mb-4'
-        aria-hidden='true'
-        role='img'
-      />
-      <h3
-        id='contact-form-heading'
-        className='text-2xl font-bold mb-2 text-center'>
-        Send us a message
-      </h3>
-      <p className='text-muted-foreground mb-6 text-center'>
-        Have questions or feedback? We&apos;d love to hear from you.
-      </p>
-      <motion.a
-        href='mailto:dicom@gouni.edu.ng?subject=Contact%20Form%20Inquiry'
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className='inline-flex items-center gap-2 px-6 py-3 bg-primary text-white dark:text-gray-900 rounded-lg font-medium hover:bg-primary/90 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
-        aria-label='Send us an email'>
-        <Send className='w-5 h-5' aria-hidden='true' />
-        Email Us
-      </motion.a>
-    </motion.div>
-  );
-}
+const infoItems = [
+  {
+    icon: MapPin,
+    label: "Address",
+    color: "text-yellow-400",
+    bg: "bg-yellow-400/10",
+    ring: "ring-yellow-400/20",
+    content: (
+      <a
+        href="https://maps.google.com/?q=Godfrey+Okoye+University+Enugu"
+        className="text-white/50 hover:text-white transition-colors not-italic text-sm leading-relaxed"
+      >
+        Godfrey Okoye University<br />
+        Thinkers Corner, Enugu<br />
+        Enugu State, Nigeria
+      </a>
+    ),
+  },
+  {
+    icon: Mail,
+    label: "Email",
+    color: "text-[#179BD7]",
+    bg: "bg-[#179BD7]/10",
+    ring: "ring-[#179BD7]/20",
+    content: (
+      <a
+        href="mailto:dicom@gouni.edu.ng"
+        className="text-white/50 hover:text-white transition-colors text-sm"
+        aria-label="Send email to DICOM"
+      >
+        dicom@gouni.edu.ng
+      </a>
+    ),
+  },
+  {
+    icon: Clock,
+    label: "Office Hours",
+    color: "text-emerald-400",
+    bg: "bg-emerald-400/10",
+    ring: "ring-emerald-400/20",
+    content: (
+      <time className="text-white/50 text-sm">Monday – Friday: 8:00 AM – 4:00 PM</time>
+    ),
+  },
+];
 
 export default function ContactUsContainer() {
   return (
-    <main
-      className='min-h-screen bg-gray-50 dark:bg-slate-900'
-      aria-labelledby='contact-heading'>
-      {/* Hero Section */}
-      <section
-        className='relative pt-20 pb-6 px-4 max-w-6xl mx-auto text-center'
-        aria-labelledby='contact-heading'>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}>
-          <h1
-            id='contact-heading'
-            className='text-4xl md:text-5xl font-bold mb-3'>
-            Contact Us
-          </h1>
-          <p
-            className='text-xl text-muted-foreground max-w-3xl mx-auto'
-            role='doc-subtitle'>
-            Get in touch with the DICOM team. We&apos;re here to help and answer
-            any questions.
-          </p>
-        </motion.div>
+    <main className="min-h-screen bg-[#060e1e]" aria-labelledby="contact-heading">
+      {/* Hero */}
+      <section className="relative pt-28 pb-16 px-4 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-[#213675]/30 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <div className="flex items-center justify-center gap-2 mb-5">
+              <div className="h-px w-8 bg-yellow-400" />
+              <span className="text-yellow-400 text-sm font-mono tracking-widest uppercase">Reach Us</span>
+              <div className="h-px w-8 bg-yellow-400" />
+            </div>
+
+            <h1
+              id="contact-heading"
+              className="text-5xl md:text-6xl font-bold text-white leading-tight mb-4"
+            >
+              Contact <span className="text-[#179BD7]">Us</span>
+            </h1>
+            <p className="text-white/50 text-lg max-w-2xl mx-auto">
+              Get in touch with the DICOM team. We&apos;re here to help and answer any questions.
+            </p>
+          </motion.div>
+        </div>
       </section>
 
-      {/* Contact Information */}
-      <section
-        className='py-12 px-4 max-w-4xl mx-auto'
-        aria-label='Contact information'>
-        <div className='grid md:grid-cols-2 gap-12' role='presentation'>
-          <ContactCard />
-          <ContactForm />
+      {/* Contact cards */}
+      <section className="py-12 px-4 max-w-5xl mx-auto pb-24">
+        <div className="grid md:grid-cols-2 gap-8 items-start">
+
+          {/* Info */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="bg-white/4 border border-white/10 rounded-2xl p-8"
+          >
+            <h2 className="text-2xl font-bold text-white mb-8">Our Office</h2>
+            <div className="space-y-6">
+              {infoItems.map(({ icon: Icon, label, color, bg, ring, content }, i) => (
+                <div key={i} className="flex items-start gap-4">
+                  <div className={`w-10 h-10 rounded-xl ${bg} ring-1 ${ring} flex items-center justify-center shrink-0 mt-0.5`}>
+                    <Icon className={`w-4.5 h-4.5 ${color}`} aria-hidden="true" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-white mb-1">{label}</h3>
+                    <address className="not-italic">{content}</address>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* CTA */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="bg-gradient-to-br from-[#213675] to-[#0a1628] border border-[#179BD7]/20 rounded-2xl p-8 flex flex-col items-center text-center"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-[#179BD7]/10 ring-1 ring-[#179BD7]/20 flex items-center justify-center mb-5">
+              <Mail className="w-8 h-8 text-[#179BD7]" aria-hidden="true" />
+            </div>
+
+            <h3 className="text-2xl font-bold text-white mb-2">Send us a message</h3>
+            <p className="text-white/45 mb-8 leading-relaxed">
+              Have questions or feedback? We&apos;d love to hear from you. Our team typically responds within one business day.
+            </p>
+
+            <motion.a
+              href="mailto:dicom@gouni.edu.ng?subject=Contact%20Form%20Inquiry"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center gap-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-7 py-3.5 rounded-full transition-colors"
+              aria-label="Send us an email"
+            >
+              <Send className="w-4 h-4" aria-hidden="true" />
+              Email Us
+            </motion.a>
+          </motion.div>
         </div>
       </section>
     </main>

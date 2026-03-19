@@ -1,11 +1,10 @@
 import type { TeamMember } from "@/types/team";
+import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { memo } from "react";
 
-const ProfileModal = dynamic(() => import("./ProfileModal"), {
-  ssr: true,
-});
+const ProfileModal = dynamic(() => import("./ProfileModal"), { ssr: true });
 
 interface DirectorProfileProps {
   director: TeamMember;
@@ -13,31 +12,39 @@ interface DirectorProfileProps {
 
 function DirectorProfile({ director }: DirectorProfileProps) {
   return (
-    <div className='w-full md:max-w-[35%]'>
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full md:max-w-[300px] shrink-0"
+    >
       <article
-        className='flex flex-col justify-center items-center bg-white dark:bg-gray-900 rounded-xl shadow-md pt-4 px-6 transition-colors duration-200'
-        aria-labelledby={`director-name-${director._id}`}>
-        <div className='relative w-full sm:max-w-sm aspect-square'>
+        className="flex flex-col items-center bg-white/5 border border-white/10 rounded-2xl pt-6 px-6 pb-6 hover:border-[#179BD7]/30 transition-all duration-300 group"
+        aria-labelledby={`director-name-${director._id}`}
+      >
+        {/* Badge */}
+        <div className="text-xs font-mono tracking-widest text-yellow-400 uppercase mb-4">Director</div>
+
+        {/* Photo */}
+        <div className="relative w-44 h-44 mb-5 rounded-full overflow-hidden ring-4 ring-[#179BD7]/20 group-hover:ring-[#179BD7]/50 transition-all">
           <Image
             src={director.imageUrl}
             alt={`${director.name}, ${director.position}`}
             fill
-            className='object-cover rounded-full'
+            className="object-cover"
             priority
-            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 35vw'
+            sizes="(max-width: 768px) 100vw, 300px"
           />
         </div>
-        <div className='flex flex-col justify-center px-6 pt-1 pb-4 text-center'>
+
+        <div className="text-center">
           <h3
             id={`director-name-${director._id}`}
-            className='text-lg font-medium text-gray-900 dark:text-white'>
+            className="text-lg font-bold text-white mb-1"
+          >
             {director.name}
           </h3>
-          <p
-            className='mb-2 text-gray-600 dark:text-gray-300'
-            aria-label={`Position: ${director.position}`}>
-            {director.position}
-          </p>
+          <p className="text-[#179BD7] text-sm mb-5">{director.position}</p>
           <ProfileModal
             name={director.name}
             imageUrl={director.imageUrl}
@@ -47,7 +54,7 @@ function DirectorProfile({ director }: DirectorProfileProps) {
           />
         </div>
       </article>
-    </div>
+    </motion.div>
   );
 }
 

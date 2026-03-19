@@ -1,16 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Mail } from "lucide-react";
+import { Mail, X } from "lucide-react";
 import Image from "next/image";
 
 type StaffProps = {
@@ -21,53 +17,64 @@ type StaffProps = {
   imageUrl: string | null;
 };
 
-const ProfileModal = ({
-  name,
-  position,
-  profile,
-  email,
-  imageUrl,
-}: StaffProps) => {
+const ProfileModal = ({ name, position, profile, email, imageUrl }: StaffProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant='outline'>View Profile</Button>
+        <button className="w-full text-sm text-[#179BD7] border border-[#179BD7]/30 hover:bg-[#179BD7]/10 hover:border-[#179BD7]/60 rounded-xl py-2 px-4 transition-all duration-200 font-medium">
+          View Profile
+        </button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-md '>
-        <DialogHeader>
-         
-          <div className="flex justify-center sm:justify-start">
-            {imageUrl && (
+
+      <DialogContent className="sm:max-w-md bg-[#0f1e3a] border border-white/10 text-white p-0 overflow-hidden rounded-2xl">
+        {/* Header with image */}
+        <div className="relative bg-gradient-to-br from-[#213675] to-[#0a1628] px-8 pt-8 pb-6 text-center">
+          <DialogClose className="absolute top-4 right-4 p-1.5 rounded-full bg-white/5 hover:bg-white/15 transition-colors text-white/50 hover:text-white">
+            <X className="w-4 h-4" />
+          </DialogClose>
+
+          {imageUrl && (
+            <div className="w-24 h-24 relative mx-auto mb-4 rounded-full overflow-hidden ring-4 ring-[#179BD7]/30">
               <Image
-                alt=''
+                alt={name}
                 priority
-                width={90}
-                height={90}
+                fill
                 src={imageUrl}
-                className='rounded-full aspect-square'
+                className="object-cover"
               />
-            )}
-          </div>
-          <DialogDescription>
-            {name} <br /> {position}
-          </DialogDescription>
-        </DialogHeader>
-        <div className='max-h-[50vh] overflow-y-scroll'>
-          <p className='mb-4'>{profile}</p>
+            </div>
+          )}
+          <h2 className="text-xl font-bold text-white">{name}</h2>
+          <p className="text-[#179BD7] text-sm mt-1">{position}</p>
+        </div>
+
+        {/* Body */}
+        <div className="px-8 py-6 max-h-[45vh] overflow-y-auto">
+          {profile && (
+            <p className="text-white/60 text-sm leading-relaxed">{profile}</p>
+          )}
+
           {email && (
-            <p className='mt-4 text-sm text-muted-foreground flex items-center'>
-              <Mail className='w-4 h-4 mr-2' />
+            <a
+              href={`mailto:${email}`}
+              className="mt-5 flex items-center gap-2.5 text-sm text-[#179BD7] hover:text-white transition-colors group"
+            >
+              <div className="w-8 h-8 rounded-lg bg-[#179BD7]/10 flex items-center justify-center shrink-0 group-hover:bg-[#179BD7]/20 transition-colors">
+                <Mail className="w-4 h-4" />
+              </div>
               {email}
-            </p>
+            </a>
           )}
         </div>
-        <DialogFooter className='sm:justify-end'>
+
+        {/* Footer */}
+        <div className="px-8 py-4 border-t border-white/8">
           <DialogClose asChild>
-            <Button type='button' variant='secondary'>
+            <button className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-sm font-medium transition-all">
               Close
-            </Button>
+            </button>
           </DialogClose>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

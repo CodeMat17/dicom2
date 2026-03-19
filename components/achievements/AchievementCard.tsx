@@ -5,7 +5,6 @@ import { CalendarDays, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import ShareStoryUrl from "../ShareStoryUrl";
-import { Button } from "../ui/button";
 
 type Props = {
   id: Id<"achievements">;
@@ -14,68 +13,55 @@ type Props = {
   title: string;
   desc: string;
   slug: string;
-  //   photoUrl: string | null;
-  date?: number; // Optional, in case date might be missing
+  date?: number;
 };
 
-const AchievementCard = ({
-  // id,
-  index,
-  image,
-  title,
-  desc,
-  date,
-  slug,
-}: Props) => {
+const AchievementCard = ({ index, image, title, desc, date, slug }: Props) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.02 + index * 0.1 }}
-      whileHover={{ y: -5 }}
-      className='group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-gray-100 dark:border-gray-700'>
-      {/* Image Container */}
-      <div className='relative w-full h-40 overflow-hidden'>
+      transition={{ delay: 0.05 + index * 0.08, duration: 0.5 }}
+      whileHover={{ y: -4 }}
+      className="group relative bg-[#0f1e3a] border border-white/8 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:border-[#179BD7]/30 transition-all duration-300 flex flex-col h-full"
+    >
+      {/* Image */}
+      <div className="relative w-full h-44 overflow-hidden shrink-0">
         <Image
           src={image}
           alt={title}
           fill
-          className='object-cover object-top transform group-hover:scale-105 transition-transform duration-300'
-          sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+          className="object-cover object-top transform group-hover:scale-105 transition-transform duration-500"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-        <div className='absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1e3a] via-black/20 to-transparent" />
+
+        {/* Date badge */}
+        {date && (
+          <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1 text-white/80 text-xs">
+            <CalendarDays className="h-3 w-3 text-yellow-400" />
+            {dayjs(date).format("MMM DD, YYYY")}
+          </div>
+        )}
       </div>
 
-      {/* Content Container */}
-      <div className='flex flex-col flex-1 px-4 pt-3 pb-2'>
-        <div className='flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-2'>
-          <CalendarDays className='h-3.5 w-3.5' />
-          {date && dayjs(date).format("MMMM DD, YYYY")}
-        </div>
-
-        <h2 className='font-semibold text-lg mb-3 text-gray-900 dark:text-gray-100 line-clamp-2 leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors capitalize'>
+      {/* Content */}
+      <div className="flex flex-col flex-1 px-5 py-4">
+        <h2 className="font-semibold text-base text-white line-clamp-2 leading-snug group-hover:text-[#179BD7] transition-colors capitalize mb-4">
           {title}
         </h2>
 
-        {/* <p className='text-gray-600 dark:text-gray-300 line-clamp-2 text-sm leading-relaxed mb-3'>
-          {desc}
-        </p> */}
-
-        <div className='flex items-center justify-between mt-auto pt-2 border-t border-gray-100 dark:border-gray-700'>
+        {/* Actions */}
+        <div className="flex items-center justify-between mt-auto pt-3 border-t border-white/8">
           <ShareStoryUrl title={title} text={desc} slug={slug} />
 
-          <Button
-            asChild
-            variant='ghost'
-            size='sm'
-            className='group/btn hover:bg-blue-50 dark:hover:bg-blue-950 text-blue-600 dark:text-blue-400'>
-            <Link
-              href={`/achievements/${slug}`}
-              className='flex items-center gap-1'>
-              Read More
-              <ChevronRight className='h-3.5 w-3.5 transform group-hover/btn:translate-x-1 transition-transform' />
-            </Link>
-          </Button>
+          <Link
+            href={`/achievements/${slug}`}
+            className="group/btn inline-flex items-center gap-1 text-sm text-[#179BD7] hover:text-white font-medium transition-colors"
+          >
+            Read More
+            <ChevronRight className="h-3.5 w-3.5 transform group-hover/btn:translate-x-1 transition-transform" />
+          </Link>
         </div>
       </div>
     </motion.div>

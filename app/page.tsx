@@ -50,7 +50,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className='min-h-screen bg-gray-50 dark:bg-slate-950'>
+    <div className="min-h-screen bg-[#060e1e]">
       <HeroCarousel />
       <AchievementsSection />
       <CollaboratorsSection />
