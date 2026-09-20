@@ -14,7 +14,6 @@ export function PageHero({
   title,
   accent,
   description,
-  footnote,
   children,
   id,
 }: {
@@ -22,7 +21,6 @@ export function PageHero({
   title: string;
   accent?: string;
   description?: string;
-  footnote?: string;
   children?: ReactNode;
   id?: string;
 }) {
@@ -79,16 +77,7 @@ export function PageHero({
           </motion.p>
         )}
 
-        {footnote && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.65 }}
-            className="mx-auto mt-5 max-w-xl border-l-2 border-gold/40 pl-4 text-left text-sm italic text-white/35 sm:text-center sm:border-l-0 sm:pl-0"
-          >
-            {footnote}
-          </motion.p>
-        )}
+    
 
         {children && (
           <motion.div

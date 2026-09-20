@@ -10,32 +10,41 @@ import ShareStoryUrl from "../ShareStoryUrl";
 import type { GalleryPhoto } from "./types";
 
 /**
- * Full-bleed viewer. The frame is sized from the photo's own ratio and capped
- * by the viewport, so a portrait fills the height and a landscape the width —
- * neither is cropped or letterboxed into the other's shape.
+ * Full-bleed viewer for one post's photographs. The frame is sized from the
+ * photo's own ratio and capped by the viewport, so a portrait fills the
+ * height and a landscape the width — neither is cropped or letterboxed into
+ * the other's shape.
+ *
+ * The arrows stay inside the post and wrap at its ends: the viewer is a way
+ * of looking closely at one set, not of walking the whole wall. Closing it
+ * leaves the visitor where they were.
  */
 export default function GalleryLightbox({
-  photos,
+  photo,
   index,
   ratios,
   onClose,
   onNavigate,
 }: {
-  photos: GalleryPhoto[];
+  /** The post being viewed, or null when the viewer is closed. */
+  photo: GalleryPhoto | null;
+  /** Position within that post's photographs. */
   index: number | null;
+  /** Ratios measured off the wire, keyed by image URL. */
   ratios: Record<string, number>;
   onClose: () => void;
-  onNavigate: (next: number) => void;
+  onNavigate: (nextImageIndex: number) => void;
 }) {
-  const open = index !== null;
-  const photo = open ? photos[index] : null;
+  const images = photo?.images ?? [];
+  const open = photo !== null && index !== null && !!images[index];
+  const image = open ? images[index] : null;
 
   const step = useCallback(
     (delta: number) => {
-      if (index === null || photos.length === 0) return;
-      onNavigate((index + delta + photos.length) % photos.length);
+      if (index === null || images.length === 0) return;
+      onNavigate((index + delta + images.length) % images.length);
     },
-    [index, photos.length, onNavigate]
+    [index, images.length, onNavigate]
   );
 
   useEffect(() => {
@@ -53,16 +62,16 @@ export default function GalleryLightbox({
     };
   }, [open, onClose, step]);
 
-  const ratio = photo
-    ? (photo.width && photo.height
-        ? photo.width / photo.height
-        : ratios[photo._id]) ?? 4 / 5
+  const ratio = image
+    ? (image.width && image.height
+        ? image.width / image.height
+        : ratios[image.url]) ?? 4 / 5
     : 1;
   const isPortrait = ratio < 1;
 
   return (
     <AnimatePresence>
-      {open && photo && (
+      {open && photo && image && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -83,7 +92,7 @@ export default function GalleryLightbox({
             <X className="h-5 w-5" />
           </button>
 
-          {photos.length > 1 && (
+          {images.length > 1 && (
             <>
               <NavButton side="left" onClick={() => step(-1)} />
               <NavButton side="right" onClick={() => step(1)} />
@@ -91,7 +100,7 @@ export default function GalleryLightbox({
           )}
 
           <motion.figure
-            key={photo._id}
+            key={image.url}
             initial={{ opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97 }}
@@ -101,9 +110,7 @@ export default function GalleryLightbox({
               "flex max-h-full w-full flex-col gap-6 overflow-y-auto",
               // A landscape reads best stacked; a portrait leaves room for the
               // caption to sit beside it on a wide screen.
-              isPortrait
-                ? "max-w-5xl lg:flex-row lg:items-center"
-                : "max-w-4xl"
+              isPortrait ? "max-w-5xl lg:flex-row lg:items-center" : "max-w-4xl"
             )}
           >
             <div
@@ -117,16 +124,18 @@ export default function GalleryLightbox({
                 margin: "0 auto",
               }}
             >
-              {photo.photoUrl && (
-                <Image
-                  src={photo.photoUrl}
-                  alt={photo.title}
-                  fill
-                  className="object-contain"
-                  sizes="(max-width: 1024px) 100vw, 70vw"
-                  priority
-                />
-              )}
+              <Image
+                src={image.url}
+                alt={
+                  images.length > 1
+                    ? `${photo.title} — photo ${index! + 1} of ${images.length}`
+                    : photo.title
+                }
+                fill
+                className="object-contain"
+                sizes="(max-width: 1024px) 100vw, 70vw"
+                priority
+              />
             </div>
 
             <figcaption
@@ -155,6 +164,41 @@ export default function GalleryLightbox({
                 {photo.description}
               </p>
 
+              {/* The rest of the post, so the other frames are one click away
+                  rather than several presses of an arrow. */}
+              {images.length > 1 && (
+                <div
+                  className={cn(
+                    "mt-5 flex gap-2 overflow-x-auto pb-1",
+                    !isPortrait && "justify-center"
+                  )}
+                >
+                  {images.map((thumb, i) => (
+                    <button
+                      key={thumb.url}
+                      type="button"
+                      aria-label={`Photo ${i + 1} of ${images.length}`}
+                      aria-current={i === index}
+                      onClick={() => onNavigate(i)}
+                      className={cn(
+                        "relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border transition-all duration-300",
+                        i === index
+                          ? "border-gold/70 opacity-100"
+                          : "border-white/15 opacity-55 hover:opacity-90"
+                      )}
+                    >
+                      <Image
+                        src={thumb.url}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        sizes="56px"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div
                 className={cn(
                   "mt-5 flex items-center gap-3 border-t border-white/10 pt-4",
@@ -165,11 +209,11 @@ export default function GalleryLightbox({
                   title={photo.title}
                   text={photo.description}
                   path={`/gallery?photo=${photo._id}`}
-                  label="Share photo"
+                  label="Share post"
                   className="-ml-2.5 text-white/60"
                 />
                 <span className="text-xs text-white/25">
-                  {index! + 1} / {photos.length}
+                  {index! + 1} / {images.length}
                 </span>
               </div>
             </figcaption>
