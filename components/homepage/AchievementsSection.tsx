@@ -1,10 +1,8 @@
 import { ArrowUpRight, Trophy } from "lucide-react";
 import Link from "next/link";
 import AchievementCard from "../achievements/AchievementCard";
-import {
-  AchievementStatScroller,
-  type AchievementStats,
-} from "../achievements/AchievementStatScroller";
+import type { AchievementStats } from "../achievements/AchievementStatScroller";
+import { StatsBand } from "./StatsBand";
 import {
   Aurora,
   Reveal,
@@ -65,54 +63,35 @@ export function AchievementsSection({
           </Reveal>
         </div>
 
-        <div className="lg:flex lg:gap-10">
-          {/* Stats rail */}
-          <Reveal className="mb-12 shrink-0 lg:mb-0 lg:w-72">
-            <div className="edge-light relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-6 shadow-card lg:sticky lg:top-28">
-              <div className="mb-6 flex items-center gap-3">
-                <span
-                  aria-hidden
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold/10 ring-1 ring-gold/25"
-                >
-                  <Trophy className="h-5 w-5 text-gold" />
-                </span>
-                <div>
-                  <p className="font-display text-base text-white">
-                    By the numbers
-                  </p>
-                  <p className="eyebrow text-[10px] text-white/70">Statistics</p>
-                </div>
-              </div>
-              <AchievementStatScroller stats={stats} />
-            </div>
-          </Reveal>
-
-          {/* Grid */}
-          <div className="flex-1">
-            {achievements.length === 0 ? (
-              <EmptyState />
-            ) : (
-              <Stagger
-                className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3"
-                gap={0.1}
-              >
-                {achievements.map((achievement) => (
-                  <Reveal key={achievement._id} variant="card">
-                    <AchievementCard
-                      id={achievement._id}
-                      index={0}
-                      image={achievement.photoUrl || "/achievement.png"}
-                      title={achievement.title}
-                      desc={achievement.description}
-                      date={achievement.date}
-                      slug={achievement.slug}
-                    />
-                  </Reveal>
-                ))}
-              </Stagger>
-            )}
-          </div>
+        {/* The record, across the full width rather than in a sidebar rail —
+            these four figures are the strongest claim on the page. */}
+        <div className="mb-14">
+          <StatsBand stats={stats} />
         </div>
+
+        {/* Grid */}
+        {achievements.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <Stagger
+            className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            gap={0.1}
+          >
+            {achievements.map((achievement) => (
+              <Reveal key={achievement._id} variant="card">
+                <AchievementCard
+                  id={achievement._id}
+                  index={0}
+                  image={achievement.photoUrl || "/achievement.png"}
+                  title={achievement.title}
+                  desc={achievement.description}
+                  date={achievement.date}
+                  slug={achievement.slug}
+                />
+              </Reveal>
+            ))}
+          </Stagger>
+        )}
       </div>
     </section>
   );

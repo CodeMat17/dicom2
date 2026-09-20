@@ -168,6 +168,10 @@
    A grain layer plus soft aurora bloom give the page depth.
    ============================================================ */
 @layer components {
+  .grain {
+    isolation: isolate;
+  }
+
   .grain::after {
     content: "";
     position: absolute;

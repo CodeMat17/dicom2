@@ -1,12 +1,14 @@
 import { AchievementsSection } from "@/components/homepage/AchievementsSection";
 import { CollaboratorsSection } from "@/components/homepage/CollaboratorsSection";
 import { EventsSection } from "@/components/homepage/EventsSection";
+import { FeaturedStory } from "@/components/homepage/FeaturedStory";
 import { HeroCarousel } from "@/components/homepage/HeroCarousel";
 import { JsonLd, organizationSchema, websiteSchema } from "@/lib/structured-data";
 import {
   getAchievementsStats,
   getCollaborators,
   getEvents,
+  getFeaturedStory,
   getHeroSlides,
   getLatestAchievements,
 } from "@/lib/server-data";
@@ -61,19 +63,21 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default async function Home() {
-  const [slides, achievements, stats, collaborators, events] =
+  const [slides, achievements, stats, collaborators, events, featured] =
     await Promise.all([
       getHeroSlides(),
       getLatestAchievements(),
       getAchievementsStats(),
       getCollaborators(),
       getEvents(),
+      getFeaturedStory(),
     ]);
 
   return (
     <div className="min-h-screen bg-ink-900">
       <JsonLd data={[organizationSchema(), websiteSchema()]} />
       <HeroCarousel slides={slides ?? []} />
+      <FeaturedStory story={featured} />
       <AchievementsSection
         achievements={achievements ?? []}
         stats={stats ?? null}

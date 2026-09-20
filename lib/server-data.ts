@@ -115,3 +115,30 @@ export const getAchievementBySlug = (slug: string) =>
     ["achievement-by-slug", slug],
     { tags: [CACHE_TAGS.achievements], revalidate: REVALIDATE_SECONDS }
   )();
+
+/**
+ * The newest achievement that actually has a written story, for the homepage
+ * spotlight.
+ *
+ * The list query returns no `story` field, so the candidates are walked
+ * newest-first and the full row is pulled for each until one has prose worth
+ * featuring. Every read here is cached and tagged, so the walk happens once
+ * per revalidation window, not once per visitor — and a run of story-less
+ * rows at the top simply yields null and the section renders nothing.
+ */
+export const getFeaturedStory = cached(
+  async () => {
+    const latest = await fetchQuery(api.achievements.getLatestAchievements);
+
+    for (const candidate of latest ?? []) {
+      const full = await fetchQuery(api.achievements.getAchievementBySlug, {
+        slug: candidate.slug,
+      });
+      if (full?.story?.trim()) return full;
+    }
+
+    return null;
+  },
+  "featured-story",
+  CACHE_TAGS.achievements
+);

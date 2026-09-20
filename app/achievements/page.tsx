@@ -1,7 +1,7 @@
 import AchievementsContainer from "@/components/achievements/AchievementsContainer";
 import {
   getAchievementsStats,
-  getAllAchievementsWithPhotos,
+  getAllAchievements,
 } from "@/lib/server-data";
 import { JsonLd, breadcrumbSchema } from "@/lib/structured-data";
 import { Metadata } from "next";
@@ -49,7 +49,9 @@ export const revalidate = 300;
 
 export default async function AchievementsPage() {
   const [achievements, stats] = await Promise.all([
-    getAllAchievementsWithPhotos(),
+    // Carries both `publishedAt` and `_creationTime`, which the timeline needs
+    // to group a story under the year it actually happened.
+    getAllAchievements(),
     getAchievementsStats(),
   ]);
 

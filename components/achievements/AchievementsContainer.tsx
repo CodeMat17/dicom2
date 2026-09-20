@@ -11,8 +11,9 @@ import type { ComponentType } from "react";
 import { Aurora, Reveal, Stagger } from "../ui/motion-primitives";
 import { Counter } from "../ui/counter";
 import { CtaBand, GoldButton, PageHero } from "../ui/page-hero";
-import AchievementsGrid, { type GridAchievement } from "./AchievementsGrid";
+import AchievementsExplorer from "./AchievementsExplorer";
 import type { AchievementStats } from "./AchievementStatScroller";
+import type { Achievement } from "@/lib/achievements";
 
 type StatStyle = {
   Icon: ComponentType<LucideProps>;
@@ -54,7 +55,7 @@ export default function AchievementsContainer({
   achievements,
   stats,
 }: {
-  achievements: GridAchievement[];
+  achievements: Achievement[];
   stats: AchievementStats;
 }) {
   const statItems = stats
@@ -137,7 +138,7 @@ export default function AchievementsContainer({
               id="stories-heading"
               className="font-display text-fluid-xl text-white"
             >
-              All stories
+              Hall of Fame
             </h2>
             <span
               aria-hidden
@@ -158,7 +159,7 @@ export default function AchievementsContainer({
               </p>
             </div>
           ) : (
-            <AchievementsGrid achievements={achievements} />
+            <AchievementsExplorer achievements={achievements} />
           )}
         </div>
       </section>
