@@ -23,7 +23,7 @@ const LogoComponent = () => {
         <span className="block font-display text-[15px] text-white tracking-tight">
           Directorate of Competitions
         </span>
-        <span className="block eyebrow text-[10px] text-white/45 mt-0.5">
+        <span className="block eyebrow text-[10px] text-white/70 mt-0.5">
           Godfrey Okoye University
         </span>
       </span>

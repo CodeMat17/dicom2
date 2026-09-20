@@ -1,7 +1,4 @@
-"use client";
-
-import { cardRise } from "@/lib/motion";
-import { motion } from "framer-motion";
+// Entirely static copy — server-rendered, no client JavaScript.
 import { Award, ArrowUpRight, Handshake, Mail, Rocket, Users } from "lucide-react";
 import Link from "next/link";
 import { Aurora, Reveal, SectionHeading, Stagger } from "../ui/motion-primitives";
@@ -51,7 +48,7 @@ const opportunities = [
 
 export default function PartnershipContainer() {
   return (
-    <main className="min-h-screen bg-ink-900">
+    <div className="min-h-screen bg-ink-900">
       <PageHero
         eyebrow="Collaborate"
         title="Strategic"
@@ -59,7 +56,7 @@ export default function PartnershipContainer() {
         description="Building bridges for academic excellence and innovation through meaningful collaboration."
       >
         <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-azure/10 ring-1 ring-azure/25">
-          <Handshake className="h-7 w-7 text-azure" />
+          <Handshake aria-hidden className="h-7 w-7 text-azure" />
         </span>
       </PageHero>
 
@@ -79,9 +76,9 @@ export default function PartnershipContainer() {
 
               <Stagger className="mt-10 space-y-4" gap={0.1}>
                 {benefits.map(({ icon: Icon, text, bg, ring, title, desc }) => (
-                  <motion.div
+                  <Reveal
                     key={title}
-                    variants={cardRise}
+                    variant="card"
                     className="group flex items-start gap-4 rounded-2xl border border-white/8 bg-white/[0.03] p-5 transition-all duration-500 ease-out-quint hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.06]"
                   >
                     <span
@@ -93,11 +90,11 @@ export default function PartnershipContainer() {
                       <span className="block font-semibold text-white">
                         {title}
                       </span>
-                      <span className="mt-1 block text-sm leading-relaxed text-white/45">
+                      <span className="mt-1 block text-sm leading-relaxed text-white/70">
                         {desc}
                       </span>
                     </span>
-                  </motion.div>
+                  </Reveal>
                 ))}
               </Stagger>
             </div>
@@ -108,7 +105,7 @@ export default function PartnershipContainer() {
                 <h2 className="font-display text-fluid-xl text-white">
                   Partnership opportunities
                 </h2>
-                <p className="mt-3 text-sm leading-relaxed text-white/45">
+                <p className="mt-3 text-sm leading-relaxed text-white/70">
                   We welcome collaborations with departments, faculties, and
                   external organizations that share our commitment to academic
                   excellence and student development.
@@ -116,19 +113,19 @@ export default function PartnershipContainer() {
 
                 <Stagger className="mt-8 space-y-3" gap={0.09}>
                   {opportunities.map(({ title, desc }, i) => (
-                    <motion.div
+                    <Reveal
                       key={title}
-                      variants={cardRise}
+                      variant="card"
                       className="group spotlight relative overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] p-5 transition-all duration-500 ease-out-quint hover:border-azure/30 hover:bg-white/[0.06]"
                     >
-                      <span className="eyebrow mb-2 block text-[10px] text-white/25">
+                      <span className="eyebrow mb-2 block text-[10px] text-white/70">
                         {String(i + 1).padStart(2, "0")}
                       </span>
                       <h3 className="font-semibold text-white transition-colors duration-300 group-hover:text-azure">
                         {title}
                       </h3>
-                      <p className="mt-1.5 text-sm text-white/40">{desc}</p>
-                    </motion.div>
+                      <p className="mt-1.5 text-sm text-white/70">{desc}</p>
+                    </Reveal>
                   ))}
                 </Stagger>
               </div>
@@ -143,7 +140,7 @@ export default function PartnershipContainer() {
         description="Let's discuss how we can work together to create impactful academic experiences."
       >
         <GoldButton href="mailto:dicom@gouni.edu.ng?subject=Partnership%20Inquiry">
-          <Mail className="h-4 w-4" />
+          <Mail aria-hidden className="h-4 w-4" />
           Contact our partnership team
         </GoldButton>
         <Link
@@ -154,6 +151,6 @@ export default function PartnershipContainer() {
           <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </Link>
       </CtaBand>
-    </main>
+    </div>
   );
 }

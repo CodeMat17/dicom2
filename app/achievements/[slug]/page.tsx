@@ -1,34 +1,20 @@
-import { api } from "@/convex/_generated/api";
-import { fetchQuery } from "convex/nextjs";
+import AchievementSlugContainer from "@/app/components/achievements/AchievementSlugContainer";
+import { getAchievementBySlug, getAllAchievements } from "@/lib/server-data";
+import { JsonLd, articleSchema, breadcrumbSchema } from "@/lib/structured-data";
 import { Metadata } from "next";
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
+import { notFound } from "next/navigation";
 
-// Lazy load the container component
-const AchievementSlugContainer = dynamic(
-  () => import("@/app/components/achievements/AchievementSlugContainer"),
-  {
-    loading: () => <AchievementSkeleton />,
-    ssr: true, // Keep SSR enabled for SEO
-  }
-);
+// Every story is prerendered at build time and refreshed in the background,
+// so a reader — or a crawler — is served static HTML with the full article in
+// it. A slug published after the last build renders once, then joins the
+// cache.
+export const revalidate = 300;
 
-// Loading skeleton component
-function AchievementSkeleton() {
-  return (
-    <div className="space-y-8" role="status" aria-label="Loading achievement" aria-busy="true">
-      <div className="space-y-4">
-        <div className="shimmer h-12 w-3/4 rounded-2xl bg-white/[0.06]" />
-        <div className="shimmer h-4 w-1/2 rounded bg-white/[0.06]" />
-      </div>
-      <div className="shimmer aspect-video rounded-3xl bg-white/[0.06]" />
-      <div className="space-y-3">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="shimmer h-4 w-full rounded bg-white/[0.06]" />
-        ))}
-      </div>
-    </div>
-  );
+export async function generateStaticParams() {
+  const achievements = await getAllAchievements();
+  return (achievements ?? []).map((achievement) => ({
+    slug: achievement.slug,
+  }));
 }
 
 export async function generateMetadata({
@@ -37,9 +23,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const story = await fetchQuery(api.achievements.getAchievementBySlug, {
-    slug,
-  });
+  // Shares the cache entry the page itself reads, so this costs no extra
+  // round trip to Convex.
+  const story = await getAchievementBySlug(slug);
 
   if (!story) {
     return {
@@ -78,7 +64,6 @@ export async function generateMetadata({
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
-      nocache: true,
       googleBot: {
         index: true,
         follow: true,
@@ -141,22 +126,42 @@ export async function generateMetadata({
       },
     ],
     category: "Stories",
-    other: {
-      "theme-color": "#213675",
-    },
   };
 }
 
-export default function AchievementPage() {
+export default async function AchievementPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const achievement = await getAchievementBySlug(slug);
+
+  if (!achievement) notFound();
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-ink-900 grain">
+      <JsonLd
+        data={[
+          articleSchema({
+            title: achievement.title,
+            description: achievement.description,
+            slug: achievement.slug,
+            image: achievement.photoUrl,
+            published: achievement.publishedAt ?? achievement._creationTime,
+          }),
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Achievements", path: "/achievements" },
+            { name: achievement.title, path: `/achievements/${achievement.slug}` },
+          ]),
+        ]}
+      />
       <div
         className="relative z-10 mx-auto max-w-3xl px-5 pb-24 pt-36 sm:px-6 md:pt-44"
         aria-labelledby="achievement-title"
       >
-        <Suspense fallback={<AchievementSkeleton />}>
-          <AchievementSlugContainer />
-        </Suspense>
+        <AchievementSlugContainer achievement={achievement} />
       </div>
     </div>
   );

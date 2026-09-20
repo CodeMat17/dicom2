@@ -47,7 +47,7 @@ const ShareStoryUrl = ({ title, text, slug, path, label, className }: Props) => 
       onClick={handleShare}
       aria-label={`Share ${title}`}
       className={cn(
-        "group/share inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium text-white/45 transition-colors duration-300 hover:bg-white/5 hover:text-white",
+        "group/share inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium text-white/70 transition-colors duration-300 hover:bg-white/5 hover:text-white",
         className
       )}
     >

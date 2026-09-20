@@ -1,10 +1,8 @@
 import type { TeamMember } from "@/types/team";
-import { motion } from "framer-motion";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import { memo } from "react";
-
-const ProfileModal = dynamic(() => import("./ProfileModal"), { ssr: true });
+import { Reveal } from "../ui/motion-primitives";
+import ProfileModal from "./ProfileModal";
 
 interface DirectorProfileProps {
   director: TeamMember;
@@ -12,12 +10,7 @@ interface DirectorProfileProps {
 
 function DirectorProfile({ director }: DirectorProfileProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 28, filter: "blur(6px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full shrink-0 lg:w-[320px]"
-    >
+    <Reveal className="w-full shrink-0 lg:w-[320px]">
       <article
         className="group edge-light spotlight relative flex flex-col items-center overflow-hidden rounded-4xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-8 shadow-card transition-all duration-500 ease-out-quint hover:border-azure/30 hover:shadow-lift lg:sticky lg:top-28"
         aria-labelledby={`director-name-${director._id}`}
@@ -63,7 +56,7 @@ function DirectorProfile({ director }: DirectorProfileProps) {
           </div>
         </div>
       </article>
-    </motion.div>
+    </Reveal>
   );
 }
 

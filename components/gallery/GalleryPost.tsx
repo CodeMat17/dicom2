@@ -59,7 +59,7 @@ export default function GalleryPost({
     <article className="border-t border-white/10 pt-10 first:border-t-0 first:pt-0">
       {/* The post's details, stated once for the whole set. */}
       <header className="mb-7">
-        <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white/45">
+        <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white/70">
           <span className="flex items-center gap-1.5">
             <CalendarDays className="h-3 w-3 text-gold" />
             <time dateTime={new Date(photo.publishedAt).toISOString()}>
@@ -67,7 +67,7 @@ export default function GalleryPost({
             </time>
           </span>
           {photo.category && (
-            <span className="rounded-full border border-white/10 px-2.5 py-0.5 normal-case tracking-normal text-white/55">
+            <span className="rounded-full border border-white/10 px-2.5 py-0.5 normal-case tracking-normal text-white/70">
               {photo.category}
             </span>
           )}
@@ -81,7 +81,7 @@ export default function GalleryPost({
           {photo.title}
         </h2>
 
-        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/55 text-pretty">
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/70 text-pretty">
           {photo.description}
         </p>
 
@@ -91,7 +91,7 @@ export default function GalleryPost({
             text={photo.description}
             path={`/gallery?photo=${photo._id}`}
             label="Share post"
-            className="-ml-2.5 text-white/60"
+            className="-ml-2.5 text-white/70"
           />
         </div>
       </header>

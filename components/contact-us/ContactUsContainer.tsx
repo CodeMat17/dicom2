@@ -1,7 +1,4 @@
-"use client";
-
-import { cardRise } from "@/lib/motion";
-import { motion } from "framer-motion";
+// Entirely static copy — server-rendered, no client JavaScript.
 import { Clock, Mail, MapPin, Send } from "lucide-react";
 import { Aurora, Reveal, Stagger } from "../ui/motion-primitives";
 import { GoldButton, PageHero } from "../ui/page-hero";
@@ -38,7 +35,7 @@ const infoItems = [
 
 export default function ContactUsContainer() {
   return (
-    <main className="min-h-screen bg-ink-900">
+    <div className="min-h-screen bg-ink-900">
       <PageHero
         id="contact-heading"
         eyebrow="Reach Us"
@@ -73,10 +70,10 @@ export default function ContactUsContainer() {
                             />
                           </span>
                           <span className="min-w-0">
-                            <span className="eyebrow block text-[10px] text-white/35">
+                            <span className="eyebrow block text-[10px] text-white/70">
                               {label}
                             </span>
-                            <span className="mt-1.5 block text-sm leading-relaxed text-white/60 transition-colors group-hover:text-white">
+                            <span className="mt-1.5 block text-sm leading-relaxed text-white/70 transition-colors group-hover:text-white">
                               {lines.map((line) => (
                                 <span key={line} className="block">
                                   {line}
@@ -91,7 +88,7 @@ export default function ContactUsContainer() {
                         "group flex items-start gap-4 rounded-2xl border border-white/8 bg-white/[0.03] p-4 transition-all duration-300 hover:border-azure/30 hover:bg-white/[0.06]";
 
                       return (
-                        <motion.div key={label} variants={cardRise}>
+                        <Reveal key={label} variant="card">
                           {href ? (
                             <a href={href} className={cls}>
                               {body}
@@ -99,7 +96,7 @@ export default function ContactUsContainer() {
                           ) : (
                             <div className={cls}>{body}</div>
                           )}
-                        </motion.div>
+                        </Reveal>
                       );
                     }
                   )}
@@ -122,14 +119,14 @@ export default function ContactUsContainer() {
                 <h2 className="relative font-display text-fluid-xl text-white">
                   Send us a message
                 </h2>
-                <p className="relative mt-4 max-w-sm leading-relaxed text-white/55">
+                <p className="relative mt-4 max-w-sm leading-relaxed text-white/70">
                   Have questions or feedback? We&apos;d love to hear from you.
                   Our team typically responds within one business day.
                 </p>
 
                 <div className="relative mt-auto pt-9">
                   <GoldButton href="mailto:dicom@gouni.edu.ng?subject=Contact%20Form%20Inquiry">
-                    <Send className="h-4 w-4" aria-hidden="true" />
+                    <Send aria-hidden className="h-4 w-4" />
                     Email us
                   </GoldButton>
                 </div>
@@ -138,6 +135,6 @@ export default function ContactUsContainer() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

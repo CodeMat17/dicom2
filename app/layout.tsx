@@ -1,16 +1,15 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { ThemeProvider } from "@/components/theme/theme-provider";
+import { RevealObserver } from "@/components/ui/reveal-observer";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
 
-import { ConvexClientProvider } from "./ConvexClientProvider";
-
+// Nunito is a variable font: asking for it without a weight list ships one
+// file that covers 300–900 instead of seven static cuts.
 const nunito = Nunito({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-nunito",
   display: "swap",
 });
@@ -44,10 +43,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
-  // verification: {
-  //   google: "YOUR_GOOGLE_SITE_VERIFICATION_CODE", // Replace with your verification code
-      
-  // },
   openGraph: {
     title: "Directorate of Competitions | Godfrey Okoye University",
     description:
@@ -89,8 +84,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
   themeColor: "#060e1e",
 };
 
@@ -100,23 +93,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className='dark' suppressHydrationWarning>
-      <body
-        className={`${nunito.variable} antialiased min-h-screen flex flex-col bg-ink-900 font-sans text-white`}>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='dark'
-          forcedTheme='dark'
-          disableTransitionOnChange>
-          <ConvexClientProvider>
-            <main className='flex-1'>
-              <Navbar />
-              {children}
-            </main>
-            <Footer />
-            <Toaster />
-          </ConvexClientProvider>
-        </ThemeProvider>
+    <html lang="en" className={`dark ${nunito.variable}`}>
+      <body className="antialiased min-h-screen flex flex-col bg-ink-900 font-sans text-white">
+        {/* Keyboard users land on this before the seven-item nav rail. */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-gold focus:px-5 focus:py-3 focus:font-semibold focus:text-ink-900"
+        >
+          Skip to content
+        </a>
+
+        <Navbar />
+        <main id="main" className="flex-1">
+          {children}
+        </main>
+        <Footer />
+
+        <RevealObserver />
+        <Toaster />
       </body>
     </html>
   );

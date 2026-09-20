@@ -24,7 +24,7 @@ const Loading = () => {
           </span>
         </div>
 
-        <p className="eyebrow animate-pulse text-white/40">Loading</p>
+        <p className="eyebrow animate-pulse text-white/70">Loading</p>
       </div>
     </div>
   );

@@ -1,3 +1,6 @@
+import { getTeam } from "@/lib/server-data";
+import { JsonLd, breadcrumbSchema } from "@/lib/structured-data";
+import type { Team } from "@/types/team";
 import StaffProfile from "@/components/staff/StaffProfile";
 import { PageHero } from "@/components/ui/page-hero";
 import { Metadata } from "next";
@@ -68,16 +71,27 @@ export const metadata: Metadata = {
   },
 };
 
-export default function StaffPage() {
+export const revalidate = 300;
+
+export default async function StaffPage() {
+  const team = await getTeam();
+
   return (
-    <main className="min-h-screen bg-ink-900">
+    <div className="min-h-screen bg-ink-900">
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Our staff", path: "/our-staff" },
+        ])}
+      />
       <PageHero
+        id="staff-heading"
         eyebrow="The Team"
         title="Meet Our"
         accent="Team"
         description="The dedicated professionals behind DICOM's mission to empower student excellence."
       />
-      <StaffProfile />
-    </main>
+      <StaffProfile team={(team as Team | null) ?? null} />
+    </div>
   );
 }

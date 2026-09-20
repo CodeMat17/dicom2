@@ -1,9 +1,7 @@
 import type { TeamMember } from "@/types/team";
-import dynamic from "next/dynamic";
 import Image from "next/image";
 import { memo } from "react";
-
-const ProfileModal = dynamic(() => import("./ProfileModal"), { ssr: true });
+import ProfileModal from "./ProfileModal";
 
 interface StaffMemberProfileProps {
   member: TeamMember;

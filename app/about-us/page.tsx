@@ -1,3 +1,9 @@
+import { getStatements } from "@/lib/server-data";
+import {
+  JsonLd,
+  breadcrumbSchema,
+  organizationSchema,
+} from "@/lib/structured-data";
 import AboutUsContainer from "@/components/about-us/AboutUsContainer";
 import type { Metadata } from "next";
 
@@ -41,16 +47,29 @@ export const metadata: Metadata = {
     "academic competitions",
   ],
   alternates: {
-    canonical: "https://dicom.gouni.edu.ng/about-us",
+    canonical: "/about-us",
   },
   authors: [{ name: "Directorate of Competitions, GOUNI" }],
   category: "education",
 };
 
-export default function AboutUs() {
+export const revalidate = 300;
+
+export default async function AboutUs() {
+  const statements = await getStatements();
+
   return (
     <>
-      <AboutUsContainer />
+      <JsonLd
+        data={[
+          organizationSchema(),
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "About us", path: "/about-us" },
+          ]),
+        ]}
+      />
+      <AboutUsContainer statements={statements ?? []} />
     </>
   );
 }

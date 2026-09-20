@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
-import { AnimatePresence, motion } from "framer-motion";
 import { CalendarDays, ChevronLeft, ChevronRight, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect } from "react";
@@ -69,15 +68,13 @@ export default function GalleryLightbox({
     : 1;
   const isPortrait = ratio < 1;
 
+  if (!open || !photo || !image) return null;
+
   return (
-    <AnimatePresence>
-      {open && photo && image && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="fixed inset-0 z-[80] flex items-center justify-center bg-ink-900/92 p-4 backdrop-blur-xl sm:p-8"
+    <>
+      {(
+        <div
+          className="fixed inset-0 z-[80] flex animate-fade-in items-center justify-center bg-ink-900/92 p-4 backdrop-blur-xl sm:p-8"
           role="dialog"
           aria-modal="true"
           aria-label={photo.title}
@@ -99,15 +96,11 @@ export default function GalleryLightbox({
             </>
           )}
 
-          <motion.figure
+          <figure
             key={image.url}
-            initial={{ opacity: 0, scale: 0.96, y: 12 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "flex max-h-full w-full flex-col gap-6 overflow-y-auto",
+              "flex max-h-full w-full animate-pop-in flex-col gap-6 overflow-y-auto",
               // A landscape reads best stacked; a portrait leaves room for the
               // caption to sit beside it on a wide screen.
               isPortrait ? "max-w-5xl lg:flex-row lg:items-center" : "max-w-4xl"
@@ -146,7 +139,7 @@ export default function GalleryLightbox({
             >
               <div
                 className={cn(
-                  "mb-3 flex items-center gap-1.5 text-[11px] font-medium text-white/50",
+                  "mb-3 flex items-center gap-1.5 text-[11px] font-medium text-white/70",
                   !isPortrait && "justify-center"
                 )}
               >
@@ -160,7 +153,7 @@ export default function GalleryLightbox({
                 {photo.title}
               </h2>
 
-              <p className="mt-3 text-sm leading-relaxed text-white/55 text-pretty">
+              <p className="mt-3 text-sm leading-relaxed text-white/70 text-pretty">
                 {photo.description}
               </p>
 
@@ -210,17 +203,17 @@ export default function GalleryLightbox({
                   text={photo.description}
                   path={`/gallery?photo=${photo._id}`}
                   label="Share post"
-                  className="-ml-2.5 text-white/60"
+                  className="-ml-2.5 text-white/70"
                 />
-                <span className="text-xs text-white/25">
+                <span className="text-xs text-white/70">
                   {index! + 1} / {images.length}
                 </span>
               </div>
             </figcaption>
-          </motion.figure>
-        </motion.div>
+          </figure>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   );
 }
 

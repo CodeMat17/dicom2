@@ -1,3 +1,5 @@
+import { getTestimonials } from "@/lib/server-data";
+import { JsonLd, breadcrumbSchema } from "@/lib/structured-data";
 import TestimonialsContainer from "@/components/testimonials/TestimonialsContainer";
 import { Metadata } from "next";
 
@@ -68,10 +70,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TestimonialsPage() {
+export const revalidate = 300;
+
+export default async function TestimonialsPage() {
+  const testimonials = await getTestimonials();
+
   return (
-    <main className='min-h-screen bg-gray-50 dark:bg-slate-950'>
-      <TestimonialsContainer />
-    </main>
-  );                           
+    <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Testimonials", path: "/testimonials" },
+        ])}
+      />
+      <TestimonialsContainer testimonials={testimonials ?? []} />
+    </>
+  );
 }

@@ -1,4 +1,9 @@
 import AchievementsContainer from "@/components/achievements/AchievementsContainer";
+import {
+  getAchievementsStats,
+  getAllAchievementsWithPhotos,
+} from "@/lib/server-data";
+import { JsonLd, breadcrumbSchema } from "@/lib/structured-data";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -40,12 +45,26 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AchievementsPage() {
-  // const containerRef = useRef<HTMLDivElement>(null);
+export const revalidate = 300;
+
+export default async function AchievementsPage() {
+  const [achievements, stats] = await Promise.all([
+    getAllAchievementsWithPhotos(),
+    getAchievementsStats(),
+  ]);
 
   return (
     <>
-      <AchievementsContainer />
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Achievements", path: "/achievements" },
+        ])}
+      />
+      <AchievementsContainer
+        achievements={achievements ?? []}
+        stats={stats ?? null}
+      />
     </>
   );
 }

@@ -314,6 +314,42 @@
 .animate-float-slow {
   animation: float-slow 14s ease-in-out infinite;
 }
+@keyframes bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, 6px, 0);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out both;
+}
+.animate-pop-in {
+  animation: pop-in 0.4s var(--ease-out-expo) both;
+}
+.animate-bob {
+  animation: bob 2s ease-in-out infinite;
+}
 .animate-ken-burns {
   animation: ken-burns 9s ease-out forwards;
 }
@@ -346,11 +382,91 @@
 }
 
 /* ============================================================
+   SCROLL REVEALS
+   Entrances are pure CSS. A single IntersectionObserver (mounted once
+   in the root layout) flips `.in-view` on, so a page full of animated
+   sections still ships no animation library and does no work on the
+   main thread while scrolling.
+
+   The hidden start state is scoped to `html[data-reveal-ready]`, which
+   that observer sets. Without JavaScript — or before it runs — every
+   element simply renders in place, so content is never trapped behind
+   an animation that may never fire.
+   ============================================================ */
+[data-reveal] {
+  transition:
+    opacity 0.75s var(--ease-out-expo) var(--reveal-delay, 0ms),
+    transform 0.75s var(--ease-out-expo) var(--reveal-delay, 0ms),
+    filter 0.55s var(--ease-out-expo) var(--reveal-delay, 0ms);
+}
+
+html[data-reveal-ready] [data-reveal]:not(.in-view) {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  filter: blur(6px);
+}
+
+html[data-reveal-ready] [data-reveal="card"]:not(.in-view) {
+  transform: translate3d(0, 36px, 0) scale(0.97);
+  filter: none;
+}
+
+html[data-reveal-ready] [data-reveal="left"]:not(.in-view) {
+  transform: translate3d(-36px, 0, 0);
+}
+
+html[data-reveal-ready] [data-reveal="fade"]:not(.in-view) {
+  transform: none;
+  filter: none;
+}
+
+html[data-reveal-ready] [data-reveal="pop"]:not(.in-view) {
+  transform: translate3d(0, 16px, 0) scale(0.94);
+  filter: none;
+}
+
+/* Children of a stagger container are released in sequence. Twelve steps
+   covers every grid on the site; anything beyond shares the last delay. */
+[data-stagger] > :nth-child(1) { --reveal-delay: 0ms; }
+[data-stagger] > :nth-child(2) { --reveal-delay: calc(var(--stagger-gap, 80ms) * 1); }
+[data-stagger] > :nth-child(3) { --reveal-delay: calc(var(--stagger-gap, 80ms) * 2); }
+[data-stagger] > :nth-child(4) { --reveal-delay: calc(var(--stagger-gap, 80ms) * 3); }
+[data-stagger] > :nth-child(5) { --reveal-delay: calc(var(--stagger-gap, 80ms) * 4); }
+[data-stagger] > :nth-child(6) { --reveal-delay: calc(var(--stagger-gap, 80ms) * 5); }
+[data-stagger] > :nth-child(7) { --reveal-delay: calc(var(--stagger-gap, 80ms) * 6); }
+[data-stagger] > :nth-child(8) { --reveal-delay: calc(var(--stagger-gap, 80ms) * 7); }
+[data-stagger] > :nth-child(9) { --reveal-delay: calc(var(--stagger-gap, 80ms) * 8); }
+[data-stagger] > :nth-child(10) { --reveal-delay: calc(var(--stagger-gap, 80ms) * 9); }
+[data-stagger] > :nth-child(11) { --reveal-delay: calc(var(--stagger-gap, 80ms) * 10); }
+[data-stagger] > :nth-child(n + 12) { --reveal-delay: calc(var(--stagger-gap, 80ms) * 11); }
+
+/* Reading indicator under the navbar, driven by the document scroll. */
+.scroll-progress {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    animation: scroll-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+@keyframes scroll-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* ============================================================
    REDUCED MOTION — honour the OS setting everywhere
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  html[data-reveal-ready] [data-reveal]:not(.in-view) {
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
   *,
   *::before,

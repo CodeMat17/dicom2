@@ -45,7 +45,7 @@ const AchievementCard = ({ image, title, desc, date, slug }: Props) => {
           {title}
         </h3>
 
-        <p className="mt-2.5 line-clamp-2 text-sm leading-relaxed text-white/45">
+        <p className="mt-2.5 line-clamp-2 text-sm leading-relaxed text-white/70">
           {desc}
         </p>
 

@@ -1,4 +1,7 @@
 import GalleryContainer from "@/components/gallery/GalleryContainer";
+import type { GalleryPhoto } from "@/components/gallery/types";
+import { getAllPhotos } from "@/lib/server-data";
+import { JsonLd, breadcrumbSchema } from "@/lib/structured-data";
 import { Metadata } from "next";
 
 const description =
@@ -37,6 +40,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function GalleryPage() {
-  return <GalleryContainer />;
+export const revalidate = 300;
+
+export default async function GalleryPage() {
+  const photos = await getAllPhotos();
+
+  return (
+    <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Gallery", path: "/gallery" },
+        ])}
+      />
+      <GalleryContainer photos={(photos ?? []) as GalleryPhoto[]} />
+    </>
+  );
 }

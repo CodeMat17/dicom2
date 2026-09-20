@@ -1,12 +1,9 @@
 "use client";
 
-import { api } from "@/convex/_generated/api";
-import { cardRise } from "@/lib/motion";
-import { usePaginatedQuery, useQuery } from "convex/react";
-import { motion } from "framer-motion";
 import { Camera, Mail, SearchX } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { GalleryPhoto } from "./types";
 import { CtaBand, GoldButton, PageHero } from "../ui/page-hero";
 import GalleryLightbox from "./GalleryLightbox";
 import GalleryPost from "./GalleryPost";
@@ -29,27 +26,28 @@ const AUTO_PAGES = 3;
 const PRELOAD_MARGIN = "0px 0px 800px 0px";
 
 /**
- * Pause after the last keystroke before the search actually runs. Long enough
- * that typing a word does not fire a query per letter, short enough that the
- * wall still feels like it is reacting to the typing.
+ * Pause after the last keystroke before the wall re-filters. The match itself
+ * is local now, but the pause still keeps the list from thrashing mid-word.
  */
-const SEARCH_DEBOUNCE_MS = 250;
+const SEARCH_DEBOUNCE_MS = 200;
 
 /** Which photograph of which post the viewer is showing. */
 type Viewing = { postId: string; imageIndex: number };
 
-export default function GalleryContainer() {
-  const {
-    results: photos,
-    status,
-    loadMore,
-  } = usePaginatedQuery(
-    api.gallery.getPhotosPaginated,
-    {},
-    { initialNumItems: BATCH }
-  );
+/**
+ * The wall is handed the full published set by the server, already rendered
+ * into the page down to the first batch. Paging and searching are then local:
+ * nothing here goes back to the network, so scrolling the gallery and typing
+ * in the box cost no requests at all.
+ */
+export default function GalleryContainer({
+  photos,
+}: {
+  photos: GalleryPhoto[];
+}) {
+  const [shown, setShown] = useState(BATCH);
 
-  // What is in the box, and what has settled enough to ask the server for.
+  // What is in the box, and what has settled enough to filter on.
   const [term, setTerm] = useState("");
   const [settledTerm, setSettledTerm] = useState("");
 
@@ -61,20 +59,25 @@ export default function GalleryContainer() {
     return () => clearTimeout(timer);
   }, [term]);
 
-  // A search has to reach posts no page has fetched yet, so it asks the
-  // server rather than filtering whatever the wall happens to be holding.
-  const searchResults = useQuery(
-    api.gallery.searchPhotos,
-    settledTerm ? { term: settledTerm } : "skip"
-  );
+  // Every whitespace-separated term has to appear in the title, so
+  // "award 2024" narrows rather than widens.
+  const searchResults = useMemo(() => {
+    const terms = settledTerm.toLowerCase().split(/s+/).filter(Boolean);
+    if (!terms.length) return null;
+    return photos.filter((photo) => {
+      const title = photo.title.toLowerCase();
+      return terms.every((word) => title.includes(word));
+    });
+  }, [photos, settledTerm]);
 
   const isSearching = term.trim().length > 0;
-  // Either the debounce has not fired yet or the query is still out.
-  const searchPending =
-    isSearching && (settledTerm !== term.trim() || searchResults === undefined);
+  /** True only while the debounce has yet to catch up with the typing. */
+  const searchPending = isSearching && settledTerm !== term.trim();
 
-  /** Matches while a search is live, the full feed otherwise. */
-  const displayed = isSearching ? searchResults ?? [] : photos;
+  /** Matches while a search is live, the loaded slice of the feed otherwise. */
+  const displayed = isSearching
+    ? (searchResults ?? [])
+    : photos.slice(0, shown);
 
   const [viewing, setViewing] = useState<Viewing | null>(null);
   // Ratios measured off the wire for photographs that have no stored
@@ -115,15 +118,15 @@ export default function GalleryContainer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [displayed]);
 
-  // Paging belongs to the full feed: while a search is live the wall shows one
-  // capped result set, so the sentinel has nothing left to pull.
-  const canLoadMore = status === "CanLoadMore" && !isSearching;
+  // Paging belongs to the full feed: while a search is live the wall shows
+  // every match at once, so the sentinel has nothing left to pull.
+  const canLoadMore = !isSearching && shown < photos.length;
   const autoLoads = canLoadMore && pagesLoaded < AUTO_PAGES;
 
   const handleLoadMore = useCallback(() => {
-    loadMore(BATCH);
+    setShown((n) => n + BATCH);
     setPagesLoaded((n) => n + 1);
-  }, [loadMore]);
+  }, []);
 
   // Sentinel parked below the last post; crossing into the preload margin
   // pulls the next page in before the visitor can notice it was missing.
@@ -156,27 +159,29 @@ export default function GalleryContainer() {
     const id = params.get("photo");
     if (!id) return;
 
-    const post = photos.find((photo) => photo._id === id);
-    if (post) {
-      deepLinked.current = true;
-      const wanted = Number(params.get("i")) || 0;
-      setViewing({
-        postId: id,
-        imageIndex: Math.min(Math.max(wanted, 0), post.images.length - 1),
-      });
-    } else if (canLoadMore) {
-      handleLoadMore();
-    }
-  }, [photos, canLoadMore, handleLoadMore]);
+    const index = photos.findIndex((photo) => photo._id === id);
+    if (index === -1) return;
+
+    deepLinked.current = true;
+    // The post may sit past the loaded slice; open enough of the wall that it
+    // is mounted behind the viewer.
+    setShown((n) => Math.max(n, index + 1));
+    const wanted = Number(params.get("i")) || 0;
+    setViewing({
+      postId: id,
+      imageIndex: Math.min(
+        Math.max(wanted, 0),
+        photos[index].images.length - 1
+      ),
+    });
+  }, [photos]);
 
   const viewed = viewing
     ? displayed.find((photo) => photo._id === viewing.postId) ?? null
     : null;
 
-  const isFirstPage = status === "LoadingFirstPage";
-
   return (
-    <main className="min-h-screen bg-ink-900">
+    <div className="min-h-screen bg-ink-900">
       <PageHero
         id="gallery-heading"
         eyebrow="In pictures"
@@ -195,9 +200,7 @@ export default function GalleryContainer() {
             searching={searchPending}
           />
 
-          {isFirstPage || searchPending ? (
-            <GallerySkeleton />
-          ) : displayed.length === 0 ? (
+          {displayed.length === 0 ? (
             isSearching ? (
               <NoMatches term={term.trim()} onClear={() => setTerm("")} />
             ) : (
@@ -208,29 +211,16 @@ export default function GalleryContainer() {
             // photographs. The next post follows underneath.
             <div className="space-y-16 sm:space-y-20">
               {displayed.map((photo, index) => (
-                <motion.div
+                <GalleryPost
                   key={photo._id}
-                  variants={cardRise}
-                  initial="hidden"
-                  animate="visible"
-                  transition={{ delay: (index % BATCH) * 0.06 }}
-                >
-                  <GalleryPost
-                    photo={photo}
-                    ratios={ratios}
-                    priority={index === 0}
-                    onOpen={(imageIndex) =>
-                      setViewing({ postId: photo._id, imageIndex })
-                    }
-                  />
-                </motion.div>
+                  photo={photo}
+                  ratios={ratios}
+                  priority={index === 0}
+                  onOpen={(imageIndex) =>
+                    setViewing({ postId: photo._id, imageIndex })
+                  }
+                />
               ))}
-            </div>
-          )}
-
-          {status === "LoadingMore" && !isSearching && (
-            <div className="mt-16">
-              <GallerySkeleton rows={1} />
             </div>
           )}
 
@@ -266,7 +256,7 @@ export default function GalleryContainer() {
         description="Invite DICOM to your next competition, or partner with us to document the stories behind the wins."
       >
         <GoldButton href="mailto:dicom@gouni.edu.ng">
-          <Mail className="h-4 w-4" />
+          <Mail aria-hidden className="h-4 w-4" />
           Get in touch
         </GoldButton>
         <Link
@@ -276,34 +266,6 @@ export default function GalleryContainer() {
           Read the stories
         </Link>
       </CtaBand>
-    </main>
-  );
-}
-
-/**
- * Previews the real shape of a post — a header band, a hero and a row of
- * smaller frames — so an arriving batch reads as growth rather than a wait.
- */
-function GallerySkeleton({ rows = 2 }: { rows?: number }) {
-  return (
-    <div className="space-y-16 sm:space-y-20">
-      {Array.from({ length: rows }).map((_, i) => (
-        <div key={i}>
-          <div className="shimmer h-3 w-28 rounded-full bg-white/[0.06]" />
-          <div className="shimmer mt-4 h-7 w-2/3 max-w-md rounded-full bg-white/[0.06]" />
-          <div className="shimmer mt-3 h-3 w-full max-w-2xl rounded-full bg-white/[0.05]" />
-          <div className="shimmer mt-7 h-[46vh] rounded-3xl border border-white/10 bg-white/[0.04]" />
-          <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-3">
-            {[260, 320, 290].map((h, j) => (
-              <div
-                key={j}
-                style={{ height: h }}
-                className="shimmer rounded-3xl border border-white/10 bg-white/[0.04]"
-              />
-            ))}
-          </div>
-        </div>
-      ))}
     </div>
   );
 }
@@ -313,12 +275,12 @@ function NoMatches({ term, onClear }: { term: string; onClear: () => void }) {
   return (
     <div className="flex flex-col items-center rounded-3xl border border-dashed border-white/10 py-24 text-center">
       <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5">
-        <SearchX className="h-7 w-7 text-white/25" />
+        <SearchX className="h-7 w-7 text-white/70" />
       </span>
-      <p className="font-display text-fluid-lg text-white/60">
+      <p className="font-display text-fluid-lg text-white/70">
         No posts match “{term}”
       </p>
-      <p className="mt-2 max-w-sm text-sm text-white/35">
+      <p className="mt-2 max-w-sm text-sm text-white/70">
         Try a single word from the title — a competition, a place or a year.
       </p>
       <button
@@ -336,12 +298,12 @@ function EmptyState() {
   return (
     <div className="flex flex-col items-center rounded-3xl border border-dashed border-white/10 py-24 text-center">
       <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5">
-        <Camera className="h-7 w-7 text-white/25" />
+        <Camera className="h-7 w-7 text-white/70" />
       </span>
-      <p className="font-display text-fluid-lg text-white/60">
+      <p className="font-display text-fluid-lg text-white/70">
         No photographs published yet
       </p>
-      <p className="mt-2 max-w-sm text-sm text-white/35">
+      <p className="mt-2 max-w-sm text-sm text-white/70">
         The gallery fills up as new competitions and ceremonies are covered.
       </p>
     </div>

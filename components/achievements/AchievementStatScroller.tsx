@@ -1,13 +1,14 @@
-"use client";
-
-import { api } from "@/convex/_generated/api";
-import { useQuery } from "convex/react";
-import { motion } from "framer-motion";
 import { Award, Star, Trophy, Users, type LucideProps } from "lucide-react";
 import type { ComponentType } from "react";
-import { cardRise } from "@/lib/motion";
-import { Stagger } from "../ui/motion-primitives";
-import { Counter } from "../ui/page-hero";
+import { Reveal, Stagger } from "../ui/motion-primitives";
+import { Counter } from "../ui/counter";
+
+export type AchievementStats = {
+  nationalChampions?: number;
+  internationalRecognition?: number;
+  studentWinners?: number;
+  universityAwards?: number;
+} | null;
 
 type StatStyle = {
   Icon: ComponentType<LucideProps>;
@@ -45,46 +46,37 @@ const STAT_STYLES: Record<string, StatStyle> = {
 
 const FALLBACK = STAT_STYLES["National Champion"];
 
-export function AchievementStatScroller() {
-  const stats = useQuery(api.achievementsStat.getAchievementsStats);
-
-  if (stats === undefined)
-    return (
-      <div className="space-y-3">
-        {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="shimmer h-[68px] rounded-2xl border border-white/8 bg-white/[0.04]"
-          />
-        ))}
-      </div>
-    );
-
+export function AchievementStatScroller({ stats }: { stats: AchievementStats }) {
   if (!stats)
     return (
-      <p className="py-4 text-center text-sm text-white/30">
+      <p className="py-4 text-center text-sm text-white/70">
         No stats available
       </p>
     );
 
   const items = [
     { label: "National Champion", value: stats.nationalChampions },
-    { label: "International Recognition", value: stats.internationalRecognition },
+    {
+      label: "International Recognition",
+      value: stats.internationalRecognition,
+    },
     { label: "Students Winners", value: stats.studentWinners },
     { label: "University Awards", value: stats.universityAwards },
   ];
 
   return (
-    <Stagger className="space-y-3" gap={0.09}>
+    <Stagger className="space-y-3" gap={0.09} as="ul">
       {items.map(({ label, value }) => {
         const { Icon, bg, text, ring } = STAT_STYLES[label] ?? FALLBACK;
         return (
-          <motion.div
+          <Reveal
             key={label}
-            variants={cardRise}
-            className="group flex items-center gap-3.5 rounded-2xl border border-white/8 bg-white/[0.03] p-3.5 transition-all duration-500 ease-out-quint hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.06]"
+            as="li"
+            variant="card"
+            className="group flex items-center gap-3.5 rounded-2xl border border-white/10 bg-white/[0.03] p-3.5 transition-all duration-500 ease-out-quint hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.06]"
           >
             <span
+              aria-hidden
               className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${bg} ring-1 ${ring} transition-transform duration-500 ease-out-expo group-hover:scale-110`}
             >
               <Icon className={`h-[18px] w-[18px] ${text}`} />
@@ -93,11 +85,11 @@ export function AchievementStatScroller() {
               <span className="block font-display text-2xl leading-none text-white">
                 <Counter value={value ?? 0} />
               </span>
-              <span className="mt-1.5 block text-xs leading-tight text-white/40">
+              <span className="mt-1.5 block text-xs leading-tight text-white/70">
                 {label}
               </span>
             </span>
-          </motion.div>
+          </Reveal>
         );
       })}
     </Stagger>

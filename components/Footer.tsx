@@ -1,5 +1,4 @@
-"use client";
-
+// Server-rendered: the only interactive part is the <Magnetic> CTA wrapper.
 import { ArrowUpRight, Mail, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -52,7 +51,7 @@ const Footer = () => {
             <h2 className="relative font-display text-fluid-2xl leading-tight text-white text-balance">
               Ready to compete at your <span className="text-shine">highest level</span>?
             </h2>
-            <p className="relative mx-auto mt-4 max-w-xl text-fluid-base text-white/60 text-pretty">
+            <p className="relative mx-auto mt-4 max-w-xl text-fluid-base text-white/70 text-pretty">
               Join a community of students turning ambition into national and
               international recognition.
             </p>
@@ -91,13 +90,13 @@ const Footer = () => {
               <span className="block font-display text-base text-white">
                 Directorate of Competitions
               </span>
-              <span className="eyebrow mt-1 block text-[10px] text-white/40">
+              <span className="eyebrow mt-1 block text-[10px] text-white/70">
                 Godfrey Okoye University
               </span>
             </span>
           </Link>
 
-          <p className="max-w-sm text-sm leading-relaxed text-white/45">
+          <p className="max-w-sm text-sm leading-relaxed text-white/70">
             Empowering students through competition and excellence at Godfrey
             Okoye University, Enugu.
           </p>
@@ -111,7 +110,7 @@ const Footer = () => {
 
         {/* Contact */}
         <Reveal className="md:col-span-4">
-          <h3 className="eyebrow mb-6 text-white/40">Contact</h3>
+          <h3 className="eyebrow mb-6 text-white/70">Contact</h3>
           <ul className="space-y-3">
             {contactInfo.map(({ icon: Icon, label, text, href }) => (
               <li key={label}>
@@ -123,7 +122,7 @@ const Footer = () => {
                     <Icon className="h-4 w-4 text-azure" />
                   </span>
                   <span className="min-w-0">
-                    <span className="eyebrow block text-[10px] text-white/30">
+                    <span className="eyebrow block text-[10px] text-white/70">
                       {label}
                     </span>
                     <span className="block truncate text-sm text-white/70 transition-colors group-hover:text-white">
@@ -138,13 +137,13 @@ const Footer = () => {
 
         {/* Links */}
         <Reveal className="md:col-span-3">
-          <h3 className="eyebrow mb-6 text-white/40">Explore</h3>
+          <h3 className="eyebrow mb-6 text-white/70">Explore</h3>
           <ul className="grid grid-cols-2 gap-x-4 gap-y-2.5 md:grid-cols-1">
             {quickLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="group inline-flex items-center gap-1.5 text-sm text-white/45 transition-colors duration-300 hover:text-white"
+                  className="group inline-flex items-center gap-1.5 text-sm text-white/70 transition-colors duration-300 hover:text-white"
                 >
                   <span className="h-px w-0 bg-gold transition-all duration-300 group-hover:w-3" />
                   {link.name}
@@ -158,11 +157,11 @@ const Footer = () => {
       {/* ---------- Bottom bar ---------- */}
       <div className="relative z-10 border-t border-white/8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-5 py-6 sm:flex-row sm:px-6">
-          <p className="text-center text-xs text-white/30 sm:text-left">
+          <p className="text-center text-xs text-white/70 sm:text-left">
             © {currentYear} Directorate of Competitions, Godfrey Okoye
             University. All rights reserved.
           </p>
-          <p className="flex items-center gap-2 text-xs text-white/25">
+          <p className="flex items-center gap-2 text-xs text-white/70">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
