@@ -1,9 +1,18 @@
 "use client";
 
 import { api } from "@/convex/_generated/api";
+import { cardRise } from "@/lib/motion";
 import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
-import { Calendar, MapPin, StickyNote } from "lucide-react";
+import { ArrowUpRight, Calendar, MapPin, StickyNote } from "lucide-react";
+import Link from "next/link";
+import {
+  Aurora,
+  Magnetic,
+  Reveal,
+  SectionHeading,
+  Stagger,
+} from "../ui/motion-primitives";
 
 interface Event {
   _id: string;
@@ -15,12 +24,17 @@ interface Event {
 
 function EventsSkeleton() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {[1, 2, 3, 4].map((i) => (
-        <div key={i} className="rounded-2xl bg-white/5 animate-pulse p-6 space-y-4 border border-white/5">
-          <div className="h-5 w-3/4 bg-white/10 rounded" />
-          <div className="h-3 w-1/2 bg-white/10 rounded" />
-          <div className="h-3 w-2/3 bg-white/10 rounded" />
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="shimmer rounded-3xl border border-white/10 bg-white/[0.04] p-6"
+        >
+          <div className="h-5 w-2/3 rounded-lg bg-white/[0.06]" />
+          <div className="mt-4 flex gap-4">
+            <div className="h-3 w-32 rounded bg-white/[0.06]" />
+            <div className="h-3 w-40 rounded bg-white/[0.06]" />
+          </div>
         </div>
       ))}
     </div>
@@ -31,89 +45,130 @@ export function EventsSection() {
   const events = useQuery(api.events.getEvents);
 
   return (
-    <section className="bg-[#0a1628] py-24 px-4" aria-labelledby="events-heading">
-      <div className="max-w-7xl mx-auto">
+    <section
+      className="relative overflow-hidden bg-ink-800 py-28 grain md:py-36"
+      aria-labelledby="events-heading"
+    >
+      <Aurora className="-right-40 top-1/4 h-[520px] w-[520px]" color="azure" />
 
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-16"
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <div className="h-px w-8 bg-yellow-400" />
-            <span className="text-yellow-400 text-sm font-mono tracking-widest uppercase">Calendar</span>
+      <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-6">
+        <div className="grid gap-16 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
+          {/* Sticky intro rail — the header stays with the list as it scrolls */}
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <SectionHeading
+              eyebrow="Calendar"
+              title="Upcoming"
+              accent="events"
+              description="Stay informed about our upcoming competitions, seminars, and institutional events."
+            />
+
+            <Reveal>
+              <Magnetic>
+                <Link
+                  href="/contact-us"
+                  className="group mt-9 inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-6 py-3.5 text-sm font-medium text-white ring-1 ring-white/15 transition-all duration-300 hover:bg-azure/15 hover:ring-azure/50"
+                >
+                  Register your interest
+                  <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              </Magnetic>
+            </Reveal>
           </div>
-          <h2
-            id="events-heading"
-            className="text-4xl md:text-5xl font-bold text-white leading-tight"
-          >
-            Upcoming <span className="text-[#179BD7]">Events</span>
-          </h2>
-          <p className="mt-3 text-white/50 max-w-lg">
-            Stay informed about our upcoming competitions, seminars, and institutional events.
-          </p>
-        </motion.div>
 
-        {/* Content */}
-        {events === undefined ? (
-          <EventsSkeleton />
-        ) : events.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-white/30">
-            <Calendar className="w-12 h-12 mb-4" />
-            <p className="text-lg">No upcoming events at the moment</p>
+          {/* Timeline */}
+          <div>
+            {events === undefined ? (
+              <EventsSkeleton />
+            ) : events.length === 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-white/10 py-20 text-center">
+                <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5">
+                  <Calendar className="h-7 w-7 text-white/25" />
+                </span>
+                <p className="font-display text-fluid-lg text-white/60">
+                  No upcoming events
+                </p>
+                <p className="mt-2 text-sm text-white/35">
+                  New dates are announced here first.
+                </p>
+              </div>
+            ) : (
+              <Stagger className="relative" gap={0.09}>
+                {/* Spine the entries hang from */}
+                <span
+                  aria-hidden
+                  className="absolute left-[11px] top-3 bottom-3 w-px bg-gradient-to-b from-azure/60 via-white/10 to-transparent"
+                />
+
+                <ul className="space-y-4">
+                  {events.map((event: Event) => (
+                    <motion.li
+                      key={event._id}
+                      variants={cardRise}
+                      className="relative pl-10"
+                    >
+                      {/* Node */}
+                      <span
+                        aria-hidden
+                        className="absolute left-0 top-7 flex h-6 w-6 items-center justify-center rounded-full border border-azure/40 bg-ink-800"
+                      >
+                        <span className="h-2 w-2 rounded-full bg-azure transition-transform duration-500 group-hover/item:scale-150" />
+                      </span>
+
+                      <article className="group/item edge-light spotlight relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-6 shadow-card transition-all duration-500 ease-out-quint hover:-translate-y-1 hover:border-azure/30 hover:shadow-lift">
+                        <h3 className="font-display text-fluid-lg leading-snug text-white transition-colors duration-300 group-hover/item:text-azure">
+                          {event.title}
+                        </h3>
+
+                        <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
+                          {event.date && (
+                            <Meta icon={Calendar} tone="gold">
+                              {event.date}
+                            </Meta>
+                          )}
+                          {event.location && (
+                            <Meta icon={MapPin} tone="azure">
+                              {event.location}
+                            </Meta>
+                          )}
+                        </div>
+
+                        {event.note && (
+                          <div className="mt-5 flex items-start gap-3 rounded-2xl bg-white/[0.03] p-4">
+                            <StickyNote className="mt-0.5 h-4 w-4 shrink-0 text-white/30" />
+                            <p className="text-sm leading-relaxed text-white/45">
+                              {event.note}
+                            </p>
+                          </div>
+                        )}
+                      </article>
+                    </motion.li>
+                  ))}
+                </ul>
+              </Stagger>
+            )}
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {events.map((event: Event, index: number) => (
-              <motion.article
-                key={event._id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08, duration: 0.5 }}
-                className="group relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/8 hover:border-[#179BD7]/30 transition-all duration-300 overflow-hidden"
-              >
-                {/* Subtle accent line */}
-                <div className="absolute top-0 left-0 h-0.5 w-0 bg-gradient-to-r from-[#179BD7] to-yellow-400 group-hover:w-full transition-all duration-500 rounded-t-2xl" />
-
-                <h3 className="text-lg font-semibold text-white mb-4 leading-snug group-hover:text-[#179BD7] transition-colors">
-                  {event.title}
-                </h3>
-
-                <div className="space-y-2.5">
-                  {event.date && (
-                    <div className="flex items-center gap-2.5 text-white/50 text-sm">
-                      <div className="w-7 h-7 rounded-lg bg-yellow-400/10 flex items-center justify-center shrink-0">
-                        <Calendar className="w-3.5 h-3.5 text-yellow-400" />
-                      </div>
-                      <span>{event.date}</span>
-                    </div>
-                  )}
-                  {event.location && (
-                    <div className="flex items-center gap-2.5 text-white/50 text-sm">
-                      <div className="w-7 h-7 rounded-lg bg-[#179BD7]/10 flex items-center justify-center shrink-0">
-                        <MapPin className="w-3.5 h-3.5 text-[#179BD7]" />
-                      </div>
-                      <span>{event.location}</span>
-                    </div>
-                  )}
-                  {event.note && (
-                    <div className="flex items-start gap-2.5 mt-3">
-                      <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center shrink-0 mt-0.5">
-                        <StickyNote className="w-3.5 h-3.5 text-white/30" />
-                      </div>
-                      <p className="text-sm text-white/40 italic leading-relaxed">{event.note}</p>
-                    </div>
-                  )}
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        )}
+        </div>
       </div>
     </section>
+  );
+}
+
+function Meta({
+  icon: Icon,
+  tone,
+  children,
+}: {
+  icon: React.ElementType;
+  tone: "gold" | "azure";
+  children: React.ReactNode;
+}) {
+  const color = tone === "gold" ? "text-gold" : "text-azure";
+  return (
+    <span className="flex items-center gap-2.5 text-sm text-white/55">
+      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.05]">
+        <Icon className={`h-3.5 w-3.5 ${color}`} />
+      </span>
+      {children}
+    </span>
   );
 }

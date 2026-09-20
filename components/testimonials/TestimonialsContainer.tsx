@@ -1,10 +1,13 @@
 "use client";
 
 import { api } from "@/convex/_generated/api";
+import { cardRise } from "@/lib/motion";
 import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
-import { Quote } from "lucide-react";
+import { ArrowRight, Quote } from "lucide-react";
 import { useState } from "react";
+import { Aurora, Stagger } from "../ui/motion-primitives";
+import { PageHero } from "../ui/page-hero";
 import { TestimonialDialog } from "./TestimonialDialog";
 
 interface Testimonial {
@@ -16,58 +19,67 @@ interface Testimonial {
 
 function TestimonialsSkeleton() {
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
       {[1, 2, 3, 4, 5, 6].map((i) => (
-        <div key={i} className="rounded-2xl bg-white/5 border border-white/8 animate-pulse p-7 h-56" />
+        <div
+          key={i}
+          className="shimmer h-64 rounded-3xl border border-white/10 bg-white/[0.04]"
+        />
       ))}
     </div>
   );
 }
 
-function TestimonialCard({ testimonial, index }: { testimonial: Testimonial; index: number }) {
+function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       <motion.article
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: index * 0.07, duration: 0.5 }}
-        whileHover={{ y: -4 }}
-        className="group relative bg-white/4 border border-white/10 rounded-2xl p-7 flex flex-col hover:border-[#179BD7]/30 hover:bg-white/6 transition-all duration-300 cursor-pointer"
+        variants={cardRise}
         onClick={() => setIsOpen(true)}
-        aria-label={`Testimonial from ${testimonial.name} — click to read full`}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setIsOpen(true);
+          }
+        }}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => e.key === "Enter" && setIsOpen(true)}
+        aria-label={`Read the full testimonial from ${testimonial.name}`}
+        className="group edge-light spotlight relative flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-7 shadow-card transition-all duration-500 ease-out-quint hover:-translate-y-1.5 hover:border-azure/30 hover:shadow-lift"
       >
-        {/* Top accent line */}
-        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-[#179BD7]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        {/* Oversized glyph as a watermark rather than a small icon */}
+        <Quote
+          className="absolute -right-3 -top-3 h-24 w-24 text-white/[0.04] transition-colors duration-500 group-hover:text-azure/10"
+          aria-hidden="true"
+        />
 
-        <Quote className="w-7 h-7 text-[#179BD7]/50 mb-4 shrink-0" aria-hidden="true" />
+        <Quote className="mb-5 h-6 w-6 shrink-0 text-azure/60" aria-hidden="true" />
 
-        <blockquote className="flex-1 mb-5">
-          <p className="text-white/55 text-sm leading-relaxed line-clamp-4">{testimonial.body}</p>
+        <blockquote className="relative flex-1">
+          <p className="line-clamp-5 text-sm leading-relaxed text-white/60">
+            {testimonial.body}
+          </p>
         </blockquote>
 
-        <button
-          className="self-start text-xs text-[#179BD7] hover:text-white font-medium transition-colors mb-4"
-          onClick={(e) => { e.stopPropagation(); setIsOpen(true); }}
-        >
-          Read full testimonial →
-        </button>
+        <span className="relative mt-5 inline-flex items-center gap-1.5 text-xs font-medium text-azure transition-colors group-hover:text-gold">
+          Read full testimonial
+          <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+        </span>
 
-        <footer className="border-t border-white/8 pt-4 mt-auto">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#213675] to-[#179BD7] flex items-center justify-center text-white font-bold text-sm shrink-0">
-              {testimonial.name[0]?.toUpperCase()}
-            </div>
-            <div>
-              <p className="font-semibold text-white text-sm">{testimonial.name}</p>
-              <p className="text-white/35 text-xs">{testimonial.role}</p>
-            </div>
-          </div>
+        <footer className="relative mt-6 flex items-center gap-3 border-t border-white/10 pt-5">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand to-azure text-sm font-bold text-white ring-1 ring-white/10">
+            {testimonial.name[0]?.toUpperCase()}
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-sm font-semibold text-white">
+              {testimonial.name}
+            </span>
+            <span className="block truncate text-xs text-white/35">
+              {testimonial.role}
+            </span>
+          </span>
         </footer>
       </motion.article>
 
@@ -84,52 +96,41 @@ export default function TestimonialsContainer() {
   const testimonials = useQuery(api.testimonials.getTestimonials);
 
   return (
-    <main className="min-h-screen bg-[#060e1e]" aria-labelledby="testimonials-heading">
-      {/* Hero */}
-      <section className="relative pt-28 pb-16 px-4 overflow-hidden" aria-labelledby="testimonials-heading">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-[#213675]/30 rounded-full blur-3xl pointer-events-none" />
+    <main className="min-h-screen bg-ink-900">
+      <PageHero
+        id="testimonials-heading"
+        eyebrow="Stories"
+        title="Voices of"
+        accent="Success"
+        description="Hear from students, alumni, sponsors and collaborators about their DICOM experiences."
+      />
 
-        <div className="relative max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <div className="flex items-center justify-center gap-2 mb-5">
-              <div className="h-px w-8 bg-yellow-400" />
-              <span className="text-yellow-400 text-sm font-mono tracking-widest uppercase">Stories</span>
-              <div className="h-px w-8 bg-yellow-400" />
+      <section className="relative overflow-hidden bg-ink-800 px-5 py-24 grain sm:px-6 md:py-32">
+        <Aurora className="-right-40 top-10 h-[460px] w-[460px]" color="azure" />
+
+        <div className="relative z-10 mx-auto max-w-7xl">
+          {testimonials === undefined ? (
+            <TestimonialsSkeleton />
+          ) : testimonials.length === 0 ? (
+            <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-white/10 py-24 text-center">
+              <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5">
+                <Quote className="h-7 w-7 text-white/25" />
+              </span>
+              <p className="font-display text-fluid-lg text-white/60">
+                No testimonials available yet
+              </p>
             </div>
-
-            <h1
-              id="testimonials-heading"
-              className="text-5xl md:text-6xl font-bold text-white leading-tight mb-4"
+          ) : (
+            <Stagger
+              className="grid gap-5 md:grid-cols-2 xl:grid-cols-3"
+              gap={0.08}
             >
-              Voices of <span className="text-[#179BD7]">Success</span>
-            </h1>
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
-              Hear from students, alumni, sponsors and collaborators about their DICOM experiences.
-            </p>
-          </motion.div>
+              {testimonials.map((t) => (
+                <TestimonialCard key={t._id} testimonial={t} />
+              ))}
+            </Stagger>
+          )}
         </div>
-      </section>
-
-      {/* Grid */}
-      <section className="py-12 px-4 max-w-7xl mx-auto pb-24">
-        {testimonials === undefined ? (
-          <TestimonialsSkeleton />
-        ) : testimonials.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-white/25">
-            <Quote className="w-12 h-12 mb-4" />
-            <p className="text-lg">No testimonials available yet</p>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {testimonials.map((t, i) => (
-              <TestimonialCard key={t._id} testimonial={t} index={i} />
-            ))}
-          </div>
-        )}
       </section>
     </main>
   );

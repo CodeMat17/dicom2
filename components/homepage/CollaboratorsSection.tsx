@@ -1,12 +1,15 @@
 "use client";
 
 import { api } from "@/convex/_generated/api";
+import { popIn } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 import { useQuery } from "convex/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Handshake, X } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { Aurora, SectionHeading } from "../ui/motion-primitives";
 
 interface Collaborator {
   _id: string;
@@ -15,19 +18,25 @@ interface Collaborator {
   imgUrl: string | null;
 }
 
+const VC_OFFICE = "Vice Chancellor, GOUNI";
+
+/* ------------------------------------------------------------------ */
+
 function CollaboratorsSkeleton() {
   return (
-    <div className="space-y-6">
-      {[1, 2].map((row) => (
-        <div key={row} className="flex gap-6 overflow-hidden">
-          {[1, 2, 3, 4, 5].map((i) => (
+    <div className="space-y-5 px-5">
+      {[0, 1].map((row) => (
+        <div key={row} className="flex gap-5 overflow-hidden">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="flex-shrink-0 flex flex-col items-center p-4 rounded-2xl bg-white/5 animate-pulse min-w-[180px]"
+              className="shimmer flex min-w-[200px] shrink-0 items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-4"
             >
-              <div className="w-16 h-16 rounded-full bg-white/10 mb-3" />
-              <div className="h-3 w-24 bg-white/10 rounded mb-2" />
-              <div className="h-2 w-16 bg-white/10 rounded" />
+              <div className="h-12 w-12 shrink-0 rounded-full bg-white/[0.07]" />
+              <div className="flex-1 space-y-2">
+                <div className="h-3 w-24 rounded bg-white/[0.07]" />
+                <div className="h-2 w-16 rounded bg-white/[0.07]" />
+              </div>
             </div>
           ))}
         </div>
@@ -36,6 +45,8 @@ function CollaboratorsSkeleton() {
   );
 }
 
+/* ------------------------------------------------------------------ */
+
 function CollaboratorModal({
   collaborator,
   onClose,
@@ -43,47 +54,66 @@ function CollaboratorModal({
   collaborator: Collaborator;
   onClose: () => void;
 }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
   return createPortal(
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        transition={{ duration: 0.25 }}
+        className="fixed inset-0 z-[70] flex items-center justify-center bg-ink-900/85 p-4 backdrop-blur-md"
         role="dialog"
-        aria-labelledby="modal-title"
+        aria-labelledby="collab-modal-title"
         aria-modal="true"
         onClick={(e) => e.target === e.currentTarget && onClose()}
       >
         <motion.div
-          initial={{ scale: 0.9, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.9, opacity: 0, y: 20 }}
-          transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          className="bg-[#0f1e3a] border border-white/10 rounded-2xl p-8 max-w-sm w-full relative text-center shadow-2xl"
+          variants={popIn}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="edge-light relative w-full max-w-sm overflow-hidden rounded-4xl border border-white/10 bg-ink-700 p-8 text-center shadow-lift"
         >
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-24 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-azure/25 blur-[70px]"
+          />
+
           <button
-            className="absolute top-4 right-4 p-1.5 rounded-full bg-white/5 hover:bg-white/10 transition-colors text-white/60 hover:text-white"
+            className="absolute right-4 top-4 rounded-full bg-white/5 p-2 text-white/55 transition-colors hover:bg-white/10 hover:text-white"
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label="Close"
           >
-            <X className="w-4 h-4" />
+            <X className="h-4 w-4" />
           </button>
 
-          <div className="w-24 h-24 relative mx-auto mb-5 ring-4 ring-[#179BD7]/30 rounded-full overflow-hidden">
+          <div className="relative mx-auto mb-5 h-28 w-28 overflow-hidden rounded-full bg-ink-900 p-1 ring-2 ring-azure/40">
             <Image
               src={collaborator.imgUrl || "/logo.webp"}
               alt={collaborator.name}
               fill
-              className="object-contain"
-              onError={(e) => { (e.target as HTMLImageElement).src = "/logo.webp"; }}
+              className="rounded-full object-contain p-1"
+              sizes="112px"
             />
           </div>
 
-          <h3 id="modal-title" className="text-xl font-bold text-white mb-1 line-clamp-2">
+          <h3
+            id="collab-modal-title"
+            className="relative font-display text-fluid-xl leading-snug text-white"
+          >
             {collaborator.name}
           </h3>
-          <p className="text-[#179BD7] text-sm">{collaborator.office}</p>
+          <p className="relative mt-2 text-sm text-azure">{collaborator.office}</p>
         </motion.div>
       </motion.div>
     </AnimatePresence>,
@@ -91,42 +121,79 @@ function CollaboratorModal({
   );
 }
 
+/* ------------------------------------------------------------------ */
+
 function CollaboratorCard({
   collaborator,
   onClick,
+  ariaHidden,
 }: {
   collaborator: Collaborator;
   onClick: () => void;
+  ariaHidden?: boolean;
 }) {
-  const isVC = collaborator.office === "Vice Chancellor, GOUNI";
+  const isVC = collaborator.office === VC_OFFICE;
 
   return (
     <button
       onClick={onClick}
+      tabIndex={ariaHidden ? -1 : 0}
+      aria-hidden={ariaHidden}
       aria-label={`View details for ${collaborator.name}`}
-      className={`flex-shrink-0 flex flex-col items-center p-4 rounded-2xl min-w-[170px] mr-5 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#179BD7] ${
+      className={cn(
+        "group mr-5 flex w-[248px] shrink-0 items-center gap-3.5 rounded-2xl border p-4 text-left",
+        "transition-all duration-500 ease-out-quint hover:-translate-y-1",
         isVC
-          ? "bg-yellow-400/10 border border-yellow-400/30 hover:bg-yellow-400/20"
-          : "bg-white/5 border border-white/10 hover:bg-white/10"
-      }`}
+          ? "border-gold/30 bg-gold/[0.07] hover:border-gold/60 hover:shadow-gold"
+          : "border-white/10 bg-white/[0.04] hover:border-azure/40 hover:bg-white/[0.07] hover:shadow-glow"
+      )}
     >
-      <div className="w-16 h-16 relative mb-3 rounded-full overflow-hidden ring-2 ring-white/10">
+      <span
+        className={cn(
+          "relative h-12 w-12 shrink-0 overflow-hidden rounded-full bg-ink-900 ring-1 transition-all duration-500",
+          isVC
+            ? "ring-gold/40 group-hover:ring-gold"
+            : "ring-white/15 group-hover:ring-azure/60"
+        )}
+      >
         <Image
           src={collaborator.imgUrl || "/logo.webp"}
-          alt={collaborator.name}
+          alt=""
           fill
-          className="object-contain"
-          onError={(e) => { (e.target as HTMLImageElement).src = "/logo.webp"; }}
+          className="object-contain p-1"
+          sizes="48px"
         />
-      </div>
-      <p className={`font-semibold text-sm text-center line-clamp-2 max-w-[150px] ${isVC ? "text-yellow-300" : "text-white"}`}>
-        {collaborator.name}
-      </p>
-      <p className="text-xs text-white/40 text-center line-clamp-2 max-w-[150px] mt-0.5">
-        {collaborator.office}
-      </p>
+      </span>
+
+      <span className="min-w-0 flex-1">
+        <span
+          className={cn(
+            "block truncate text-sm font-semibold",
+            isVC ? "text-gold" : "text-white"
+          )}
+        >
+          {collaborator.name}
+        </span>
+        <span className="mt-0.5 block truncate text-xs text-white/40">
+          {collaborator.office}
+        </span>
+      </span>
     </button>
   );
+}
+
+/* ------------------------------------------------------------------ */
+
+/**
+ * Builds a track that is exactly two identical halves, so the CSS
+ * animation to -50% loops with no visible jump regardless of how many
+ * collaborators come back from the query.
+ */
+function buildTrack(list: Collaborator[]) {
+  if (!list.length) return [];
+  const half: Collaborator[] = [];
+  while (half.length < Math.max(8, list.length)) half.push(...list);
+  return [...half, ...half];
 }
 
 export function CollaboratorsSection() {
@@ -134,68 +201,61 @@ export function CollaboratorsSection() {
   const [selected, setSelected] = useState<Collaborator | null>(null);
   const handleClose = useCallback(() => setSelected(null), []);
 
-  const repeated = collaborators ? Array(5).fill(collaborators).flat() : [];
+  const list = collaborators ?? [];
+  // Offset the second row so the two rows never sit in lockstep.
+  const rowA = buildTrack(list);
+  const rowB = buildTrack([...list].reverse());
 
   return (
-    <section className="bg-[#060e1e] py-24 overflow-hidden" aria-labelledby="collaborators-heading">
-      <div className="max-w-7xl mx-auto px-4 mb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="flex items-center gap-2 mb-3">
-            <div className="h-px w-8 bg-yellow-400" />
-            <span className="text-yellow-400 text-sm font-mono tracking-widest uppercase">Partners</span>
-          </div>
-          <h2
-            id="collaborators-heading"
-            className="text-4xl md:text-5xl font-bold text-white leading-tight"
-          >
-            Our Valued <span className="text-[#179BD7]">Collaborators</span>
-          </h2>
-          <p className="mt-3 text-white/50 max-w-lg">
-            Working together with distinguished individuals and institutions to elevate student excellence.
-          </p>
-        </motion.div>
+    <section
+      className="relative overflow-hidden bg-ink-900 py-28 grain md:py-36"
+      aria-labelledby="collaborators-heading"
+    >
+      <Aurora
+        className="left-1/2 top-10 h-[460px] w-[680px] -translate-x-1/2"
+        color="brand"
+      />
+
+      <div className="relative z-10 mx-auto mb-16 max-w-7xl px-5 sm:px-6">
+        <SectionHeading
+          eyebrow="Partners"
+          title="Our valued"
+          accent="collaborators"
+          description="Working together with distinguished individuals and institutions to elevate student excellence."
+          align="center"
+          className="mx-auto"
+        />
       </div>
 
       {collaborators === undefined ? (
-        <div className="px-4">
-          <CollaboratorsSkeleton />
-        </div>
-      ) : collaborators.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-white/30 px-4">
-          <Handshake className="w-12 h-12 mb-4" />
+        <CollaboratorsSkeleton />
+      ) : list.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-white/30">
+          <Handshake className="mb-4 h-12 w-12" />
           <p className="text-lg">No collaborators found</p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {/* Row 1 — scrolls left */}
-          <div className="relative overflow-hidden">
-            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#060e1e] to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#060e1e] to-transparent z-10 pointer-events-none" />
-            <div className="marquee-left" role="region" aria-label="Collaborators row 1">
-              {repeated.map((collab, i) => (
+        <div className="marquee-wrapper relative z-10 space-y-5">
+          <div className="mask-edges overflow-hidden">
+            <div className="marquee-track marquee-left" aria-label="Collaborators">
+              {rowA.map((collab, i) => (
                 <CollaboratorCard
-                  key={`left-${collab._id}-${i}`}
+                  key={`a-${collab._id}-${i}`}
                   collaborator={collab}
+                  ariaHidden={i >= rowA.length / 2}
                   onClick={() => setSelected(collab)}
                 />
               ))}
             </div>
           </div>
 
-          {/* Row 2 — scrolls right */}
-          <div className="relative overflow-hidden">
-            <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#060e1e] to-transparent z-10 pointer-events-none" />
-            <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#060e1e] to-transparent z-10 pointer-events-none" />
-            <div className="marquee-right" role="region" aria-label="Collaborators row 2">
-              {repeated.map((collab, i) => (
+          <div className="mask-edges overflow-hidden">
+            <div className="marquee-track marquee-right" aria-hidden>
+              {rowB.map((collab, i) => (
                 <CollaboratorCard
-                  key={`right-${collab._id}-${i}`}
+                  key={`b-${collab._id}-${i}`}
                   collaborator={collab}
+                  ariaHidden
                   onClick={() => setSelected(collab)}
                 />
               ))}
@@ -204,7 +264,9 @@ export function CollaboratorsSection() {
         </div>
       )}
 
-      {selected && <CollaboratorModal collaborator={selected} onClose={handleClose} />}
+      {selected && (
+        <CollaboratorModal collaborator={selected} onClose={handleClose} />
+      )}
     </section>
   );
 }

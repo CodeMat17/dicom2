@@ -1,4 +1,5 @@
 import StaffProfile from "@/components/staff/StaffProfile";
+import { PageHero } from "@/components/ui/page-hero";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -69,24 +70,13 @@ export const metadata: Metadata = {
 
 export default function StaffPage() {
   return (
-    <main className="min-h-screen bg-[#060e1e]">
-      {/* Hero */}
-      <div className="relative pt-28 pb-8 px-4 text-center overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-[#213675]/30 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative max-w-4xl mx-auto">
-          <div className="flex items-center justify-center gap-2 mb-5">
-            <div className="h-px w-8 bg-yellow-400" />
-            <span className="text-yellow-400 text-sm font-mono tracking-widest uppercase">The Team</span>
-            <div className="h-px w-8 bg-yellow-400" />
-          </div>
-          <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-4">
-            Meet Our <span className="text-[#179BD7]">Team</span>
-          </h1>
-          <p className="text-white/50 text-lg max-w-xl mx-auto">
-            The dedicated professionals behind DICOM&apos;s mission to empower student excellence.
-          </p>
-        </div>
-      </div>
+    <main className="min-h-screen bg-ink-900">
+      <PageHero
+        eyebrow="The Team"
+        title="Meet Our"
+        accent="Team"
+        description="The dedicated professionals behind DICOM's mission to empower student excellence."
+      />
       <StaffProfile />
     </main>
   );

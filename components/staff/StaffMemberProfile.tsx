@@ -1,5 +1,4 @@
 import type { TeamMember } from "@/types/team";
-import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { memo } from "react";
@@ -14,47 +13,39 @@ function StaffMemberProfile({ member }: StaffMemberProfileProps) {
   if (!member?.imageUrl) return null;
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4 }}
-      whileHover={{ y: -3 }}
-      className="flex flex-col items-center py-6 px-4 bg-white/4 border border-white/8 rounded-2xl hover:border-[#179BD7]/25 hover:bg-white/6 transition-all duration-300 group"
+    <article
+      className="group edge-light spotlight relative flex h-full flex-col items-center overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] px-5 py-7 text-center shadow-card transition-all duration-500 ease-out-quint hover:-translate-y-1.5 hover:border-azure/30 hover:shadow-lift"
       aria-labelledby={`staff-name-${member._id}`}
     >
-      {/* Photo */}
-      <div className="relative w-24 h-24 mb-4 rounded-full overflow-hidden ring-2 ring-white/10 group-hover:ring-[#179BD7]/40 transition-all">
+      <div className="relative mb-4 h-24 w-24 shrink-0 overflow-hidden rounded-full ring-2 ring-white/12 transition-all duration-500 group-hover:ring-azure/50">
         <Image
           src={member.imageUrl}
           alt={`${member.name}, ${member.position}`}
-          width={96}
-          height={96}
-          className="object-cover"
+          fill
+          className="object-cover transition-transform duration-700 ease-out-quint group-hover:scale-105"
           loading="lazy"
+          sizes="96px"
         />
       </div>
 
-      <div className="flex flex-col items-center text-center flex-1 w-full">
-        <h3
-          id={`staff-name-${member._id}`}
-          className="font-semibold text-white text-sm leading-snug mb-0.5"
-        >
-          {member.name}
-        </h3>
-        <p className="text-[#179BD7] text-xs mb-4 line-clamp-2">{member.position}</p>
+      <h3
+        id={`staff-name-${member._id}`}
+        className="text-sm font-semibold leading-snug text-white"
+      >
+        {member.name}
+      </h3>
+      <p className="mt-1 line-clamp-2 text-xs text-azure">{member.position}</p>
 
-        <div className="mt-auto w-full">
-          <ProfileModal
-            name={member.name}
-            imageUrl={member.imageUrl}
-            position={member.position}
-            email={member.email}
-            profile={member.profile}
-          />
-        </div>
+      <div className="mt-auto w-full pt-5">
+        <ProfileModal
+          name={member.name}
+          imageUrl={member.imageUrl}
+          position={member.position}
+          email={member.email}
+          profile={member.profile}
+        />
       </div>
-    </motion.article>
+    </article>
   );
 }
 

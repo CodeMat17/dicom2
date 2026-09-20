@@ -57,6 +57,17 @@ export async function GET() {
       },
     },
     {
+      url: `${baseUrl}/gallery`,
+      lastmod: new Date().toISOString(),
+      changefreq: "weekly",
+      priority: "0.7",
+      image: {
+        url: `${baseUrl}/opengraph-image.jpg`,
+        title: "DICOM Gallery",
+        caption: "Photographs from DICOM competitions and ceremonies",
+      },
+    },
+    {
       url: `${baseUrl}/partnership`,
       lastmod: new Date().toISOString(),
       changefreq: "daily",

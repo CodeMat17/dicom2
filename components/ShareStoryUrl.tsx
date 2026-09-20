@@ -1,38 +1,63 @@
-import { Share2 } from "lucide-react";
+"use client";
+
+import { cn } from "@/lib/utils";
+import { Check, Share2 } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "./ui/button";
 
 type Props = {
   title: string;
   text: string;
-  slug: string;
+  /** Slug of an achievement story. Ignored when `path` is supplied. */
+  slug?: string;
+  /** Absolute site path to share instead, e.g. `/gallery?photo=abc`. */
+  path?: string;
+  label?: string;
+  className?: string;
 };
 
-const ShareStoryUrl = ({ title, text, slug }: Props) => {
-  return (
-    <Button
-    //   size='icon'
-      variant={"ghost"}
-      type='button'
-      onClick={() => {
-        const shareUrl = `${window.location.origin}/achievements/${slug}`;
-        if (navigator.share) {
-          navigator
-            .share({
-              title,
-              text,
-              url: shareUrl,
-            })
-            .catch((error) => console.error("Error sharing:", error));
-        } else {
-          navigator.clipboard.writeText(shareUrl);
-          toast.success("Link copied");
+const ShareStoryUrl = ({ title, text, slug, path, label, className }: Props) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const target = path ?? `/achievements/${slug}`;
+    const shareUrl = `${window.location.origin}${target}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text, url: shareUrl });
+      } catch (error) {
+        // A user-cancelled share is not an error worth surfacing.
+        if ((error as Error)?.name !== "AbortError") {
+          console.error("Error sharing:", error);
         }
-      }}
-      className='p-2 text-muted-foreground hover:bg-muted rounded-full transition-colors'
-      aria-label='Share achievement'>
-      <Share2 className='w-4 h-4 shrink-0' /> <span className="text-xs">Share</span>
-    </Button>
+      }
+      return;
+    }
+
+    await navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    toast.success("Link copied to clipboard");
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleShare}
+      aria-label={`Share ${title}`}
+      className={cn(
+        "group/share inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium text-white/45 transition-colors duration-300 hover:bg-white/5 hover:text-white",
+        className
+      )}
+    >
+      {copied ? (
+        <Check className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+      ) : (
+        <Share2 className="h-3.5 w-3.5 shrink-0 transition-transform duration-300 group-hover/share:scale-110" />
+      )}
+      {copied ? "Copied" : (label ?? "Share")}
+    </button>
   );
 };
 

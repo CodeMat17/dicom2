@@ -2,28 +2,17 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import type { Metadata } from "next";
-import { Playfair_Display } from "next/font/google";
-import localFont from "next/font/local";
+import type { Metadata, Viewport } from "next";
+import { Nunito } from "next/font/google";
 import "./globals.css";
 
 import { ConvexClientProvider } from "./ConvexClientProvider";
 
-const playfair = Playfair_Display({
+const nunito = Nunito({
   subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-playfair",
-});
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-nunito",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -59,12 +48,6 @@ export const metadata: Metadata = {
   //   google: "YOUR_GOOGLE_SITE_VERIFICATION_CODE", // Replace with your verification code
       
   // },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
   openGraph: {
     title: "Directorate of Competitions | Godfrey Okoye University",
     description:
@@ -103,19 +86,27 @@ export const metadata: Metadata = {
   category: "education",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#060e1e",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang='en' className='dark' suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased min-h-screen flex flex-col`}>
+        className={`${nunito.variable} antialiased min-h-screen flex flex-col bg-ink-900 font-sans text-white`}>
         <ThemeProvider
           attribute='class'
-          defaultTheme='system'
-          enableSystem
+          defaultTheme='dark'
+          forcedTheme='dark'
           disableTransitionOnChange>
           <ConvexClientProvider>
             <main className='flex-1'>

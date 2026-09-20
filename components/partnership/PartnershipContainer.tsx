@@ -1,30 +1,34 @@
 "use client";
 
+import { cardRise } from "@/lib/motion";
 import { motion } from "framer-motion";
-import { Award, Handshake, Mail, Rocket, Users } from "lucide-react";
+import { Award, ArrowUpRight, Handshake, Mail, Rocket, Users } from "lucide-react";
+import Link from "next/link";
+import { Aurora, Reveal, SectionHeading, Stagger } from "../ui/motion-primitives";
+import { CtaBand, GoldButton, PageHero } from "../ui/page-hero";
 
 const benefits = [
   {
     icon: Users,
-    color: "text-[#179BD7]",
-    bg: "bg-[#179BD7]/10",
-    ring: "ring-[#179BD7]/20",
+    text: "text-azure",
+    bg: "bg-azure/10",
+    ring: "ring-azure/25",
     title: "Expanded Reach",
     desc: "Access our network of talented students and academic professionals.",
   },
   {
     icon: Rocket,
-    color: "text-yellow-400",
-    bg: "bg-yellow-400/10",
-    ring: "ring-yellow-400/20",
+    text: "text-gold",
+    bg: "bg-gold/10",
+    ring: "ring-gold/25",
     title: "Innovation Boost",
     desc: "Collaborate on cutting-edge projects and research initiatives.",
   },
   {
     icon: Award,
-    color: "text-emerald-400",
+    text: "text-emerald-400",
     bg: "bg-emerald-400/10",
-    ring: "ring-emerald-400/20",
+    ring: "ring-emerald-400/25",
     title: "Recognition",
     desc: "Gain visibility through our platforms, events, and publications.",
   },
@@ -47,128 +51,109 @@ const opportunities = [
 
 export default function PartnershipContainer() {
   return (
-    <main className="min-h-screen bg-[#060e1e]">
-      {/* Hero */}
-      <section className="relative pt-28 pb-20 px-4 overflow-hidden text-center">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-[#213675]/30 rounded-full blur-3xl pointer-events-none" />
+    <main className="min-h-screen bg-ink-900">
+      <PageHero
+        eyebrow="Collaborate"
+        title="Strategic"
+        accent="Partnerships"
+        description="Building bridges for academic excellence and innovation through meaningful collaboration."
+      >
+        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-azure/10 ring-1 ring-azure/25">
+          <Handshake className="h-7 w-7 text-azure" />
+        </span>
+      </PageHero>
 
-        <div className="relative max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <div className="flex items-center justify-center gap-2 mb-5">
-              <div className="h-px w-8 bg-yellow-400" />
-              <span className="text-yellow-400 text-sm font-mono tracking-widest uppercase">Collaborate</span>
-              <div className="h-px w-8 bg-yellow-400" />
+      <section className="relative overflow-hidden bg-ink-800 px-5 py-24 grain sm:px-6 md:py-32">
+        <Aurora className="-right-40 top-20 h-[460px] w-[460px]" color="azure" />
+
+        <div className="relative z-10 mx-auto max-w-6xl">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+            {/* Why partner */}
+            <div>
+              <SectionHeading
+                eyebrow="The case"
+                title="Why partner"
+                accent="with us?"
+                description="DICOM thrives on meaningful collaborations that create opportunities for students, faculty, and the broader academic community. Together, we achieve more."
+              />
+
+              <Stagger className="mt-10 space-y-4" gap={0.1}>
+                {benefits.map(({ icon: Icon, text, bg, ring, title, desc }) => (
+                  <motion.div
+                    key={title}
+                    variants={cardRise}
+                    className="group flex items-start gap-4 rounded-2xl border border-white/8 bg-white/[0.03] p-5 transition-all duration-500 ease-out-quint hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.06]"
+                  >
+                    <span
+                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${bg} ring-1 ${ring} transition-transform duration-500 ease-out-expo group-hover:scale-110`}
+                    >
+                      <Icon className={`h-5 w-5 ${text}`} />
+                    </span>
+                    <span>
+                      <span className="block font-semibold text-white">
+                        {title}
+                      </span>
+                      <span className="mt-1 block text-sm leading-relaxed text-white/45">
+                        {desc}
+                      </span>
+                    </span>
+                  </motion.div>
+                ))}
+              </Stagger>
             </div>
 
-            <div className="w-16 h-16 rounded-2xl bg-[#179BD7]/10 ring-1 ring-[#179BD7]/20 flex items-center justify-center mx-auto mb-6">
-              <Handshake className="w-8 h-8 text-[#179BD7]" />
-            </div>
+            {/* Opportunities */}
+            <Reveal delay={0.1}>
+              <div className="edge-light sticky top-28 overflow-hidden rounded-4xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] p-8 shadow-card md:p-10">
+                <h2 className="font-display text-fluid-xl text-white">
+                  Partnership opportunities
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-white/45">
+                  We welcome collaborations with departments, faculties, and
+                  external organizations that share our commitment to academic
+                  excellence and student development.
+                </p>
 
-            <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-4">
-              Strategic <span className="text-[#179BD7]">Partnerships</span>
-            </h1>
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
-              Building bridges for academic excellence and innovation through meaningful collaboration.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Benefits + Opportunities */}
-      <section className="py-12 px-4 max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-10">
-
-          {/* Left: Why partner */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-3xl font-bold text-white mb-3">Why Partner With Us?</h2>
-            <p className="text-white/45 mb-8 leading-relaxed">
-              DICOM thrives on meaningful collaborations that create opportunities for students, faculty, and the broader academic community. Together, we achieve more.
-            </p>
-
-            <div className="space-y-5">
-              {benefits.map(({ icon: Icon, color, bg, ring, title, desc }, i) => (
-                <motion.div
-                  key={title}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.4 }}
-                  className="flex items-start gap-4"
-                >
-                  <div className={`w-10 h-10 rounded-xl ${bg} ring-1 ${ring} flex items-center justify-center shrink-0 mt-0.5`}>
-                    <Icon className={`w-5 h-5 ${color}`} />
-                  </div>
-                  <div>
-                    <h3 className="text-white font-semibold mb-1">{title}</h3>
-                    <p className="text-white/45 text-sm">{desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Right: Opportunities */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="bg-white/4 border border-white/10 rounded-2xl p-8"
-          >
-            <h3 className="text-2xl font-bold text-white mb-2">Partnership Opportunities</h3>
-            <p className="text-white/40 text-sm mb-6 leading-relaxed">
-              We welcome collaborations with departments, faculties, and external organizations that share our commitment to academic excellence and student development.
-            </p>
-
-            <div className="space-y-3">
-              {opportunities.map(({ title, desc }, i) => (
-                <motion.div
-                  key={title}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 + i * 0.1 }}
-                  className="p-4 bg-white/4 border border-white/8 rounded-xl hover:border-white/15 transition-colors group"
-                >
-                  <h4 className="font-semibold text-white text-sm mb-1 group-hover:text-[#179BD7] transition-colors">{title}</h4>
-                  <p className="text-white/40 text-xs">{desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 px-4 pb-28">
-        <div className="max-w-4xl mx-auto">
-          <div className="relative bg-gradient-to-br from-[#213675] to-[#0a1628] border border-[#179BD7]/20 rounded-3xl px-8 py-16 text-center overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#179BD7_0%,_transparent_60%)] opacity-5 pointer-events-none" />
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Collaborate?</h2>
-            <p className="text-white/50 text-lg mb-8 max-w-xl mx-auto">
-              Let&apos;s discuss how we can work together to create impactful academic experiences.
-            </p>
-            <motion.a
-              href="mailto:dicom@gouni.edu.ng?subject=Partnership Inquiry"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold px-5 py-2.5 rounded-full transition-colors"
-            >
-              {/* <Mail className="w-4 h-4" /> */}
-              Contact Our Partnership Team
-            </motion.a>
+                <Stagger className="mt-8 space-y-3" gap={0.09}>
+                  {opportunities.map(({ title, desc }, i) => (
+                    <motion.div
+                      key={title}
+                      variants={cardRise}
+                      className="group spotlight relative overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] p-5 transition-all duration-500 ease-out-quint hover:border-azure/30 hover:bg-white/[0.06]"
+                    >
+                      <span className="eyebrow mb-2 block text-[10px] text-white/25">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <h3 className="font-semibold text-white transition-colors duration-300 group-hover:text-azure">
+                        {title}
+                      </h3>
+                      <p className="mt-1.5 text-sm text-white/40">{desc}</p>
+                    </motion.div>
+                  ))}
+                </Stagger>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
+
+      <CtaBand
+        title="Ready to"
+        accent="collaborate?"
+        description="Let's discuss how we can work together to create impactful academic experiences."
+      >
+        <GoldButton href="mailto:dicom@gouni.edu.ng?subject=Partnership%20Inquiry">
+          <Mail className="h-4 w-4" />
+          Contact our partnership team
+        </GoldButton>
+        <Link
+          href="/about-us"
+          className="group inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-4 text-sm font-medium text-white/80 transition-all duration-300 hover:border-white/40 hover:bg-white/5 hover:text-white"
+        >
+          Learn about DICOM
+          <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </Link>
+      </CtaBand>
     </main>
   );
 }

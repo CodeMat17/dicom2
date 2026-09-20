@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Mail, X } from "lucide-react";
@@ -17,60 +18,76 @@ type StaffProps = {
   imageUrl: string | null;
 };
 
-const ProfileModal = ({ name, position, profile, email, imageUrl }: StaffProps) => {
+const ProfileModal = ({
+  name,
+  position,
+  profile,
+  email,
+  imageUrl,
+}: StaffProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="w-full text-sm text-[#179BD7] border border-[#179BD7]/30 hover:bg-[#179BD7]/10 hover:border-[#179BD7]/60 rounded-xl py-2 px-4 transition-all duration-200 font-medium">
-          View Profile
+        <button className="w-full rounded-xl border border-azure/30 px-4 py-2.5 text-sm font-medium text-azure transition-all duration-300 hover:border-azure/60 hover:bg-azure/10 hover:text-white">
+          View profile
         </button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-md bg-[#0f1e3a] border border-white/10 text-white p-0 overflow-hidden rounded-2xl">
-        {/* Header with image */}
-        <div className="relative bg-gradient-to-br from-[#213675] to-[#0a1628] px-8 pt-8 pb-6 text-center">
-          <DialogClose className="absolute top-4 right-4 p-1.5 rounded-full bg-white/5 hover:bg-white/15 transition-colors text-white/50 hover:text-white">
-            <X className="w-4 h-4" />
+      <DialogContent className="overflow-hidden rounded-4xl border border-white/10 bg-ink-700 p-0 text-white shadow-lift sm:max-w-md">
+        {/* Header */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-brand via-ink-700 to-ink-800 px-8 pb-7 pt-9 text-center">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-20 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-azure/25 blur-[70px]"
+          />
+
+          <DialogClose className="absolute right-4 top-4 rounded-full bg-white/5 p-2 text-white/55 transition-colors hover:bg-white/15 hover:text-white">
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
           </DialogClose>
 
           {imageUrl && (
-            <div className="w-24 h-24 relative mx-auto mb-4 rounded-full overflow-hidden ring-4 ring-[#179BD7]/30">
+            <div className="relative mx-auto mb-5 h-24 w-24 overflow-hidden rounded-full ring-4 ring-azure/30">
               <Image
                 alt={name}
                 priority
                 fill
                 src={imageUrl}
                 className="object-cover"
+                sizes="96px"
               />
             </div>
           )}
-          <h2 className="text-xl font-bold text-white">{name}</h2>
-          <p className="text-[#179BD7] text-sm mt-1">{position}</p>
+
+          <DialogTitle className="relative font-display text-fluid-lg leading-snug text-white">
+            {name}
+          </DialogTitle>
+          <p className="relative mt-1.5 text-sm text-azure">{position}</p>
         </div>
 
         {/* Body */}
-        <div className="px-8 py-6 max-h-[45vh] overflow-y-auto">
+        <div className="max-h-[45vh] overflow-y-auto px-8 py-6">
           {profile && (
-            <p className="text-white/60 text-sm leading-relaxed">{profile}</p>
+            <p className="text-sm leading-relaxed text-white/60">{profile}</p>
           )}
 
           {email && (
             <a
               href={`mailto:${email}`}
-              className="mt-5 flex items-center gap-2.5 text-sm text-[#179BD7] hover:text-white transition-colors group"
+              className="group mt-6 flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.03] p-3.5 text-sm text-white/65 transition-all duration-300 hover:border-azure/30 hover:bg-white/[0.06] hover:text-white"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#179BD7]/10 flex items-center justify-center shrink-0 group-hover:bg-[#179BD7]/20 transition-colors">
-                <Mail className="w-4 h-4" />
-              </div>
-              {email}
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-azure/10 ring-1 ring-azure/20 transition-colors group-hover:bg-azure/20">
+                <Mail className="h-4 w-4 text-azure" />
+              </span>
+              <span className="truncate">{email}</span>
             </a>
           )}
         </div>
 
         {/* Footer */}
-        <div className="px-8 py-4 border-t border-white/8">
+        <div className="border-t border-white/8 px-8 py-4">
           <DialogClose asChild>
-            <button className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-sm font-medium transition-all">
+            <button className="w-full rounded-xl bg-white/5 py-3 text-sm font-medium text-white/60 transition-all duration-300 hover:bg-white/10 hover:text-white">
               Close
             </button>
           </DialogClose>

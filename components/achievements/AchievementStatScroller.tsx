@@ -5,22 +5,45 @@ import { useQuery } from "convex/react";
 import { motion } from "framer-motion";
 import { Award, Star, Trophy, Users, type LucideProps } from "lucide-react";
 import type { ComponentType } from "react";
+import { cardRise } from "@/lib/motion";
+import { Stagger } from "../ui/motion-primitives";
+import { Counter } from "../ui/page-hero";
 
-type IconMap = { [key: string]: ComponentType<LucideProps> };
-
-const iconMap: IconMap = {
-  "National Champion": Trophy,
-  "International Recognition": Star,
-  "Students Winners": Users,
-  "University Awards": Award,
+type StatStyle = {
+  Icon: ComponentType<LucideProps>;
+  bg: string;
+  text: string;
+  ring: string;
 };
 
-const colors: Record<string, { bg: string; text: string; ring: string }> = {
-  "National Champion": { bg: "bg-yellow-400/10", text: "text-yellow-400", ring: "ring-yellow-400/20" },
-  "International Recognition": { bg: "bg-[#179BD7]/10", text: "text-[#179BD7]", ring: "ring-[#179BD7]/20" },
-  "Students Winners": { bg: "bg-emerald-400/10", text: "text-emerald-400", ring: "ring-emerald-400/20" },
-  "University Awards": { bg: "bg-purple-400/10", text: "text-purple-400", ring: "ring-purple-400/20" },
+const STAT_STYLES: Record<string, StatStyle> = {
+  "National Champion": {
+    Icon: Trophy,
+    bg: "bg-gold/10",
+    text: "text-gold",
+    ring: "ring-gold/25",
+  },
+  "International Recognition": {
+    Icon: Star,
+    bg: "bg-azure/10",
+    text: "text-azure",
+    ring: "ring-azure/25",
+  },
+  "Students Winners": {
+    Icon: Users,
+    bg: "bg-emerald-400/10",
+    text: "text-emerald-400",
+    ring: "ring-emerald-400/25",
+  },
+  "University Awards": {
+    Icon: Award,
+    bg: "bg-purple-400/10",
+    text: "text-purple-400",
+    ring: "ring-purple-400/25",
+  },
 };
+
+const FALLBACK = STAT_STYLES["National Champion"];
 
 export function AchievementStatScroller() {
   const stats = useQuery(api.achievementsStat.getAchievementsStats);
@@ -29,13 +52,20 @@ export function AchievementStatScroller() {
     return (
       <div className="space-y-3">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-16 rounded-xl bg-white/5 animate-pulse" />
+          <div
+            key={i}
+            className="shimmer h-[68px] rounded-2xl border border-white/8 bg-white/[0.04]"
+          />
         ))}
       </div>
     );
 
   if (!stats)
-    return <p className="text-white/30 text-sm text-center py-4">No stats available</p>;
+    return (
+      <p className="py-4 text-center text-sm text-white/30">
+        No stats available
+      </p>
+    );
 
   const items = [
     { label: "National Champion", value: stats.nationalChampions },
@@ -45,28 +75,31 @@ export function AchievementStatScroller() {
   ];
 
   return (
-    <div className="space-y-3">
-      {items.map(({ label, value }, i) => {
-        const Icon = iconMap[label] || Trophy;
-        const c = colors[label] || colors["National Champion"];
+    <Stagger className="space-y-3" gap={0.09}>
+      {items.map(({ label, value }) => {
+        const { Icon, bg, text, ring } = STAT_STYLES[label] ?? FALLBACK;
         return (
           <motion.div
             key={label}
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.08, duration: 0.4 }}
-            className="flex items-center gap-3 p-3 rounded-xl bg-white/3 border border-white/8 hover:border-white/15 transition-colors"
+            variants={cardRise}
+            className="group flex items-center gap-3.5 rounded-2xl border border-white/8 bg-white/[0.03] p-3.5 transition-all duration-500 ease-out-quint hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.06]"
           >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${c.bg} ring-1 ${c.ring}`}>
-              <Icon className={`w-4.5 h-4.5 ${c.text}`} />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-white leading-none">{value}</p>
-              <p className="text-xs text-white/40 mt-0.5 leading-tight">{label}</p>
-            </div>
+            <span
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${bg} ring-1 ${ring} transition-transform duration-500 ease-out-expo group-hover:scale-110`}
+            >
+              <Icon className={`h-[18px] w-[18px] ${text}`} />
+            </span>
+            <span className="min-w-0">
+              <span className="block font-display text-2xl leading-none text-white">
+                <Counter value={value ?? 0} />
+              </span>
+              <span className="mt-1.5 block text-xs leading-tight text-white/40">
+                {label}
+              </span>
+            </span>
           </motion.div>
         );
       })}
-    </div>
+    </Stagger>
   );
 }

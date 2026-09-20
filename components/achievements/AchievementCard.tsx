@@ -1,10 +1,10 @@
 import { Id } from "@/convex/_generated/dataModel";
 import dayjs from "dayjs";
-import { motion } from "framer-motion";
-import { CalendarDays, ChevronRight } from "lucide-react";
+import { ArrowUpRight, CalendarDays } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import ShareStoryUrl from "../ShareStoryUrl";
+import { SpotlightCard } from "../ui/motion-primitives";
 
 type Props = {
   id: Id<"achievements">;
@@ -16,55 +16,52 @@ type Props = {
   date?: number;
 };
 
-const AchievementCard = ({ index, image, title, desc, date, slug }: Props) => {
+const AchievementCard = ({ image, title, desc, date, slug }: Props) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.05 + index * 0.08, duration: 0.5 }}
-      whileHover={{ y: -4 }}
-      className="group relative bg-[#0f1e3a] border border-white/8 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:border-[#179BD7]/30 transition-all duration-300 flex flex-col h-full"
-    >
-      {/* Image */}
-      <div className="relative w-full h-44 overflow-hidden shrink-0">
+    <SpotlightCard className="flex h-full flex-col">
+      {/* Media */}
+      <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden">
         <Image
           src={image}
           alt={title}
           fill
-          className="object-cover object-top transform group-hover:scale-105 transition-transform duration-500"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover object-top transition-transform duration-700 ease-out-quint group-hover:scale-[1.07]"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f1e3a] via-black/20 to-transparent" />
+        {/* Seats the image into the card body so there is no hard seam */}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink-700 via-ink-900/25 to-transparent" />
 
-        {/* Date badge */}
         {date && (
-          <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/60 backdrop-blur-sm rounded-full px-2.5 py-1 text-white/80 text-xs">
-            <CalendarDays className="h-3 w-3 text-yellow-400" />
+          <div className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full border border-white/10 bg-ink-900/70 px-3 py-1.5 text-[11px] font-medium text-white/85 backdrop-blur-md">
+            <CalendarDays className="h-3 w-3 text-gold" />
             {dayjs(date).format("MMM DD, YYYY")}
           </div>
         )}
       </div>
 
-      {/* Content */}
-      <div className="flex flex-col flex-1 px-5 py-4">
-        <h2 className="font-semibold text-base text-white line-clamp-2 leading-snug group-hover:text-[#179BD7] transition-colors capitalize mb-4">
+      {/* Body */}
+      <div className="relative flex flex-1 flex-col p-5">
+        <h3 className="font-display text-fluid-lg capitalize leading-snug text-white transition-colors duration-300 group-hover:text-azure line-clamp-2">
           {title}
-        </h2>
+        </h3>
 
-        {/* Actions */}
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-white/8">
+        <p className="mt-2.5 line-clamp-2 text-sm leading-relaxed text-white/45">
+          {desc}
+        </p>
+
+        <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-4">
           <ShareStoryUrl title={title} text={desc} slug={slug} />
 
           <Link
             href={`/achievements/${slug}`}
-            className="group/btn inline-flex items-center gap-1 text-sm text-[#179BD7] hover:text-white font-medium transition-colors"
+            className="group/btn inline-flex items-center gap-1.5 text-sm font-medium text-azure transition-colors hover:text-gold"
           >
-            Read More
-            <ChevronRight className="h-3.5 w-3.5 transform group-hover/btn:translate-x-1 transition-transform" />
+            Read story
+            <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
           </Link>
         </div>
       </div>
-    </motion.div>
+    </SpotlightCard>
   );
 };
 
