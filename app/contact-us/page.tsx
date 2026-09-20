@@ -62,14 +62,12 @@ export const metadata: Metadata = {
   category: "Contact",
   other: {
     "og:site_name": "DICOM - Directorate of Competitions",
-    "og:type": "website",
-    "theme-color": "#ffffff",
-  },
+    "og:type": "website",  },
 };
 
 export default function ContactUsPage() {
   return (
-    <main className='min-h-screen bg-gray-50 dark:bg-slate-950'>
+    <main className='min-h-screen bg-ink-900'>
       <ContactUsContainer />
     </main>
   );

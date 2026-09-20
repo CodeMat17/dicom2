@@ -15,6 +15,24 @@ export default {
     },
     extend: {
       colors: {
+        /* The single most important line in this file.
+
+           The site was built dark-only, so ~350 class usages spell their
+           foreground and their hairline washes as literal `white`
+           (`text-white`, `text-white/70`, `bg-white/5`, `border-white/10`,
+           `from-white/10`...). Pointing Tailwind's `white` at a token
+           instead of #fff makes every one of them theme-aware for free:
+           in dark it still resolves to pure white, and in light it becomes
+           near-black ink — so a `bg-white/5` overlay inverts into a soft
+           ink wash rather than disappearing into the page.
+
+           `<alpha-value>` is what preserves the `/70` opacity modifiers. */
+        white: "hsl(var(--fg) / <alpha-value>)",
+
+        /* Modal + lightbox scrim. Deliberately NOT part of the ink ramp:
+           a scrim stays dark in both themes so the dialog above it reads. */
+        scrim: "hsl(var(--scrim) / <alpha-value>)",
+
         /* Brand surface ramp */
         ink: {
           900: "hsl(var(--ink-900))",
@@ -100,9 +118,11 @@ export default {
       },
 
       boxShadow: {
-        /* Layered elevation reads far better than a single blurred drop */
-        card: "0 1px 2px hsl(217 68% 2% / 0.5), 0 8px 24px -8px hsl(217 68% 2% / 0.6)",
-        lift: "0 2px 4px hsl(217 68% 2% / 0.4), 0 24px 48px -12px hsl(217 68% 2% / 0.75)",
+        /* Layered elevation reads far better than a single blurred drop.
+           card/lift live in CSS so each theme can set its own: the
+           near-black drops that work on ink would be soot on white. */
+        card: "var(--shadow-card)",
+        lift: "var(--shadow-lift)",
         glow: "0 0 0 1px hsl(var(--azure) / 0.25), 0 12px 40px -8px hsl(var(--azure) / 0.35)",
         gold: "0 8px 30px -6px hsl(var(--gold) / 0.45)",
       },

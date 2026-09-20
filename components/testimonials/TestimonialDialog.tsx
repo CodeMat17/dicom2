@@ -54,7 +54,7 @@ export function TestimonialExpand({
           if (e.target === ref.current) ref.current?.close();
         }}
         aria-labelledby={titleId}
-        className="m-auto w-[min(32rem,calc(100vw-2rem))] max-h-[85vh] overflow-hidden rounded-4xl border border-white/10 bg-ink-700 p-0 text-white shadow-lift backdrop:bg-ink-900/80 backdrop:backdrop-blur-md"
+        className="m-auto w-[min(32rem,calc(100vw-2rem))] max-h-[85vh] overflow-hidden rounded-4xl border border-white/10 bg-ink-700 p-0 text-white shadow-lift backdrop:bg-scrim/70 backdrop:backdrop-blur-md"
       >
         <div className="flex max-h-[85vh] flex-col">
           {/* Header */}

@@ -74,7 +74,7 @@ export default function GalleryLightbox({
     <>
       {(
         <div
-          className="fixed inset-0 z-[80] flex animate-fade-in items-center justify-center bg-ink-900/92 p-4 backdrop-blur-xl sm:p-8"
+          className="fixed inset-0 z-[80] flex animate-fade-in items-center justify-center bg-scrim/92 p-4 backdrop-blur-xl sm:p-8"
           role="dialog"
           aria-modal="true"
           aria-label={photo.title}

@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { ThemeProvider } from "@/components/theme-provider";
 import { RevealObserver } from "@/components/ui/reveal-observer";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata, Viewport } from "next";
@@ -84,7 +85,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#060e1e",
+  // The browser chrome follows the page floor of whichever theme is active,
+  // so the address bar never sits as a dark slab above a light page.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#060e1e" },
+  ],
 };
 
 export default function RootLayout({
@@ -93,7 +99,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${nunito.variable}`}>
+    // The prerendered HTML carries `dark`, matching defaultTheme below, so the
+    // static pages already paint the default correctly. next-themes rewrites
+    // that class from a blocking inline script when the visitor has chosen
+    // light; suppressHydrationWarning tells React to keep whatever the script
+    // left in the DOM rather than treating it as a mismatch.
+    <html
+      lang="en"
+      className={`dark ${nunito.variable}`}
+      suppressHydrationWarning
+    >
       <body className="antialiased min-h-screen flex flex-col bg-ink-900 font-sans text-white">
         {/* Keyboard users land on this before the seven-item nav rail. */}
         <a
@@ -103,14 +118,22 @@ export default function RootLayout({
           Skip to content
         </a>
 
-        <Navbar />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          // Light and dark only — no "system" third state to reason about.
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <Navbar />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer />
 
-        <RevealObserver />
-        <Toaster />
+          <RevealObserver />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

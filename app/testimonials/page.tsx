@@ -65,9 +65,7 @@ export const metadata: Metadata = {
   category: "Testimonials",
   other: {
     "og:site_name": "DICOM - Directorate of Competitions",
-    "og:type": "website",
-    "theme-color": "#ffffff",
-  },
+    "og:type": "website",  },
 };
 
 export const revalidate = 300;

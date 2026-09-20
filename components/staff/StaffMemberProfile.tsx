@@ -12,29 +12,44 @@ function StaffMemberProfile({ member }: StaffMemberProfileProps) {
 
   return (
     <article
-      className="group edge-light spotlight relative flex h-full flex-col items-center overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] px-5 py-7 text-center shadow-card transition-all duration-500 ease-out-quint hover:-translate-y-1.5 hover:border-azure/30 hover:shadow-lift"
+      className="group edge-light spotlight relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] shadow-card transition-all duration-500 ease-out-quint hover:-translate-y-1.5 hover:border-azure/30 hover:shadow-lift"
       aria-labelledby={`staff-name-${member._id}`}
     >
-      <div className="relative mb-4 h-24 w-24 shrink-0 overflow-hidden rounded-full ring-2 ring-white/12 transition-all duration-500 group-hover:ring-azure/50">
+      {/* Full-bleed portrait */}
+      <div className="relative aspect-[4/5] w-full overflow-hidden">
         <Image
           src={member.imageUrl}
           alt={`${member.name}, ${member.position}`}
           fill
-          className="object-cover transition-transform duration-700 ease-out-quint group-hover:scale-105"
+          className="object-cover object-top transition-transform duration-700 ease-out-quint group-hover:scale-[1.06]"
           loading="lazy"
-          sizes="96px"
+          sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 320px"
         />
+
+        {/* Legibility scrim + brand wash on hover */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-900 via-ink-900/45 to-transparent"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-azure/25 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        />
+
+        <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+          <h3
+            id={`staff-name-${member._id}`}
+            className="font-display text-fluid-base leading-snug text-white drop-shadow-sm"
+          >
+            {member.name}
+          </h3>
+          <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-azure sm:text-sm">
+            {member.position}
+          </p>
+        </div>
       </div>
 
-      <h3
-        id={`staff-name-${member._id}`}
-        className="text-sm font-semibold leading-snug text-white"
-      >
-        {member.name}
-      </h3>
-      <p className="mt-1 line-clamp-2 text-xs text-azure">{member.position}</p>
-
-      <div className="mt-auto w-full pt-5">
+      <div className="mt-auto p-4 pt-3 sm:p-5 sm:pt-4">
         <ProfileModal
           name={member.name}
           imageUrl={member.imageUrl}

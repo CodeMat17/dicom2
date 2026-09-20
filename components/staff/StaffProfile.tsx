@@ -28,7 +28,7 @@ export default function StaffProfile({ team }: { team: Team | null }) {
 
             <Stagger
               as="ul"
-              className="grid flex-1 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3"
+              className="grid flex-1 grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-2 xl:grid-cols-3"
               gap={0.07}
             >
               {team.staff.map((member) => (

@@ -41,43 +41,53 @@ const ProfileModal = ({
           if (e.target === ref.current) ref.current?.close();
         }}
         aria-labelledby={titleId}
-        className="m-auto w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-4xl border border-white/10 bg-ink-700 p-0 text-left text-white shadow-lift backdrop:bg-ink-900/80 backdrop:backdrop-blur-md"
+        className="m-auto w-[min(28rem,calc(100vw-2rem))] overflow-hidden rounded-4xl border border-white/10 bg-ink-700 p-0 text-left text-white shadow-lift backdrop:bg-scrim/70 backdrop:backdrop-blur-md"
       >
-        {/* Header */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-brand via-ink-700 to-ink-800 px-8 pb-7 pt-9 text-center">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-20 left-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-azure/25 blur-[70px]"
-          />
-
+        {/* Header — full-bleed portrait */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-brand via-ink-700 to-ink-800">
           <button
             type="button"
             onClick={() => ref.current?.close()}
-            className="absolute right-4 top-4 rounded-full bg-white/5 p-2 text-white/70 transition-colors hover:bg-white/15 hover:text-white"
+            className="absolute right-4 top-4 z-10 rounded-full bg-ink-900/50 p-2 text-white/80 backdrop-blur-md transition-colors hover:bg-ink-900/80 hover:text-white"
           >
             <X aria-hidden className="h-4 w-4" />
             <span className="sr-only">Close</span>
           </button>
 
-          {imageUrl && (
-            <div className="relative mx-auto mb-5 h-24 w-24 overflow-hidden rounded-full ring-4 ring-azure/30">
+          {imageUrl ? (
+            <div className="relative aspect-[4/3] w-full overflow-hidden">
               <Image
                 alt=""
                 fill
                 src={imageUrl}
-                className="object-cover"
-                sizes="96px"
+                className="object-cover object-top"
+                sizes="(max-width: 480px) 100vw, 448px"
               />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-700 via-ink-700/45 to-transparent"
+              />
+              <div className="absolute inset-x-0 bottom-0 px-7 pb-6">
+                <p
+                  id={titleId}
+                  className="font-display text-fluid-xl leading-tight text-white"
+                >
+                  {name}
+                </p>
+                <p className="mt-1.5 text-sm text-azure">{position}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="px-8 pb-7 pt-9 text-center">
+              <p
+                id={titleId}
+                className="font-display text-fluid-lg leading-snug text-white"
+              >
+                {name}
+              </p>
+              <p className="mt-1.5 text-sm text-azure">{position}</p>
             </div>
           )}
-
-          <p
-            id={titleId}
-            className="relative font-display text-fluid-lg leading-snug text-white"
-          >
-            {name}
-          </p>
-          <p className="relative mt-1.5 text-sm text-azure">{position}</p>
         </div>
 
         {/* Body */}

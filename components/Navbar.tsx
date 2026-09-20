@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import LogoComponent from "./LogoComponent";
+import ThemeToggle from "./ThemeToggle";
 import { ScrollProgress } from "./ui/motion-primitives";
 
 const navLinks = [
@@ -97,6 +98,10 @@ export default function Navbar() {
             </nav>
 
             <div className="flex items-center gap-2">
+              {/* Sits outside the lg: breakpoint switch — the theme toggle is
+                  reachable at every width, not buried in the drawer. */}
+              <ThemeToggle />
+
               {/* Desktop CTA */}
               <Link
                 href="/contact-us"
@@ -133,7 +138,7 @@ export default function Navbar() {
           if (e.target === drawerRef.current) drawerRef.current?.close();
         }}
         aria-label="Navigation menu"
-        className="lg:hidden m-0 ml-auto h-full max-h-none w-[86%] max-w-sm bg-transparent p-0 text-white backdrop:bg-ink-900/80 backdrop:backdrop-blur-md"
+        className="lg:hidden m-0 ml-auto h-full max-h-none w-[86%] max-w-sm bg-transparent p-0 text-white backdrop:bg-scrim/70 backdrop:backdrop-blur-md"
       >
         <div className="relative flex h-full flex-col border-l border-white/10 bg-ink-800 shadow-lift">
           <div

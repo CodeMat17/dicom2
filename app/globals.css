@@ -6,29 +6,60 @@
    DICOM DESIGN TOKENS
    ============================================================ */
 @layer base {
+  /* --------------------------------------------------------
+     LIGHT is the :root default; DARK overrides the same names
+     below. Every component colour in the app resolves through
+     these tokens — including `white`, which Tailwind is
+     remapped to `--fg` — so a single class flip repaints the
+     whole site, text included.
+     -------------------------------------------------------- */
   :root {
-    /* Brand surfaces — deepest to highest elevation */
-    --ink-900: 217 68% 6%; /* #060e1e  page floor     */
-    --ink-800: 215 61% 9%; /* #0a1628  alternate band */
-    --ink-700: 218 59% 14%; /* #0f1e3a  raised card    */
-    --ink-600: 220 48% 20%; /* modal / popover         */
+    color-scheme: light;
 
-    /* Brand hues */
+    /* Brand surfaces — page floor to highest elevation */
+    --ink-900: 210 40% 98%; /* page floor     */
+    --ink-800: 214 33% 94%; /* alternate band */
+    --ink-700: 0 0% 100%; /* raised card    */
+    --ink-600: 0 0% 100%; /* modal / popover */
+
+    /* Brand hues — azure and gold are darkened so they stay
+       legible as *text* on a near-white floor. */
     --brand: 224 56% 30%; /* #213675 navy        */
-    --azure: 199 80% 47%; /* #179BD7 bright blue */
-    --gold: 48 96% 53%; /* #facc15 yellow-400  */
+    --azure: 199 89% 34%; /* deepened blue       */
+    --gold: 36 87% 35%; /* deepened amber      */
 
     /* Text ramp */
-    --text-hi: 0 0% 100%;
-    --text-mid: 210 20% 80%;
-    --text-lo: 213 15% 62%;
+    --text-hi: 222 47% 12%;
+    --text-mid: 215 22% 30%;
+    --text-lo: 215 16% 42%;
+
+    /* Tailwind's `white` maps here: `text-white` follows the
+       theme, and every `bg-white/5` / `border-white/10` wash
+       inverts into a soft ink wash instead of vanishing. */
+    --fg: var(--text-hi);
+
+    /* Modal / lightbox scrim stays dark in both themes */
+    --scrim: 217 50% 8%;
+
+    /* Atmosphere — grain and aurora blooms are tuned for a dark
+       floor, so they are dialled back over light surfaces. */
+    --grain-opacity: 0.05;
+    --bloom-opacity: 0.5;
+
+    /* Elevation. Light UI needs a tighter, cooler shadow than
+       the near-black drops the dark theme uses. */
+    --shadow-card: 0 1px 2px hsl(217 30% 40% / 0.1),
+      0 8px 24px -8px hsl(217 30% 40% / 0.22);
+    --shadow-lift: 0 2px 4px hsl(217 30% 40% / 0.1),
+      0 24px 48px -12px hsl(217 30% 40% / 0.28);
 
     /* Motion */
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
     --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-    /* shadcn bridge (dark-first values) */
+    /* shadcn bridge — these alias the tokens above, so they
+       re-resolve on their own when `.dark` redefines them. */
     --background: var(--ink-900);
     --foreground: var(--text-hi);
     --card: var(--ink-700);
@@ -37,22 +68,53 @@
     --popover-foreground: var(--text-hi);
     --primary: var(--azure);
     --primary-foreground: 0 0% 100%;
-    --secondary: 217 33% 18%;
+    --secondary: 214 33% 91%;
     --secondary-foreground: var(--text-hi);
-    --muted: 217 33% 18%;
+    --muted: 214 33% 91%;
     --muted-foreground: var(--text-lo);
     --accent: var(--azure);
     --accent-foreground: 0 0% 100%;
-    --destructive: 0 63% 41%;
+    --destructive: 0 72% 45%;
     --destructive-foreground: 0 0% 100%;
-    --border: 213 30% 22%;
-    --input: 213 30% 22%;
+    --border: 214 25% 85%;
+    --input: 214 25% 85%;
     --ring: var(--azure);
     --radius: 0.875rem;
   }
 
+  /* `.dark` lands on the same <html> element as `:root`, so it
+     only needs to restate the names that actually change. */
   .dark {
     color-scheme: dark;
+
+    --ink-900: 217 68% 6%; /* #060e1e  page floor     */
+    --ink-800: 215 61% 9%; /* #0a1628  alternate band */
+    --ink-700: 218 59% 14%; /* #0f1e3a  raised card    */
+    --ink-600: 220 48% 20%; /* modal / popover         */
+
+    --brand: 224 56% 30%; /* #213675 navy        */
+    --azure: 199 80% 47%; /* #179BD7 bright blue */
+    --gold: 48 96% 53%; /* #facc15 yellow-400  */
+
+    --text-hi: 0 0% 100%;
+    --text-mid: 210 20% 80%;
+    --text-lo: 213 15% 62%;
+
+    --scrim: 217 68% 4%;
+
+    --grain-opacity: 0.16;
+    --bloom-opacity: 1;
+
+    --shadow-card: 0 1px 2px hsl(217 68% 2% / 0.5),
+      0 8px 24px -8px hsl(217 68% 2% / 0.6);
+    --shadow-lift: 0 2px 4px hsl(217 68% 2% / 0.4),
+      0 24px 48px -12px hsl(217 68% 2% / 0.75);
+
+    --secondary: 217 33% 18%;
+    --muted: 217 33% 18%;
+    --destructive: 0 63% 41%;
+    --border: 213 30% 22%;
+    --input: 213 30% 22%;
   }
 
   * {
@@ -79,7 +141,7 @@
 
   ::selection {
     background: hsl(var(--azure) / 0.3);
-    color: #fff;
+    color: hsl(var(--text-hi));
   }
 
   /* Custom scrollbar */
@@ -112,7 +174,7 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.16;
+    opacity: var(--grain-opacity);
     mix-blend-mode: overlay;
     background-image: url("/noise.svg");
   }
@@ -123,7 +185,15 @@
     border-radius: 9999px;
     filter: blur(100px);
     pointer-events: none;
+    opacity: var(--bloom-opacity);
     z-index: 0;
+  }
+
+  /* The same bloom drawn inline as a utility stack (a decorative,
+     click-through, fully-rounded div with a large blur) is dimmed the
+     same way — at full strength a navy wash reads as dirt on light. */
+  .pointer-events-none.rounded-full[class*="blur-["] {
+    opacity: var(--bloom-opacity);
   }
 
   /* Hairline gradient border that catches light along the top edge */
@@ -138,8 +208,8 @@
     padding: 1px;
     background: linear-gradient(
       160deg,
-      hsl(0 0% 100% / 0.22),
-      hsl(0 0% 100% / 0.04) 30%,
+      hsl(var(--fg) / 0.22),
+      hsl(var(--fg) / 0.04) 30%,
       transparent 60%
     );
     -webkit-mask:
@@ -366,7 +436,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    hsl(0 0% 100% / 0.07),
+    hsl(var(--fg) / 0.07),
     transparent
   );
   animation: shimmer 1.8s infinite;

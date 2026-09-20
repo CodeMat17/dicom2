@@ -153,7 +153,7 @@ function CollaboratorDialog({
         if (e.target === ref.current) ref.current?.close();
       }}
       aria-labelledby="collab-dialog-title"
-      className="m-auto w-[min(24rem,calc(100vw-2rem))] bg-transparent p-0 text-white backdrop:bg-ink-900/85 backdrop:backdrop-blur-md"
+      className="m-auto w-[min(24rem,calc(100vw-2rem))] bg-transparent p-0 text-white backdrop:bg-scrim/75 backdrop:backdrop-blur-md"
     >
       <div className="edge-light relative overflow-hidden rounded-4xl border border-white/10 bg-ink-700 p-8 text-center shadow-lift">
         <div

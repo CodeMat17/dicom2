@@ -62,14 +62,12 @@ export const metadata: Metadata = {
 
   other: {
     "og:site_name": "DICOM - Directorate of Competitions",
-    "og:type": "website",
-    "theme-color": "#ffffff",
-  },
+    "og:type": "website",  },
 };
 
 export default function PartnershipPage() {
   return (
-  <main className='min-h-screen bg-gray-50 dark:bg-slate-950'>      <PartnershipContainer />
+  <main className='min-h-screen bg-ink-900'>      <PartnershipContainer />
     </main>
   );
 }

@@ -1,15 +1,18 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import { Toaster as Sonner } from "sonner";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
-// The site is dark-only, so the toaster no longer asks a theme provider what
-// it should be — that provider existed purely to answer this one question.
+// Toasts paint their own surface, so they have to be told the theme rather
+// than inheriting it from the token cascade like the rest of the site.
 const Toaster = ({ ...props }: ToasterProps) => {
+  const { resolvedTheme } = useTheme();
+
   return (
     <Sonner
-      theme="dark"
+      theme={resolvedTheme === "light" ? "light" : "dark"}
       className="toaster group"
       toastOptions={{
         classNames: {
