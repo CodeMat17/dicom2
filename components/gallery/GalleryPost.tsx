@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import { CalendarDays, Expand, Images } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import ShareStoryUrl from "../ShareStoryUrl";
 import type { GalleryImage, GalleryPhoto } from "./types";
 
 /**
@@ -22,7 +21,7 @@ const FALLBACK_RATIO = 4 / 5;
  * One gallery post: its details once, above its photographs.
  *
  * The details belong to the post, not to any single frame, so the date,
- * title, description and share control sit in a band across the top and the
+ * title and description sit in a band across the top and the
  * photographs below carry nothing but themselves. The first photograph runs
  * full width as the hero and the rest fall into ratio-true columns beneath
  * it — nothing is cropped to a house aspect ratio in either place.
@@ -84,16 +83,6 @@ export default function GalleryPost({
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/70 text-pretty">
           {photo.description}
         </p>
-
-        <div className="mt-4">
-          <ShareStoryUrl
-            title={photo.title}
-            text={photo.description}
-            path={`/gallery?photo=${photo._id}`}
-            label="Share post"
-            className="-ml-2.5 text-white/70"
-          />
-        </div>
       </header>
 
       <Frame
