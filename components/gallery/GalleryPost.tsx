@@ -180,7 +180,9 @@ function Frame({
               // Hold the ratio while the height cap bites, so a panorama
               // narrows rather than stretching.
               maxWidth: `min(100%, calc(${maxHeightVh}vh * ${ratio}))`,
-              margin: "0 auto",
+              // Inline only: a `margin` shorthand would zero the caller's
+              // bottom margin and glue the hero to the grid below it.
+              marginInline: "auto",
             }
           : {}),
       }}
