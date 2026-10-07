@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   category: "education",
 };
 
-export const revalidate = 300;
+export const revalidate = 86400; // keep in step with REVALIDATE_SECONDS in lib/server-data.ts
 
 export default async function AboutUs() {
   const statements = await getStatements();

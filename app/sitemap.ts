@@ -4,7 +4,7 @@ import type { MetadataRoute } from "next";
 
 // Generated at build time and refreshed on the same schedule as the pages it
 // lists, so crawling the sitemap never runs a query on the request path.
-export const revalidate = 300;
+export const revalidate = 86400; // keep in step with REVALIDATE_SECONDS in lib/server-data.ts
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const achievements = await getAllAchievements();

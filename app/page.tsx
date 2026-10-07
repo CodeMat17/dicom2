@@ -60,7 +60,7 @@ export const metadata: Metadata = {
 
 // Prerendered, then refreshed in the background. Nothing on this page is
 // computed per visitor, so a page view is served straight from the CDN.
-export const revalidate = 300;
+export const revalidate = 86400; // keep in step with REVALIDATE_SECONDS in lib/server-data.ts
 
 export default async function Home() {
   const [slides, achievements, stats, collaborators, events, featured] =

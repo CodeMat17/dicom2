@@ -15,13 +15,18 @@ import { unstable_cache } from "next/cache";
 /**
  * Ceiling on how stale a page may be when nothing tells us an edit happened.
  *
- * The dashboard is meant to call /api/revalidate after a write, which makes an
- * edit live in seconds; this window is the safety net for when it does not.
- * Five minutes costs almost nothing, because a page is only ever regenerated
- * if someone actually asks for it after the window lapses — a story nobody
- * visits is never rebuilt.
+ * The dashboard calls /api/revalidate after a write, which makes an edit live
+ * on the next request; this window is only the safety net for when it does
+ * not. It is deliberately long: every lapse lets the next visitor (or crawler)
+ * regenerate the page, and each regeneration is several ISR writes on Vercel —
+ * the HTML, the RSC payload, its prefetch segments and every data entry below
+ * — whether or not the content changed. At five minutes, crawlers walking the
+ * sitemap rewrote the whole site hundreds of times a day.
+ *
+ * The routes' `export const revalidate` must be a literal, so they repeat this
+ * number; change them together.
  */
-const REVALIDATE_SECONDS = 300;
+const REVALIDATE_SECONDS = 86400;
 
 export const CACHE_TAGS = {
   achievements: "achievements",
@@ -109,12 +114,25 @@ export const getAllPhotos = cached(
   CACHE_TAGS.gallery
 );
 
-export const getAchievementBySlug = (slug: string) =>
-  unstable_cache(
+/**
+ * A single story, or null.
+ *
+ * The slug comes straight from the URL, so it is checked against the cached
+ * list before it is allowed its own cache entry — otherwise every probe for
+ * /achievements/<anything> would write a new data entry. A story published
+ * after the list was cached shows up as soon as the dashboard revalidates the
+ * `achievements` tag, which refreshes both.
+ */
+export async function getAchievementBySlug(slug: string) {
+  const known = await getAllAchievements();
+  if (!known?.some((achievement) => achievement.slug === slug)) return null;
+
+  return unstable_cache(
     () => fetchQuery(api.achievements.getAchievementBySlug, { slug }),
     ["achievement-by-slug", slug],
     { tags: [CACHE_TAGS.achievements], revalidate: REVALIDATE_SECONDS }
   )();
+}
 
 /**
  * The newest achievement that actually has a written story, for the homepage

@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     "og:type": "website",  },
 };
 
-export const revalidate = 300;
+export const revalidate = 86400; // keep in step with REVALIDATE_SECONDS in lib/server-data.ts
 
 export default async function TestimonialsPage() {
   const testimonials = await getTestimonials();

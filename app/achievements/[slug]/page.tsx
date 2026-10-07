@@ -6,9 +6,10 @@ import { notFound } from "next/navigation";
 
 // Every story is prerendered at build time and refreshed in the background,
 // so a reader — or a crawler — is served static HTML with the full article in
-// it. A slug published after the last build renders once, then joins the
-// cache.
-export const revalidate = 300;
+// it. A slug published after the last build renders once (after the dashboard
+// revalidates the `achievements` tag), then joins the cache; slugs that are
+// not in the cached list 404 without writing a data entry of their own.
+export const revalidate = 86400; // keep in step with REVALIDATE_SECONDS in lib/server-data.ts
 
 export async function generateStaticParams() {
   const achievements = await getAllAchievements();

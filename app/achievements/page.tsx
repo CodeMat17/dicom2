@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 300;
+export const revalidate = 86400; // keep in step with REVALIDATE_SECONDS in lib/server-data.ts
 
 export default async function AchievementsPage() {
   const [achievements, stats] = await Promise.all([

@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 /**
  * On-demand cache invalidation for the DICOM dashboard.
  *
- * Public pages are prerendered and refreshed on an hourly window, which keeps
+ * Public pages are prerendered and refreshed on a daily window, which keeps
  * every page view off the server. This is the escape hatch for an editor who
  * does not want to wait out that window: the dashboard calls it after a write
  * and the affected pages rebuild on the next request.
