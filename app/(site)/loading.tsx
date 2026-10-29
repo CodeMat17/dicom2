@@ -1,5 +1,10 @@
 import Image from "next/image";
 
+// Lives in the (site) route group rather than at the app root on purpose.
+// A loading boundary starts streaming before the page beneath it runs, which
+// locks the response to 200 — so a story page's notFound() would come back as
+// a "soft 404". Story pages sit outside this group and return a real 404.
+
 const Loading = () => {
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-ink-900">

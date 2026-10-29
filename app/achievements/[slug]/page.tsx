@@ -4,12 +4,13 @@ import { JsonLd, articleSchema, breadcrumbSchema } from "@/lib/structured-data";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-// Every story is prerendered at build time and refreshed in the background,
-// so a reader — or a crawler — is served static HTML with the full article in
-// it. A slug published after the last build renders once (after the dashboard
-// revalidates the `achievements` tag), then joins the cache; slugs that are
-// not in the cached list 404 without writing a data entry of their own.
-export const revalidate = 86400; // keep in step with REVALIDATE_SECONDS in lib/server-data.ts
+// Every story is prerendered at build time, so a reader — or a crawler — is
+// served static HTML with the full article in it. Each page reads only its
+// own `achievement:<slug>` tag, so editing one story rebuilds that page alone.
+// A slug published after the last build renders on its first visit, then
+// joins the cache; an unknown slug renders its 404 once and keeps it until a
+// story with that slug is published.
+export const revalidate = false; // rebuilt only by /api/revalidate; see lib/server-data.ts
 
 export async function generateStaticParams() {
   const achievements = await getAllAchievements();

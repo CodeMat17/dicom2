@@ -58,9 +58,10 @@ export const metadata: Metadata = {
   category: "education",
 };
 
-// Prerendered, then refreshed in the background. Nothing on this page is
-// computed per visitor, so a page view is served straight from the CDN.
-export const revalidate = 86400; // keep in step with REVALIDATE_SECONDS in lib/server-data.ts
+// Prerendered once and served straight from the CDN. It is rebuilt only when
+// the dashboard revalidates one of the tags it reads (hero slides, stories,
+// stats, collaborators, events) — never on a timer.
+export const revalidate = false; // rebuilt only by /api/revalidate; see lib/server-data.ts
 
 export default async function Home() {
   const [slides, achievements, stats, collaborators, events, featured] =

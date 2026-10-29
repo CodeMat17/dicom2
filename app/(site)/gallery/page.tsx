@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 86400; // keep in step with REVALIDATE_SECONDS in lib/server-data.ts
+export const revalidate = false; // rebuilt only by /api/revalidate; see lib/server-data.ts
 
 export default async function GalleryPage() {
   const photos = await getAllPhotos();

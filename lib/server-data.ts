@@ -2,31 +2,29 @@
 //
 // Every public page is prerendered, so content has to be in the HTML that
 // leaves the CDN rather than arriving over a websocket after hydration. These
-// helpers run at build time and again only when a cache entry expires, which
-// keeps rendering off the request path — a page view costs no server compute.
+// helpers run at build time and again only when the dashboard says the data
+// behind them changed — there is no timer, so a page view or a crawler never
+// causes a regeneration.
 //
 // Each helper is tagged so the dashboard can call `revalidateTag` (see
-// app/api/revalidate/route.ts) and push an edit live without waiting out the
-// window.
+// app/api/revalidate/route.ts) and push an edit live on the next request.
 import { api } from "@/convex/_generated/api";
 import { fetchQuery } from "convex/nextjs";
 import { unstable_cache } from "next/cache";
 
 /**
- * Ceiling on how stale a page may be when nothing tells us an edit happened.
+ * Cache entries never expire on their own.
  *
- * The dashboard calls /api/revalidate after a write, which makes an edit live
- * on the next request; this window is only the safety net for when it does
- * not. It is deliberately long: every lapse lets the next visitor (or crawler)
- * regenerate the page, and each regeneration is several ISR writes on Vercel —
- * the HTML, the RSC payload, its prefetch segments and every data entry below
- * — whether or not the content changed. At five minutes, crawlers walking the
- * sitemap rewrote the whole site hundreds of times a day.
+ * Every regeneration is several ISR writes on Vercel — the HTML, the RSC
+ * payload, its prefetch segments and every data entry below — whether or not
+ * the content changed. A time window (5 minutes, later 24 hours) let crawlers
+ * walking the sitemap rewrite the whole site over and over, so pages now
+ * change only when a dashboard save revalidates their tag.
  *
- * The routes' `export const revalidate` must be a literal, so they repeat this
- * number; change them together.
+ * The routes' `export const revalidate = false` mirrors this; keep them
+ * together.
  */
-const REVALIDATE_SECONDS = 86400;
+const REVALIDATE = false;
 
 export const CACHE_TAGS = {
   achievements: "achievements",
@@ -40,11 +38,36 @@ export const CACHE_TAGS = {
   testimonials: "testimonials",
 } as const;
 
-/** Wraps a Convex read so it is fetched once per window, not once per request. */
+/**
+ * The tag for one story page.
+ *
+ * Story pages deliberately do not read anything tagged `achievements`, so
+ * editing one story rebuilds that page (plus the lists that show it) rather
+ * than every story on the site.
+ */
+const STORY_TAG_PREFIX = "achievement:";
+
+export function storyTag(slug: string) {
+  return `${STORY_TAG_PREFIX}${slug}`;
+}
+
+/** Whether `tag` is one the dashboard may ask us to revalidate. */
+export function isKnownTag(tag: string) {
+  if ((Object.values(CACHE_TAGS) as string[]).includes(tag)) return true;
+  const slug = tag.slice(STORY_TAG_PREFIX.length);
+  return tag.startsWith(STORY_TAG_PREFIX) && isPlausibleSlug(slug);
+}
+
+/** Cheap guard against junk URLs before they cost a Convex call. */
+function isPlausibleSlug(slug: string) {
+  return slug.length > 0 && slug.length <= 200 && !/[/?#\s]/.test(slug);
+}
+
+/** Wraps a Convex read so it is fetched once, then only after a revalidate. */
 function cached<T>(fn: () => Promise<T>, key: string, tag: string) {
   return unstable_cache(fn, [key], {
     tags: [tag],
-    revalidate: REVALIDATE_SECONDS,
+    revalidate: REVALIDATE,
   });
 }
 
@@ -117,20 +140,18 @@ export const getAllPhotos = cached(
 /**
  * A single story, or null.
  *
- * The slug comes straight from the URL, so it is checked against the cached
- * list before it is allowed its own cache entry — otherwise every probe for
- * /achievements/<anything> would write a new data entry. A story published
- * after the list was cached shows up as soon as the dashboard revalidates the
- * `achievements` tag, which refreshes both.
+ * Tagged only with the story's own tag — never `achievements` — so a story
+ * page is rebuilt only when that story is created, edited or deleted. A miss
+ * is cached too, under the same tag, so a slug that 404s today starts working
+ * the moment the dashboard publishes a story with it.
  */
 export async function getAchievementBySlug(slug: string) {
-  const known = await getAllAchievements();
-  if (!known?.some((achievement) => achievement.slug === slug)) return null;
+  if (!isPlausibleSlug(slug)) return null;
 
   return unstable_cache(
     () => fetchQuery(api.achievements.getAchievementBySlug, { slug }),
     ["achievement-by-slug", slug],
-    { tags: [CACHE_TAGS.achievements], revalidate: REVALIDATE_SECONDS }
+    { tags: [storyTag(slug)], revalidate: REVALIDATE }
   )();
 }
 
@@ -140,9 +161,9 @@ export async function getAchievementBySlug(slug: string) {
  *
  * The list query returns no `story` field, so the candidates are walked
  * newest-first and the full row is pulled for each until one has prose worth
- * featuring. Every read here is cached and tagged, so the walk happens once
- * per revalidation window, not once per visitor — and a run of story-less
- * rows at the top simply yields null and the section renders nothing.
+ * featuring. The walk is cached under `achievements`, so it runs once per
+ * story edit, not once per visitor — and a run of story-less rows at the top
+ * simply yields null and the section renders nothing.
  */
 export const getFeaturedStory = cached(
   async () => {

@@ -1,17 +1,19 @@
-import { CACHE_TAGS } from "@/lib/server-data";
+import { isKnownTag } from "@/lib/server-data";
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 /**
  * On-demand cache invalidation for the DICOM dashboard.
  *
- * Public pages are prerendered and refreshed on a daily window, which keeps
- * every page view off the server. This is the escape hatch for an editor who
- * does not want to wait out that window: the dashboard calls it after a write
- * and the affected pages rebuild on the next request.
+ * Public pages are prerendered and never expire on their own, so this is the
+ * only way an edit reaches them: the dashboard calls it after a write and the
+ * affected pages rebuild on their next request.
  *
- *   POST /api/revalidate?tag=achievements
+ *   POST /api/revalidate?tag=achievements&tag=achievement:<slug>
  *   x-revalidate-secret: <REVALIDATE_SECRET>
+ *
+ * At least one tag is required. There is no "refresh everything" fallback —
+ * that would rewrite the whole site, and no single edit needs it.
  */
 export async function POST(request: Request) {
   const secret = process.env.REVALIDATE_SECRET;
@@ -29,20 +31,26 @@ export async function POST(request: Request) {
     );
   }
 
-  const tag = new URL(request.url).searchParams.get("tag");
-  const tags = Object.values(CACHE_TAGS) as string[];
+  const tags = [...new Set(new URL(request.url).searchParams.getAll("tag"))];
 
-  if (tag && !tags.includes(tag)) {
+  if (tags.length === 0) {
     return NextResponse.json(
-      { revalidated: false, error: `Unknown tag: ${tag}`, tags },
+      { revalidated: false, error: "At least one tag is required" },
       { status: 400 }
     );
   }
 
-  // No tag means the dashboard touched something broad — refresh everything.
+  const unknown = tags.filter((tag) => !isKnownTag(tag));
+  if (unknown.length > 0) {
+    return NextResponse.json(
+      { revalidated: false, error: `Unknown tag: ${unknown.join(", ")}` },
+      { status: 400 }
+    );
+  }
+
   // "max" keeps serving the cached page while the rebuild happens behind it,
   // so an edit never makes a visitor wait on Convex.
-  for (const name of tag ? [tag] : tags) revalidateTag(name, "max");
+  for (const tag of tags) revalidateTag(tag, "max");
 
-  return NextResponse.json({ revalidated: true, tags: tag ? [tag] : tags });
+  return NextResponse.json({ revalidated: true, tags });
 }
