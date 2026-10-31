@@ -18,6 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/gallery`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE_URL}/testimonials`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${SITE_URL}/contact-us`, changeFrequency: "yearly", priority: 0.5 },
+    { url: `${SITE_URL}/mbanefo-design-public-choice-vote`, changeFrequency: "daily", priority: 0.8 },
   ];
 
   const storyRoutes: MetadataRoute.Sitemap = (achievements ?? []).map(

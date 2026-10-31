@@ -25,6 +25,8 @@ const securityHeaders = [
       "img-src 'self' data: blob: https://res.cloudinary.com https://*.convex.cloud",
       "font-src 'self' data:",
       "connect-src 'self' https://*.convex.cloud https://*.convex.site",
+      // The embedded Google Form on the public vote page.
+      "frame-src https://docs.google.com",
       "upgrade-insecure-requests",
     ].join("; "),
   },

@@ -3,6 +3,7 @@ import { CollaboratorsSection } from "@/components/homepage/CollaboratorsSection
 import { EventsSection } from "@/components/homepage/EventsSection";
 import { FeaturedStory } from "@/components/homepage/FeaturedStory";
 import { HeroCarousel } from "@/components/homepage/HeroCarousel";
+import { VotePromoSection } from "@/components/homepage/VotePromoSection";
 import { JsonLd, organizationSchema, websiteSchema } from "@/lib/structured-data";
 import {
   getAchievementsStats,
@@ -78,6 +79,7 @@ export default async function Home() {
     <div className="min-h-screen bg-ink-900">
       <JsonLd data={[organizationSchema(), websiteSchema()]} />
       <HeroCarousel slides={slides ?? []} />
+      <VotePromoSection />
       <FeaturedStory story={featured} />
       <AchievementsSection
         achievements={achievements ?? []}

@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { RevealObserver } from "@/components/ui/reveal-observer";
 import { Toaster } from "@/components/ui/sonner";
+import { VoteBanner } from "@/components/vote/VoteBanner";
 import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
@@ -131,6 +132,7 @@ export default function RootLayout({
           </main>
           <Footer />
 
+          <VoteBanner />
           <RevealObserver />
           <Toaster />
         </ThemeProvider>

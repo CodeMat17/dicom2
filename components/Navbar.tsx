@@ -1,13 +1,15 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { VOTE_PATH } from "@/lib/vote";
+import { ArrowUpRight, Menu, Trophy, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import LogoComponent from "./LogoComponent";
 import ThemeToggle from "./ThemeToggle";
 import { ScrollProgress } from "./ui/motion-primitives";
+import { useVotingOpen } from "./vote/use-voting-open";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -23,6 +25,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const votingOpen = useVotingOpen();
   const drawerRef = useRef<HTMLDialogElement>(null);
 
   // The bar starts transparent over the hero and condenses into glass once
@@ -98,6 +101,18 @@ export default function Navbar() {
             </nav>
 
             <div className="flex items-center gap-2">
+              {/* Public vote pill — at every width while voting is open. */}
+              {votingOpen && (
+                <Link
+                  href={VOTE_PATH}
+                  aria-current={pathname === VOTE_PATH ? "page" : undefined}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-gold px-3.5 py-2 text-sm font-semibold text-ink-900 shadow-gold transition-colors hover:bg-gold/90 sm:px-4 sm:py-2.5"
+                >
+                  <Trophy aria-hidden className="h-4 w-4" />
+                  Vote
+                </Link>
+              )}
+
               {/* Sits outside the lg: breakpoint switch — the theme toggle is
                   reachable at every width, not buried in the drawer. */}
               <ThemeToggle />
@@ -193,7 +208,26 @@ export default function Navbar() {
               );
             })}
 
-            <div className="mt-auto pt-6">
+            <div className="mt-auto space-y-3 pt-6">
+              {votingOpen && (
+                <Link
+                  href={VOTE_PATH}
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-3 rounded-2xl border border-gold/30 bg-gold/10 px-4 py-3.5 transition-colors hover:bg-gold/15"
+                >
+                  <Trophy aria-hidden className="h-5 w-5 shrink-0 text-gold" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-semibold text-white">
+                      Public Choice Vote
+                    </span>
+                    <span className="block text-xs text-white/70">
+                      Frank Mbanefo Design Competition
+                    </span>
+                  </span>
+                  <ArrowUpRight aria-hidden className="h-4 w-4 text-gold" />
+                </Link>
+              )}
+
               <Link
                 href="/contact-us"
                 onClick={() => setIsOpen(false)}
