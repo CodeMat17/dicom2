@@ -1,7 +1,7 @@
 import { Id } from "@/convex/_generated/dataModel";
 import dayjs from "dayjs";
 import { ArrowUpRight, CalendarDays } from "lucide-react";
-import Image from "next/image";
+import Image from "@/components/AppImage";
 import Link from "next/link";
 import ShareStoryUrl from "../ShareStoryUrl";
 import { SpotlightCard } from "../ui/motion-primitives";

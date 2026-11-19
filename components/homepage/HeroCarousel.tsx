@@ -9,7 +9,7 @@
 // in a carousel library or an animation runtime for what is a fade.
 import { cn } from "@/lib/utils";
 import { ArrowRight, MoveDown } from "lucide-react";
-import Image from "next/image";
+import Image from "@/components/AppImage";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { Magnetic } from "../ui/motion-interactions";

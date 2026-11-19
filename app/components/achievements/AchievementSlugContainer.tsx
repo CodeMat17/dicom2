@@ -1,7 +1,7 @@
 import ShareStoryUrl from "@/components/ShareStoryUrl";
 import { Reveal } from "@/components/ui/motion-primitives";
 import { ArrowLeft, CalendarDays } from "lucide-react";
-import Image from "next/image";
+import Image from "@/components/AppImage";
 import Link from "next/link";
 
 export type AchievementStory = {

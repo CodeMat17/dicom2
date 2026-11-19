@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import Image from "next/image";
+import Image from "@/components/AppImage";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export interface Collaborator {

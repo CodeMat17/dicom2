@@ -3,7 +3,7 @@
 // Native <dialog>: focus trapping, Escape and page inerting come from the
 // platform rather than from a dialog library in the bundle.
 import { Mail, X } from "lucide-react";
-import Image from "next/image";
+import Image from "@/components/AppImage";
 import { useId, useRef } from "react";
 
 type StaffProps = {

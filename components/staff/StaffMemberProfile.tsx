@@ -1,5 +1,5 @@
 import type { TeamMember } from "@/types/team";
-import Image from "next/image";
+import Image from "@/components/AppImage";
 import { memo } from "react";
 import ProfileModal from "./ProfileModal";
 

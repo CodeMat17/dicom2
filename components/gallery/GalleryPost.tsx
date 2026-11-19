@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import { CalendarDays, Expand, Images } from "lucide-react";
-import Image from "next/image";
+import Image from "@/components/AppImage";
 import { useState } from "react";
 import type { GalleryImage, GalleryPhoto } from "./types";
 
